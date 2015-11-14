@@ -1,0 +1,29 @@
+{
+  "name": "jsmediatags",
+  "version": "0.0.1",
+  "description": "Media Tags Reader (ID3, ID4)",
+  "author": {
+    "name": "António Afonso",
+    "email": "antonio.afonso@gmail.com"
+  },
+  "main": "index.js",
+  "devDependencies": {
+    "babel-plugin-transform-flow-strip-types": "*",
+    "babel-jest": "~6.0.1",
+    "jest-cli": "~0.7.1",
+    "babel-core": "~6.2.1",
+    "babel-cli": "~6.2.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "build": "./node_modules/babel-cli/bin/babel.js src --out-dir build",
+    "watch": "./node_modules/babel-cli/bin/babel.js --watch src --out-dir build"
+  },
+  "jest": {
+    "rootDir": "./src",
+    "scriptPreprocessor": "../node_modules/babel-jest"
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  }
+}

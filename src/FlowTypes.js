@@ -15,3 +15,8 @@ export type CharsetType =
   "utf-8" |
   "iso-8859-1";
 
+export type ChunkType = {
+  offset: number,
+  data: Array<number>
+};
+

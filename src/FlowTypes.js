@@ -2,6 +2,10 @@
  * @flow
  */
 
+export type CallbackType = {
+  onSuccess: (data: Object) => void,
+  onError?: () => void
+};
 
 export type LoadCallbackType = {
   onSuccess: () => void,

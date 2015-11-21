@@ -2,6 +2,8 @@
  * @flow
  */
 
+var MediaFileReader = require('./MediaFileReader');
+
 export type CallbackType = {
   onSuccess: (data: Object) => void,
   onError?: () => void
@@ -27,3 +29,12 @@ export type ChunkType = {
 export type Byte = number;
 
 export type ByteArray = Array<Byte>;
+
+export type FrameReaderSignature = (
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  majorVersion?: string
+) => any;
+

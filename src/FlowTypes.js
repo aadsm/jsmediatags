@@ -24,3 +24,6 @@ export type ChunkType = {
   data: Array<number>
 };
 
+export type Byte = number;
+
+export type ByteArray = Array<Byte>;

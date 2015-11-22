@@ -38,3 +38,48 @@ export type FrameReaderSignature = (
   majorVersion?: string
 ) => any;
 
+export type TagFrames = {[key: string]: TagFrame};
+
+type TagFrame = {
+  id: string,
+  size: number,
+  description: string,
+  data: Object
+};
+
+export type TagFrameHeader = {
+  id: string,
+  size: number,
+  headerSize: number,
+  flags: ?TagFrameFlags
+};
+
+export type TagFrameFlags = {
+  message: {
+    tag_alter_preservation: boolean,
+    file_alter_preservation: boolean,
+    read_only: boolean
+  },
+  format: {
+    grouping_identity: boolean,
+    compression: boolean,
+    encryption: boolean,
+    unsynchronisation: boolean,
+    data_length_indicator: boolean
+  }
+};
+
+export type TagHeader = {
+  version: string,
+  major: number,
+  revision: number,
+  flags: TagHeaderFlags,
+  size: number
+};
+
+export type TagHeaderFlags = {
+  unsynchronisation: boolean,
+  extended_header: boolean,
+  experimental_indicator: boolean,
+  footer_present: boolean
+};

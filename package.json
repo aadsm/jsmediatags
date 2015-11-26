@@ -13,15 +13,25 @@
   "devDependencies": {
     "babel-plugin-transform-flow-strip-types": "~6.1.18",
     "babel-plugin-transform-es2015-modules-commonjs": "~6.1.18",
+    "babel-plugin-transform-es2015-classes": "~6.1.18",
+    "babel-plugin-transform-es2015-block-scoping": "~6.1.18",
+    "babel-plugin-transform-class-properties": "~6.2.2",
     "babel-jest": "~6.0.1",
-    "jest-cli": "~0.7.1",
     "babel-core": "~6.2.1",
-    "babel-cli": "~6.2.0"
+    "babel-cli": "~6.2.0",
+    "jest-cli": "~0.7.1",
+    "browserify": "~12.0.1",
+    "watchify": "~3.6.1",
+    "babelify": "~7.2.0",
+    "google-closure-compiler": "20151015.0.0"
   },
   "scripts": {
     "test": "jest",
     "build": "./node_modules/babel-cli/bin/babel.js src --out-dir build",
-    "watch": "./node_modules/babel-cli/bin/babel.js --watch src --out-dir build"
+    "watch": "./node_modules/babel-cli/bin/babel.js --watch src --out-dir build",
+    "dist-dev": "mkdir -p dist && ./node_modules/browserify/bin/cmd.js browser.js -i xhr2 -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
+    "dist-watch": "mkdir -p dist && ./node_modules/watchify/bin/cmd.js browser.js -v -i xhr2 -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
+    "dist": "npm run dist-dev && java -jar node_modules/google-closure-compiler/compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS --js dist/jsmediatags.js > dist/jsmediatags.min.js"
   },
   "jest": {
     "rootDir": "./src",

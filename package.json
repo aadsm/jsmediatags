@@ -7,6 +7,9 @@
     "email": "antonio.afonso@gmail.com"
   },
   "main": "index.js",
+  "dependencies": {
+    "xhr2": "~0.1.3"
+  },
   "devDependencies": {
     "babel-plugin-transform-flow-strip-types": "~6.1.18",
     "babel-plugin-transform-es2015-modules-commonjs": "~6.1.18",

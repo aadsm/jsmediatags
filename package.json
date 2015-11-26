@@ -8,7 +8,8 @@
   },
   "main": "index.js",
   "devDependencies": {
-    "babel-plugin-transform-flow-strip-types": "*",
+    "babel-plugin-transform-flow-strip-types": "~6.1.18",
+    "babel-plugin-transform-es2015-modules-commonjs": "~6.1.18",
     "babel-jest": "~6.0.1",
     "jest-cli": "~0.7.1",
     "babel-core": "~6.2.1",

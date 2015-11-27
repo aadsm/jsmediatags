@@ -113,7 +113,12 @@ class ID3v2TagReader extends MediaTagReader {
       var header = this._readFrameHeader(data, offset, id3header);
       var frameId = header.id;
 
-      // if last frame GTFO
+      // If the header size is 0 then we're probably hit the padding if it
+      // exists.
+      if (header.size === 0) {
+        break;
+      }
+      // No frame ID sometimes means it's the last frame (GTFO).
       if (!frameId) {
         break;
       }

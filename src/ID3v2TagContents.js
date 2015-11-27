@@ -17,6 +17,7 @@ const getSynchsafeInteger32 = ByteArrayUtils.getSynchsafeInteger32;
 const getInteger32 = ByteArrayUtils.getInteger32;
 const getInteger24 = ByteArrayUtils.getInteger24;
 
+// Offsets
 const FLAGS = 5;
 const SIZE = 6;
 const EXTENDED_HEADER = 10;
@@ -24,6 +25,8 @@ const EXTENDED_FLAGS_V3 = 14;
 const EXTENDED_FLAGS_V4 = 15;
 const START_EXTENDED_DATA_V3 = 20;
 const START_EXTENDED_DATA_V4 = 16;
+// Sizes
+const HEADER_SIZE = 10;
 
 import type {
   ByteArray,
@@ -55,7 +58,8 @@ class ID3v2TagContents {
     this._contents = [].concat(
       bin("ID3"),
       [major, revision],
-      [0] // flags
+      [0], // flags
+      [0, 0, 0, 0] // size
     );
     this._frames = {};
     this._updateSize();
@@ -293,14 +297,13 @@ class ID3v2TagContents {
   }
 
   _updateSize() {
+    // Header (10 bytes) is not included in the size.
     var size = 0;
 
-    // header
-    size += 10;
     if (this._hasExtendedHeader) {
-      // header size
+      // Extended header size
       size += this._major === 4 ? 6 : 10;
-      // data size
+      // Extended header data size
       for (var key in this._extendedHeader) {
         if (this._extendedHeader.hasOwnProperty(key)) {
           size += this._extendedHeader[key];
@@ -314,7 +317,7 @@ class ID3v2TagContents {
       }
     }
 
-    this._nextFrameOffset = size;
+    this._nextFrameOffset = size + HEADER_SIZE;
 
     this._size = size;
     this._setData(SIZE, getSynchsafeInteger32(size));

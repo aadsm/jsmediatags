@@ -18,7 +18,8 @@ describe("ID3v2TagReader", function() {
       .addFrame("TCOM", [].concat(
         [0x00], // encoding
         bin("The Composer"), [0x00]
-      ));
+      ))
+      .addFrame("\u0000\u0000\u0000\u0000", []); // Padding frame
 
   beforeEach(function() {
     mediaFileReader = new ArrayFileReader(id3FileContents.toArray());
@@ -103,6 +104,18 @@ describe("ID3v2TagReader", function() {
     }).then(function(tags) {
       expect(Object.keys(tags.tags)).not.toContain("TIT2");
       expect(Object.keys(tags.tags)).toContain("TCOM");
+    });
+  });
+
+  pit("shold ignore empty tags", function() {
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(Object.keys(tags.tags)).not.toContain("\u0000\u0000\u0000\u0000");
     });
   });
 });

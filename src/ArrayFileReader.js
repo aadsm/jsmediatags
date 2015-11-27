@@ -29,10 +29,6 @@ class ArrayFileReader extends MediaFileReader {
     setTimeout(callbacks.onSuccess, 0);
   }
 
-  getBytesLoaded(): number {
-    return this._array.length;
-  }
-
   getByteAt(offset: number): Byte {
     return this._array[offset];
   }

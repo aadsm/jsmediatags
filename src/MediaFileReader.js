@@ -57,10 +57,6 @@ class MediaFileReader {
     return this._size;
   }
 
-  getBytesLoaded(): number {
-    throw new Error("Must implement getBytesLoaded function");
-  }
-
   getByteAt(offset: number): number {
     throw new Error("Must implement getByteAt function");
   }

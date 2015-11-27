@@ -96,10 +96,6 @@ class XhrFileReader extends MediaFileReader {
     xhr.send(null);
   }
 
-  getBytesLoaded(): number {
-    throw new Error("Must implement getBytesLoaded function");
-  }
-
   getByteAt(offset: number): number {
     var character = this._fileData.getByteAt(offset);
     return character.charCodeAt(0) & 0xff;

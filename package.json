@@ -7,6 +7,21 @@
     "email": "antonio.afonso@gmail.com"
   },
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aadsm/jsmediatags.git"
+  },
+  "keywords": [
+    "ID3",
+    "tags",
+    "mp3",
+    "audio"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/aadsm/jsmediatags/issues"
+  },
+  "homepage": "https://github.com/aadsm/jsmediatags#readme",
   "dependencies": {
     "xhr2": "~0.1.3"
   },
@@ -27,8 +42,8 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "./node_modules/babel-cli/bin/babel.js src --out-dir build",
-    "watch": "./node_modules/babel-cli/bin/babel.js --watch src --out-dir build",
+    "build": "./node_modules/babel-cli/bin/babel.js src --ignore __tests__,__mocks,FlowTypes.js --out-dir build",
+    "watch": "./node_modules/babel-cli/bin/babel.js --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build",
     "dist-dev": "mkdir -p dist && ./node_modules/browserify/bin/cmd.js browser.js -i xhr2 -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
     "dist-watch": "mkdir -p dist && ./node_modules/watchify/bin/cmd.js browser.js -v -i xhr2 -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
     "dist": "npm run dist-dev && java -jar node_modules/google-closure-compiler/compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS --js dist/jsmediatags.js > dist/jsmediatags.min.js"

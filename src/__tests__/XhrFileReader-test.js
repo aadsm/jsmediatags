@@ -83,7 +83,11 @@ describe("XhrFileReader", function() {
     fileReader = new XhrFileReader("http://www.example.fakedomain/fail.mp3");
 
     return new Promise(function(resolve, reject) {
-      fileReader.init(throwOnSuccess(resolve));
+      fileReader.init(throwOnSuccess(function(error) {
+        expect(error.type).toBe("xhr");
+        expect(error.xhr).toBeDefined();
+        resolve();
+      }));
       jest.runAllTimers();
     }).then(function(tags) {
       expect(true).toBe(true);

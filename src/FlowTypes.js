@@ -6,12 +6,12 @@ var MediaFileReader = require('./MediaFileReader');
 
 export type CallbackType = {
   onSuccess: (data: Object) => void,
-  onError?: () => void
+  onError?: (error: Object) => void
 };
 
 export type LoadCallbackType = {
   onSuccess: () => void,
-  onError?: () => void
+  onError?: (error: Object) => void
 };
 
 export type CharsetType =

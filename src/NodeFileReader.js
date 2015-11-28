@@ -46,7 +46,7 @@ class NodeFileReader extends MediaFileReader {
     fs.stat(self._path, function(err, stats) {
       if (err) {
         if (callbacks.onError) {
-          callbacks.onError(err);
+          callbacks.onError({"type": "fs", "fs": err});
         }
       } else {
         self._size = stats.size;
@@ -72,7 +72,7 @@ class NodeFileReader extends MediaFileReader {
 
     var readData = function(err, _fd) {
       if (err) {
-        onError(err);
+        onError({"type": "fs", "fs": err});
         return;
       }
 
@@ -89,7 +89,7 @@ class NodeFileReader extends MediaFileReader {
       });
 
       if (err) {
-        onError(err);
+        onError({"type": "fs", "fs": err});
         return;
       }
 

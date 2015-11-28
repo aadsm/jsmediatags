@@ -70,15 +70,18 @@ class XhrFileReader extends MediaFileReader {
         // $FlowIssue - xhr is not null
         callbacks.onSuccess(xhr);
       } else if (callbacks.onError) {
-        callbacks.onError();
+        callbacks.onError({"type": "xhr", "xhr": xhr});
       }
       xhr = null;
     };
 
     if (typeof xhr.onload !== 'undefined') {
       xhr.onload = onXHRLoad;
-      // $FlowIssue - onerror should be optional
-      xhr.onerror = callbacks.onError;
+      xhr.onerror = function() {
+        if (callbacks.onError) {
+          callbacks.onError({"type": "xhr", "xhr": xhr});
+        }
+      }
     } else {
       xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {

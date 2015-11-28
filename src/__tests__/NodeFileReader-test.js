@@ -72,7 +72,14 @@ describe("NodeFileReader", function() {
     fileReader = new NodeFileReader("doesnt-exist");
 
     return new Promise(function(resolve, reject) {
-      fileReader.init({onSuccess: reject, onError: resolve});
+      fileReader.init({
+        onSuccess: reject,
+        onError: function(error) {
+          expect(error.type).toBe("fs");
+          expect(error.fs).toBeDefined();
+          resolve();
+        }
+      });
     }).then(function(tags) {
       expect(true).toBe(true);
     });

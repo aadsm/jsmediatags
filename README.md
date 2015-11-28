@@ -32,8 +32,8 @@ tagReader.read({
   onSuccess: function(tags) {
     console.log(tags);
   },
-  onError: function() {
-    console.log(':(');
+  onError: function(error) {
+    console.log(':(', error.type, error[error.type]);
   }
 });
 ```

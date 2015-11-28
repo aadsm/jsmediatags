@@ -1,3 +1,7 @@
 node_modules
 dist
 src
+.babelrc
+.flowconfig
+.gitignore
+browser.js

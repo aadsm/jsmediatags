@@ -1,6 +1,6 @@
 {
   "name": "jsmediatags",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Media Tags Reader (ID3, ID4)",
   "author": {
     "name": "António Afonso",

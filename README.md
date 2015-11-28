@@ -38,7 +38,7 @@ tagReader.read({
 
 ### Browser
 
-Copy the [`dist/jsmediatags.min.js`](https://github.com/aadsm/jsmediatags/blob/master/dist/jsmediatags.min.js) into your web application directory and include it with a script tag.
+Copy the [`dist/jsmediatags.min.js`](https://github.com/aadsm/jsmediatags/blob/master/dist/jsmediatags.min.js) file into your web application directory and include it with a script tag.
 UMD will give you multiple usage options to use it:
 
 ```javascript
@@ -85,9 +85,9 @@ Run `npm run watch` to automatically recompile the source code whenever a file i
 
 Run `npm run dist` to generate a UMD version of this library that is ready to be used in a browser.
 
-Two packages are created for the browser: `jsmediatags.min.js` and `jsmediatags.js`. One is a minimized version that is meant to be used in production and the other a regular version meant to be used for debugging.
+Two packages are created for the browser: `dist/jsmediatags.min.js` and `dist/jsmediatags.js`. One is a minimized version that is meant to be used in production and the other a regular version meant to be used for debugging.
 
-Run `npm run dist-watch` to recompile and browserify the source code whenever a file is changed. This will only regenerate the `jsmediatags.js` file.
+Run `npm run dist-watch` to recompile and browserify the source code whenever a file is changed. This will only regenerate the `dist/jsmediatags.js` file.
 
 ### New File Readers
 
@@ -98,9 +98,9 @@ Extend the `MediaFileReader` class to implement a new file reader. Methods to im
 * getBytesLoaded
 * getByteAt
 
-* Current Implementations
-  * [NodeFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/NodeFileReader.js) (NodeJS)
-  * [XhrFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/XhrFileReader.js) (Browser and NodeJS)
+Current Implementations:
+* [NodeFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/NodeFileReader.js) (NodeJS)
+* [XhrFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/XhrFileReader.js) (Browser and NodeJS)
 
 ### New Tag Readers
 
@@ -111,8 +111,8 @@ Extend the `MediaTagReader` class to implement a new tag reader. Methods to impl
 * \_loadData
 * \_parseData
 
-* Current Implementations
-  * [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.js)
+Current Implementations:
+* [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.js)
 
 ### Unit Testing
 

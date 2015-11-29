@@ -5,7 +5,7 @@
 var MediaFileReader = require('./MediaFileReader');
 
 export type CallbackType = {
-  onSuccess: (data: Object) => void,
+  onSuccess: (data: any) => void,
   onError?: (error: Object) => void
 };
 

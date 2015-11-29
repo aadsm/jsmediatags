@@ -18,6 +18,15 @@ import type {
 } from './FlowTypes';
 
 class ID3v2TagReader extends MediaTagReader {
+  static getTagIdentifierByteRange(): [number, number] {
+    return [0, 9]; // ID3 header
+  }
+
+  static canReadTagFormat(tagIdentifier: Array<number>): boolean {
+    var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
+    return id === 'ID3';
+  }
+
   _loadData(mediaFileReader: MediaFileReader, callbacks: LoadCallbackType) {
     mediaFileReader.loadRange([6, 9], {
       onSuccess: function() {

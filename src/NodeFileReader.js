@@ -29,7 +29,7 @@ class NodeFileReader extends MediaFileReader {
     this._fileData = new ChunkedFileData();
   }
 
-  static canReadFile(file: Object): boolean {
+  static canReadFile(file: any): boolean {
     return (
       typeof file === 'string' &&
       !/^[a-z]+:\/\//i.test(file)

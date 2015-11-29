@@ -26,7 +26,7 @@ class MediaFileReader {
   /**
    * Decides if this media file reader is able to read the given file.
    */
-  static canReadFile(file: Object): boolean {
+  static canReadFile(file: any): boolean {
     throw new Error("Must implement canReadFile function");
   }
 

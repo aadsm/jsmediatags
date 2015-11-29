@@ -23,7 +23,7 @@ class XhrFileReader extends MediaFileReader {
     this._fileData = new ChunkedFileData();
   }
 
-  static canReadFile(file: Object): boolean {
+  static canReadFile(file: any): boolean {
     return (
       typeof file === 'string' &&
       /^[a-z]+:\/\//i.test(file)
@@ -67,7 +67,6 @@ class XhrFileReader extends MediaFileReader {
       // 200 - OK
       // 206 - Partial Content
       if (xhr.status === 200 || xhr.status === 206) {
-        // $FlowIssue - xhr is not null
         callbacks.onSuccess(xhr);
       } else if (callbacks.onError) {
         callbacks.onError({"type": "xhr", "xhr": xhr});

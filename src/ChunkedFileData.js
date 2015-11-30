@@ -53,18 +53,20 @@ class ChunkedFileData {
       };
 
       if (needsPrepend) {
-        chunk.data = firstChunk.data.slice(
+        var slicedData = firstChunk.data.slice(
           0,
           offset - firstChunk.offset
-        ).concat(data);
+        );
+        chunk.data = this._concatData(slicedData, data);
       }
 
       if (needsAppend) {
         // Use the lastChunk because the slice logic is easier to handle.
-        chunk.data = data.slice(
+        var slicedData = data.slice(
           0,
           lastChunk.offset - offset
-        ).concat(lastChunk.data);
+        );
+        chunk.data = this._concatData(slicedData, lastChunk.data);
       }
 
       this._fileData.splice(
@@ -72,6 +74,18 @@ class ChunkedFileData {
         chunkRange.endIx - chunkRange.startIx + 1,
         chunk
       );
+    }
+  }
+
+  _concatData(dataA: Array<number>, dataB: Array<number>): Array<number> {
+    // TypedArrays don't support concat.
+    if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView(dataA)) {
+      var dataAandB = new dataA.constructor(dataA.length + dataB.length);
+      dataAandB.set(dataA, 0);
+      dataAandB.set(dataB, dataA.length);
+      return dataAandB;
+    } else {
+      return dataA.concat(dataB);
     }
   }
 

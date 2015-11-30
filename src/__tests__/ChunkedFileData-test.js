@@ -326,4 +326,16 @@ describe("ChunkedFileData", function() {
       chunkedFileData.getByteAt(100);
     }).toThrow();
   });
+
+  it("should add TypedArrays", function() {
+    var intArray = new Uint8Array(new Buffer([0x01, 0x02, 0x03, 0x04, 0x05]));
+    chunkedFileData.addData(5, intArray);
+
+    expect(function() {
+      // Append
+      chunkedFileData.addData(6, intArray);
+      // Prepend
+      chunkedFileData.addData(1, intArray);
+    }).not.toThrow();
+  });
 });

@@ -20,13 +20,10 @@ This is a work in progress. Currently only NodeJS, Browser and ID3v2 tags are su
 Run `npm install jsmediatags --save` to install.
 
 ```javascript
+// Simple API - will fetch all tags
 var jsmediatags = require("jsmediatags");
-var NodeFileReader = jsmediatags.NodeFileReader;
-var ID3v2TagReader = jsmediatags.ID3v2TagReader;
 
-var fileReader = new NodeFileReader("./music-file.mp3");
-var tagReader = new ID3v2TagReader(fileReader);
-tagReader.read({
+jsmediatags.read("./music-file.mp3", {
   onSuccess: function(tags) {
     console.log(tags);
   },
@@ -34,6 +31,20 @@ tagReader.read({
     console.log(':(', error.type, error[error.type]);
   }
 });
+
+// Advanced API
+var jsmediatags = require("jsmediatags");
+
+new jsmediatags.Reader("http://www.example.com/music-file.mp3")
+  .setTags(["title", "artist"])
+  .read({
+    onSuccess: function(tags) {
+      console.log(tags);
+    },
+    onError: function(error) {
+      console.log(':(', error.type, error[error.type]);
+    }
+  });
 ```
 
 ### Browser
@@ -43,16 +54,37 @@ UMD will give you multiple usage options to use it:
 
 ```javascript
 // As a global Object
-var XhrFileReader = window.jsmediatags.XhrFileReader;
-var ID3v2TagReader = window.jsmediatags.ID3v2TagReader;
+var jsmediatags = window.jsmediatags;
 
 // As a CommonJS Module
 var jsmediatags = require("jsmediatags");
-var XhrFileReader = jsmediatags.XhrFileReader;
-var ID3v2TagReader = jsmediatags.ID3v2TagReader;
 ```
 
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
+
+## Documentation
+
+This library uses file readers (MediaFileReader API) to read the file itself and media tag readers (MediaTagReader API) to parse the tags in the file.
+
+By default the library will automatically pick the most appropriate file reader depending on the file location. In the common case this will be the URL or local path where the file is located.
+
+A similar approach is taken for the tag reader. The most appropriate tag reader will be selected depending on the tag signature found in the file.
+
+However, you can specify exactly which file reader or tag reader to use using the advanced API.
+
+New file and tag readers can be implemented by extending the MediaFileReader and MediaTagReader classes. Check the `Development` section down bellow for more information.
+
+### Reference
+
+* `jsmediatags.Reader`
+  * `setTags(tags: Array<string>)` - Specify which tags to read
+  * `setFileReader(fileReader: typeof MediaFileReader)` - Use this particular file reader
+  * `setTagReader(tagReader: typeof MediaTagReader)` - Use this particular tag reader
+  * `read({onSuccess, onError})` - Read the tags.
+
+* `jsmediatags.Config`
+  * `addFileReader(fileReader: typeof MediaFileReader)` - Add a new file reader to the automatic detection system.
+  * `addTagReader(tagReader: typeof MediaTagReader)` - Add a new tag reader to the automatic detection system.
 
 ## Development
 

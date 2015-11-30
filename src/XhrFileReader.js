@@ -30,13 +30,12 @@ class XhrFileReader extends MediaFileReader {
     );
   }
 
-  init(callbacks: LoadCallbackType): void {
+  _init(callbacks: LoadCallbackType): void {
     var self = this;
 
     this._makeXHRRequest("HEAD", null, {
       onSuccess: function(xhr: XMLHttpRequest) {
         self._size = parseInt(xhr.getResponseHeader("Content-Length"), 10);
-        self._isInitialized = true;
         callbacks.onSuccess();
       },
       onError: callbacks.onError

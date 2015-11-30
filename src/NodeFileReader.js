@@ -40,7 +40,7 @@ class NodeFileReader extends MediaFileReader {
     return this._fileData.getByteAt(offset);
   }
 
-  init(callbacks: LoadCallbackType) {
+  _init(callbacks: LoadCallbackType) {
     var self = this;
 
     fs.stat(self._path, function(err, stats) {
@@ -50,7 +50,6 @@ class NodeFileReader extends MediaFileReader {
         }
       } else {
         self._size = stats.size;
-        self._isInitialized = true;
         callbacks.onSuccess();
       }
     });

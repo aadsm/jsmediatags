@@ -35,6 +35,22 @@ class MediaFileReader {
    * Loads the necessary initial information from the file.
    */
   init(callbacks: LoadCallbackType): void {
+    var self = this;
+
+    if (this._isInitialized) {
+      setTimeout(callbacks.onSuccess, 1);
+    } else {
+      return this._init({
+        onSuccess: function() {
+          self._isInitialized = true;
+          callbacks.onSuccess();
+        },
+        onError: callbacks.onError
+      });
+    }
+  }
+
+  _init(callbacks: LoadCallbackType): void {
     throw new Error("Must implement init function");
   }
 

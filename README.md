@@ -9,7 +9,9 @@ This is a work in progress. Currently only NodeJS, Browser and ID3v2 tags are su
 
 * File Readers
   * NodeJS
-  * Browser
+  * XMLHttpRequest
+  * Blob
+  * File
 * Tag Readers
   * ID3v2 (unsynchronisation is not supported)
 
@@ -58,6 +60,28 @@ var jsmediatags = window.jsmediatags;
 
 // As a CommonJS Module
 var jsmediatags = require("jsmediatags");
+```
+
+It supports loading files from remote hosts, Blob and File objects:
+```javascript
+// From remote host
+jsmediatags.read("./music-file.mp3", {
+  onSuccess: function(tags) {
+    console.log(tags);
+  },
+  onError: function(error) {
+    console.log(error);
+  }
+});
+
+// From Blob
+jsmediatags.read(blob, ...);
+
+// From File
+inputTypeFile.addEventListener("change", function(event) {
+  var file = event.target.files[0];
+  jsmediatags.read(file, ...);
+}, false);
 ```
 
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
@@ -133,6 +157,8 @@ Extend the `MediaFileReader` class to implement a new file reader. Methods to im
 Current Implementations:
 * [NodeFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/NodeFileReader.js) (NodeJS)
 * [XhrFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/XhrFileReader.js) (Browser and NodeJS)
+* [BlobFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/BlobFileReader.js) (Blob and File)
+
 
 ### New Tag Readers
 

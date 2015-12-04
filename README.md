@@ -65,7 +65,7 @@ var jsmediatags = require("jsmediatags");
 It supports loading files from remote hosts, Blob and File objects:
 ```javascript
 // From remote host
-jsmediatags.read("./music-file.mp3", {
+jsmediatags.read("http://www.example.com/music-file.mp3", {
   onSuccess: function(tags) {
     console.log(tags);
   },

@@ -697,7 +697,11 @@ var ID3v2TagReader = (function (_MediaTagReader) {
   }], [{
     key: 'getTagIdentifierByteRange',
     value: function getTagIdentifierByteRange() {
-      return [0, 9]; // ID3 header
+      // ID3 header
+      return {
+        offset: 0,
+        length: 10
+      };
     }
   }, {
     key: 'canReadTagFormat',
@@ -1514,9 +1518,14 @@ var Reader = (function () {
       var fileReader = new FileReader(this._file);
       var self = this;
 
-      this._getTagReader(fileReader, {
-        onSuccess: function (TagReader) {
-          new TagReader(fileReader).setTags(self._tags).read(callbacks);
+      fileReader.init({
+        onSuccess: function () {
+          self._getTagReader(fileReader, {
+            onSuccess: function (TagReader) {
+              new TagReader(fileReader).setTags(self._tags).read(callbacks);
+            },
+            onError: callbacks.onError
+          });
         },
         onError: callbacks.onError
       });
@@ -1556,27 +1565,43 @@ var Reader = (function () {
   }, {
     key: "_findTagReader",
     value: function _findTagReader(fileReader, callbacks) {
-      var tagIdentifierRange = [Number.MAX_VALUE, 0];
+      // We don't want to make multiple fetches per tag reader to get the tag
+      // identifier. The strategy here is to combine all the tag identifier
+      // ranges into one and make a single fetch. This is particularly important
+      // in file readers that have expensive loads like the XHR one.
+      // However, with this strategy we run into the problem of loading the
+      // entire file because tag identifiers might be at the start or end of
+      // the file.
+      // To get around this we divide the tag readers into two categories, the
+      // ones that read their tag identifiers from the start of the file and the
+      // ones that read from the end of the file.
+      var tagReadersAtFileStart = [];
+      var tagReadersAtFileEnd = [];
+      var fileSize = fileReader.getSize();
 
-      // Create a super set of all ranges so we can load them all at once.
-      // Might need to rethink this approach if there are tag ranges too far
-      // a part from each other. We're good for now though.
       for (var i = 0; i < mediaTagReaders.length; i++) {
         var range = mediaTagReaders[i].getTagIdentifierByteRange();
-
-        if (range[1] < range[0]) {
-          throw new Error("Invalid range: ", range, " from ", mediaTagReaders[i]);
+        if (range.offset >= 0 && range.offset < fileSize / 2 || range.offset < 0 && range.offset < -fileSize / 2) {
+          tagReadersAtFileStart.push(mediaTagReaders[i]);
+        } else {
+          tagReadersAtFileEnd.push(mediaTagReaders[i]);
         }
-
-        tagIdentifierRange[0] = Math.min(range[0], tagIdentifierRange[0]);
-        tagIdentifierRange[1] = Math.max(range[1], tagIdentifierRange[1]);
       }
 
-      fileReader.loadRange(tagIdentifierRange, {
+      var tagsLoaded = false;
+      var loadTagIdentifiersCallbacks = {
         onSuccess: function () {
+          if (!tagsLoaded) {
+            // We're expecting to load two sets of tag identifiers. This flag
+            // indicates when the first one has been loaded.
+            tagsLoaded = true;
+            return;
+          }
+
           for (var i = 0; i < mediaTagReaders.length; i++) {
             var range = mediaTagReaders[i].getTagIdentifierByteRange();
-            var tagIndentifier = fileReader.getBytesAt(range[0], range[1] - range[0] + 1);
+            var tagIndentifier = fileReader.getBytesAt(range.offset >= 0 ? range.offset : range.offset + fileSize, range.length);
+
             if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {
               callbacks.onSuccess(mediaTagReaders[i]);
               return;
@@ -1584,7 +1609,36 @@ var Reader = (function () {
           }
         },
         onError: callbacks.onError
-      });
+      };
+
+      this._loadTagIdentifierRanges(fileReader, tagReadersAtFileStart, loadTagIdentifiersCallbacks);
+      this._loadTagIdentifierRanges(fileReader, tagReadersAtFileEnd, loadTagIdentifiersCallbacks);
+    }
+  }, {
+    key: "_loadTagIdentifierRanges",
+    value: function _loadTagIdentifierRanges(fileReader, tagReaders, callbacks) {
+      if (tagReaders.length === 0) {
+        // Force async
+        setTimeout(callbacks.onSuccess, 1);
+        return;
+      }
+
+      var tagIdentifierRange = [Number.MAX_VALUE, 0];
+      var fileSize = fileReader.getSize();
+
+      // Create a super set of all ranges so we can load them all at once.
+      // Might need to rethink this approach if there are tag ranges too far
+      // a part from each other. We're good for now though.
+      for (var i = 0; i < tagReaders.length; i++) {
+        var range = tagReaders[i].getTagIdentifierByteRange();
+        var start = range.offset >= 0 ? range.offset : range.offset + fileSize;
+        var end = start + range.length - 1;
+
+        tagIdentifierRange[0] = Math.min(start, tagIdentifierRange[0]);
+        tagIdentifierRange[1] = Math.max(end, tagIdentifierRange[1]);
+      }
+
+      fileReader.loadRange(tagIdentifierRange, callbacks);
     }
   }]);
 

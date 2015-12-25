@@ -27,7 +27,9 @@ describe("jsmediatags", function() {
         }, 1);
       });
 
-    ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue([]);
+    ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
+      {offset: 0, length: 0}
+    );
     ID3v2TagReader.prototype.setTags = jest.genMockFunction().mockReturnThis();
   });
 
@@ -133,6 +135,34 @@ describe("jsmediatags", function() {
         jsmediatags.Config.removeTagReader(MockTagReader);
         var rangeSuperset = NodeFileReader.prototype.loadRange.mock.calls[0][0];
         expect(rangeSuperset).toEqual([2, 6]);
+      });
+    });
+
+    pit("should not load the entire file if two tag loaders require start and end ranges for tag identifier", function() {
+      var fileReader = new NodeFileReader();
+      var MockTagReader = jest.genMockFunction();
+      jsmediatags.Config.addTagReader(MockTagReader);
+
+      fileReader.getSize.mockReturnValue(1024);
+
+      ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
+      ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
+        {offset: 0, length: 3}
+      );
+      MockTagReader.getTagIdentifierByteRange = jest.genMockFunction()
+        .mockReturnValue({offset: -3, length: 3});
+      MockTagReader.canReadTagFormat = jest.genMockFunction()
+        .mockReturnValue(true);
+
+      return new Promise(function(resolve, reject) {
+        var reader = new jsmediatags.Reader();
+        reader._findTagReader(fileReader, {onSuccess: resolve, onError: reject});
+        jest.runAllTimers();
+      }).then(function() {
+        jsmediatags.Config.removeTagReader(MockTagReader);
+        var loadRangeCalls = NodeFileReader.prototype.loadRange.mock.calls;
+        expect(loadRangeCalls[0][0]).toEqual([0, 2]);
+        expect(loadRangeCalls[1][0]).toEqual([1021, 1023]);
       });
     });
   });

@@ -14,12 +14,17 @@ import type {
   TagHeader,
   TagFrameHeader,
   TagFrameFlags,
-  CharsetType
+  CharsetType,
+  ByteRange
 } from './FlowTypes';
 
 class ID3v2TagReader extends MediaTagReader {
-  static getTagIdentifierByteRange(): [number, number] {
-    return [0, 9]; // ID3 header
+  static getTagIdentifierByteRange(): ByteRange {
+    // ID3 header
+    return {
+      offset: 0,
+      length: 10
+    };
   }
 
   static canReadTagFormat(tagIdentifier: Array<number>): boolean {

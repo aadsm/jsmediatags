@@ -98,19 +98,18 @@ class Reader {
 
   _findTagReader(fileReader: MediaFileReader, callbacks: CallbackType) {
     var tagIdentifierRange = [Number.MAX_VALUE, 0];
+    var fileSize = fileReader.getSize();
 
     // Create a super set of all ranges so we can load them all at once.
     // Might need to rethink this approach if there are tag ranges too far
     // a part from each other. We're good for now though.
     for (var i = 0; i < mediaTagReaders.length; i++) {
       var range = mediaTagReaders[i].getTagIdentifierByteRange();
+      var start = range.offset >= 0 ? range.offset : range.offset + fileSize;
+      var end = start + range.length - 1;
 
-      if (range[1] < range[0]) {
-        throw new Error("Invalid range: ", range, " from ", mediaTagReaders[i]);
-      }
-
-      tagIdentifierRange[0] = Math.min(range[0], tagIdentifierRange[0]);
-      tagIdentifierRange[1] = Math.max(range[1], tagIdentifierRange[1]);
+      tagIdentifierRange[0] = Math.min(start, tagIdentifierRange[0]);
+      tagIdentifierRange[1] = Math.max(end, tagIdentifierRange[1]);
     }
 
     fileReader.loadRange(tagIdentifierRange, {
@@ -118,8 +117,8 @@ class Reader {
         for (var i = 0; i < mediaTagReaders.length; i++) {
           var range = mediaTagReaders[i].getTagIdentifierByteRange();
           var tagIndentifier = fileReader.getBytesAt(
-            range[0],
-            range[1] - range[0] + 1
+            range.offset >= 0 ? range.offset : range.offset + fileSize,
+            range.length
           );
           if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {
             callbacks.onSuccess(mediaTagReaders[i]);

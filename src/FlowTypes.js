@@ -21,6 +21,11 @@ export type CharsetType =
   "utf-8" |
   "iso-8859-1";
 
+export type ByteRange = {
+  offset: number, // negative offset is relative to the end of the file.
+  length: number
+};
+
 export type ChunkType = {
   offset: number,
   data: Array<number>

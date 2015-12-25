@@ -117,9 +117,11 @@ describe("jsmediatags", function() {
       jsmediatags.Config.addTagReader(MockTagReader);
 
       ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
-      ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue([2, 4]);
+      ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
+        {offset: 2, length: 3}
+      );
       MockTagReader.getTagIdentifierByteRange = jest.genMockFunction()
-        .mockReturnValue([5, 6]);
+        .mockReturnValue({offset: 5, length: 2});
       MockTagReader.canReadTagFormat = jest.genMockFunction()
         .mockReturnValue(true);
 

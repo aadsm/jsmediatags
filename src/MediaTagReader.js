@@ -7,7 +7,8 @@ const MediaFileReader = require('./MediaFileReader');
 
 import type {
   CallbackType,
-  LoadCallbackType
+  LoadCallbackType,
+  ByteRange
 } from './FlowTypes';
 
 class MediaTagReader {
@@ -24,7 +25,7 @@ class MediaTagReader {
    * _canReadTagFormat in order to identify if the file contains tag
    * information that can be read.
    */
-  static getTagIdentifierByteRange(): [number, number] {
+  static getTagIdentifierByteRange(): ByteRange {
     throw new Error("Must implement");
   }
 

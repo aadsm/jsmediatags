@@ -52,11 +52,16 @@ class Reader {
     var fileReader = new FileReader(this._file);
     var self = this;
 
-    this._getTagReader(fileReader, {
-      onSuccess: function(TagReader: Class<MediaTagReader>) {
-        new TagReader(fileReader)
-          .setTags(self._tags)
-          .read(callbacks);
+    fileReader.init({
+      onSuccess: function() {
+        self._getTagReader(fileReader, {
+          onSuccess: function(TagReader: Class<MediaTagReader>) {
+            new TagReader(fileReader)
+              .setTags(self._tags)
+              .read(callbacks);
+          },
+          onError: callbacks.onError
+        });
       },
       onError: callbacks.onError
     });

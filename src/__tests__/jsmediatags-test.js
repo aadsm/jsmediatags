@@ -6,7 +6,6 @@ const jsmediatags = require("../jsmediatags");
 const NodeFileReader = require("../NodeFileReader");
 const XhrFileReader = require("../XhrFileReader");
 const ID3v2TagReader = require("../ID3v2TagReader");
-const bin = require("../ByteArrayUtils").bin;
 
 describe("jsmediatags", function() {
   var mockFileReader;
@@ -15,6 +14,12 @@ describe("jsmediatags", function() {
   beforeEach(function() {
     // Reset auto mock to its original state.
     NodeFileReader.canReadFile = jest.genMockFunction();
+    NodeFileReader.prototype.init = jest.genMockFunction()
+      .mockImplementation(function(callbacks) {
+        setTimeout(function() {
+          callbacks.onSuccess();
+        }, 1);
+      });
     NodeFileReader.prototype.loadRange = jest.genMockFunction()
       .mockImplementation(function(range, callbacks) {
         setTimeout(function() {

@@ -79,7 +79,7 @@ var BlobFileReader = (function (_MediaFileReader) {
 
 module.exports = BlobFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":8}],4:[function(require,module,exports){
+},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":9}],4:[function(require,module,exports){
 /**
  * This class represents a file that might not have all its data loaded yet.
  * It is used when loading the entire file is not an option because it's too
@@ -262,17 +262,17 @@ var ChunkedFileData = (function () {
       var dataChunk;
 
       for (var i = 0; i < this._fileData.length; i++) {
-        if (offset >= this._fileData[i].offset) {
+        var dataChunkStart = this._fileData[i].offset;
+        var dataChunkEnd = dataChunkStart + this._fileData[i].data.length - 1;
+
+        if (offset >= dataChunkStart && offset <= dataChunkEnd) {
           dataChunk = this._fileData[i];
           break;
         }
       }
 
       if (dataChunk) {
-        var dataOffset = offset - dataChunk.offset;
-        if (dataOffset < dataChunk.data.length) {
-          return dataChunk.data[dataOffset];
-        }
+        return dataChunk.data[offset - dataChunk.offset];
       }
 
       throw new Error("Offset " + offset + " hasn't been loaded yet.");
@@ -289,7 +289,109 @@ module.exports = ChunkedFileData;
 
 var MediaFileReader = require('./MediaFileReader');
 
-},{"./MediaFileReader":8}],6:[function(require,module,exports){
+},{"./MediaFileReader":9}],6:[function(require,module,exports){
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _FlowTypes = require('./FlowTypes');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MediaTagReader = require('./MediaTagReader');
+var MediaFileReader = require('./MediaFileReader');
+
+var ID3v1TagReader = (function (_MediaTagReader) {
+		_inherits(ID3v1TagReader, _MediaTagReader);
+
+		function ID3v1TagReader() {
+				_classCallCheck(this, ID3v1TagReader);
+
+				return _possibleConstructorReturn(this, Object.getPrototypeOf(ID3v1TagReader).apply(this, arguments));
+		}
+
+		_createClass(ID3v1TagReader, [{
+				key: '_loadData',
+				value: function _loadData(mediaFileReader, callbacks) {
+						var fileSize = mediaFileReader.getSize();
+						mediaFileReader.loadRange([fileSize - 128, fileSize - 1], callbacks);
+				}
+		}, {
+				key: '_parseData',
+				value: function _parseData(data, tags) {
+						var offset = data.getSize() - 128;
+
+						var title = data.getStringWithCharsetAt(offset + 3, 30).toString();
+						var artist = data.getStringWithCharsetAt(offset + 33, 30).toString();
+						var album = data.getStringWithCharsetAt(offset + 63, 30).toString();
+						var year = data.getStringWithCharsetAt(offset + 93, 4).toString();
+
+						var trackFlag = data.getByteAt(offset + 97 + 28);
+						var track = data.getByteAt(offset + 97 + 29);
+						if (trackFlag == 0 && track != 0) {
+								var version = "1.1";
+								var comment = data.getStringWithCharsetAt(offset + 97, 28).toString();
+						} else {
+								var version = "1.0";
+								var comment = data.getStringWithCharsetAt(offset + 97, 30).toString();
+								track = 0;
+						}
+
+						var genreIdx = data.getByteAt(offset + 97 + 30);
+						if (genreIdx < 255) {
+								var genre = GENRES[genreIdx];
+						} else {
+								var genre = "";
+						}
+
+						var tag = {
+								"version": version,
+								"title": title,
+								"artist": artist,
+								"album": album,
+								"year": year,
+								"comment": comment,
+								"genre": genre
+						};
+
+						if (track) {
+								// $FlowIssue - flow is not happy with adding properties even when they're optional.
+								tag["track"] = track;
+						}
+
+						return tag;
+				}
+		}], [{
+				key: 'getTagIdentifierByteRange',
+				value: function getTagIdentifierByteRange() {
+						// The identifier is TAG and is at offset: -128. However, to avoid a
+						// fetch for the tag identifier and another for the data, we load the
+						// entire data since it's so small.
+						return {
+								offset: -128,
+								length: 128
+						};
+				}
+		}, {
+				key: 'canReadTagFormat',
+				value: function canReadTagFormat(tagIdentifier) {
+						var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
+						return id === "TAG";
+				}
+		}]);
+
+		return ID3v1TagReader;
+})(MediaTagReader);
+
+var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock", "Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk", "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock", "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music", "Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle", "Duet", "Punk Rock", "Drum Solo", "Acapella", "Euro-House", "Dance Hall"];
+
+module.exports = ID3v1TagReader;
+
+},{"./FlowTypes":5,"./MediaFileReader":9,"./MediaTagReader":10}],7:[function(require,module,exports){
 'use strict';
 
 var _FlowTypes = require('./FlowTypes');
@@ -430,7 +532,7 @@ var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file 
 
 module.exports = ID3v2FrameReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":8}],7:[function(require,module,exports){
+},{"./FlowTypes":5,"./MediaFileReader":9}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -885,7 +987,7 @@ var SHORTCUTS = {
 
 module.exports = ID3v2TagReader;
 
-},{"./FlowTypes":5,"./ID3v2FrameReader":6,"./MediaFileReader":8,"./MediaTagReader":9}],8:[function(require,module,exports){
+},{"./FlowTypes":5,"./ID3v2FrameReader":7,"./MediaFileReader":9,"./MediaTagReader":10}],9:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1124,7 +1226,7 @@ var MediaFileReader = (function () {
 
 module.exports = MediaFileReader;
 
-},{"./FlowTypes":5,"./StringUtils":10}],9:[function(require,module,exports){
+},{"./FlowTypes":5,"./StringUtils":11}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1218,7 +1320,7 @@ var MediaTagReader = (function () {
 
 module.exports = MediaTagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":8}],10:[function(require,module,exports){
+},{"./FlowTypes":5,"./MediaFileReader":9}],11:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1334,7 +1436,7 @@ var StringUtils = {
 
 module.exports = StringUtils;
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1463,7 +1565,7 @@ var XhrFileReader = (function (_MediaFileReader) {
 
 module.exports = XhrFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":8,"xhr2":2}],12:[function(require,module,exports){
+},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":9,"xhr2":2}],13:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1477,6 +1579,7 @@ var NodeFileReader = require("./NodeFileReader");
 var XhrFileReader = require("./XhrFileReader");
 var BlobFileReader = require("./BlobFileReader");
 var MediaTagReader = require("./MediaTagReader");
+var ID3v1TagReader = require("./ID3v1TagReader");
 var ID3v2TagReader = require("./ID3v2TagReader");
 
 var mediaFileReaders = [];
@@ -1684,7 +1787,9 @@ Config
 // $FlowIssue - flow doesn't allow type to pass as their supertype
 .addFileReader(BlobFileReader)
 // $FlowIssue - flow doesn't allow type to pass as their supertype
-.addTagReader(ID3v2TagReader);
+.addTagReader(ID3v2TagReader)
+// $FlowIssue - flow doesn't allow type to pass as their supertype
+.addTagReader(ID3v1TagReader);
 
 if (typeof process !== "undefined") {
   Config
@@ -1698,5 +1803,5 @@ module.exports = {
   "Config": Config
 };
 
-},{"./BlobFileReader":3,"./FlowTypes":5,"./ID3v2TagReader":7,"./MediaFileReader":8,"./MediaTagReader":9,"./NodeFileReader":1,"./XhrFileReader":11}]},{},[12])(12)
+},{"./BlobFileReader":3,"./FlowTypes":5,"./ID3v1TagReader":6,"./ID3v2TagReader":8,"./MediaFileReader":9,"./MediaTagReader":10,"./NodeFileReader":1,"./XhrFileReader":12}]},{},[13])(13)
 });

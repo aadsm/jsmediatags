@@ -5,6 +5,7 @@ jest
 const jsmediatags = require("../jsmediatags");
 const NodeFileReader = require("../NodeFileReader");
 const XhrFileReader = require("../XhrFileReader");
+const ID3v1TagReader = require("../ID3v1TagReader");
 const ID3v2TagReader = require("../ID3v2TagReader");
 
 describe("jsmediatags", function() {
@@ -12,6 +13,7 @@ describe("jsmediatags", function() {
   var mockTags = {};
 
   beforeEach(function() {
+    jsmediatags.Config.removeTagReader(ID3v1TagReader);
     // Reset auto mock to its original state.
     NodeFileReader.canReadFile = jest.genMockFunction();
     NodeFileReader.prototype.init = jest.genMockFunction()

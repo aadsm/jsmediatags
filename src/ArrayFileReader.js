@@ -19,6 +19,7 @@ class ArrayFileReader extends MediaFileReader {
     super();
     this._array = array;
     this._size = array.length;
+    this._isInitialized = true;
   }
 
   init(callbacks: LoadCallbackType) {

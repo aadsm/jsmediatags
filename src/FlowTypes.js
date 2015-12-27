@@ -88,3 +88,14 @@ export type TagHeaderFlags = {
   experimental_indicator: boolean,
   footer_present: boolean
 };
+
+export type ID3v1TagType = {
+  version: "1.0" | "1.1",
+  title: string,
+  artist: string,
+  album: string,
+  year: string,
+  comment: string,
+  track?: number,
+  genre: string
+};

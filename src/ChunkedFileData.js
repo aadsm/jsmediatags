@@ -177,17 +177,17 @@ class ChunkedFileData {
     var dataChunk;
 
     for (var i = 0; i < this._fileData.length; i++) {
-      if (offset >= this._fileData[i].offset) {
+      var dataChunkStart = this._fileData[i].offset;
+      var dataChunkEnd = dataChunkStart + this._fileData[i].data.length - 1;
+
+      if (offset >= dataChunkStart && offset <= dataChunkEnd) {
         dataChunk = this._fileData[i];
         break;
       }
     }
 
     if (dataChunk) {
-      var dataOffset = offset - dataChunk.offset;
-      if (dataOffset < dataChunk.data.length) {
-        return dataChunk.data[dataOffset];
-      }
+      return dataChunk.data[offset - dataChunk.offset];
     }
 
     throw new Error("Offset " + offset + " hasn't been loaded yet.");

@@ -302,6 +302,14 @@ describe("ChunkedFileData", function() {
     expect(iByte).toBe(0x03);
   });
 
+  it("should read data from the right range", function() {
+    chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
+    chunkedFileData.addData(200, [0x11, 0x12, 0x13, 0x14, 0x15]);
+    var iByte = chunkedFileData.getByteAt(202);
+
+    expect(iByte).toBe(0x13);
+  });
+
   it("should fail to read when data is not loaded before any chunks", function() {
     chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
 

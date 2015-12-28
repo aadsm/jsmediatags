@@ -3,7 +3,7 @@
 Intended to be the next version of https://github.com/aadsm/JavaScript-ID3-Reader.
 
 NOTE: DO NOT USE
-This is a work in progress. Currently only NodeJS, Browser and ID3v2 tags are supported. The API is most likely to change during development.
+This is a work in progress. The API is most likely to change during development.
 
 ## Current Support
 
@@ -13,6 +13,7 @@ This is a work in progress. Currently only NodeJS, Browser and ID3v2 tags are su
   * Blob
   * File
 * Tag Readers
+  * ID3v1
   * ID3v2 (unsynchronisation is not supported)
 
 ## How to use
@@ -33,7 +34,9 @@ jsmediatags.read("./music-file.mp3", {
     console.log(':(', error.type, error[error.type]);
   }
 });
+```
 
+```javascript
 // Advanced API
 var jsmediatags = require("jsmediatags");
 
@@ -170,6 +173,7 @@ Extend the `MediaTagReader` class to implement a new tag reader. Methods to impl
 * \_parseData
 
 Current Implementations:
+* [ID3v1TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v1TagReader.js)
 * [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.js)
 
 ### Unit Testing

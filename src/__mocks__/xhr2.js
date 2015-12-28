@@ -16,6 +16,7 @@ function XMLHttpRequestMock() {
   this.onload = function() {};
   this.open = jest.genMockFunction().mockImplementation(function(method, url) {
     _url = url;
+    _range = null;
   });
   this.overrideMimeType = jest.genMockFunction();
   this.setRequestHeader = jest.genMockFunction().mockImplementation(
@@ -46,8 +47,9 @@ function XMLHttpRequestMock() {
   });
 }
 
+var XMLHttpRequest = new XMLHttpRequestMock();
 xhr2Mock.__setMockUrls = __setMockUrls;
-xhr2Mock.XMLHttpRequest = XMLHttpRequestMock;
-window.XMLHttpRequest = XMLHttpRequestMock;
+xhr2Mock.XMLHttpRequest = XMLHttpRequest;
+window.XMLHttpRequest = function() { return XMLHttpRequest; };
 
 module.exports = xhr2Mock;

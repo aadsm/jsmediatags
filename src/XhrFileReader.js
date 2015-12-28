@@ -45,6 +45,11 @@ class XhrFileReader extends MediaFileReader {
   loadRange(range: [number, number], callbacks: LoadCallbackType): void {
     var self = this;
 
+    if (self._fileData.hasDataRange(range[0], range[1])) {
+      setTimeout(callbacks.onSuccess, 1);
+      return;
+    }
+
     this._makeXHRRequest("GET", range, {
       onSuccess: function(xhr: XMLHttpRequest) {
         var data = xhr.responseBody || xhr.responseText;

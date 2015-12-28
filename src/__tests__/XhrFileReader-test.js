@@ -49,6 +49,17 @@ describe("XhrFileReader", function() {
     });
   });
 
+  pit("should not fetch the same data twice", function() {
+    return new Promise(function(resolve, reject) {
+      fileReader.loadRange([0, 4], throwOnError(function() {
+        fileReader.loadRange([0, 4], throwOnError(resolve));
+      }));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(require('xhr2').XMLHttpRequest.send.mock.calls.length).toBe(1);
+    });
+  });
+
   pit("should read a byte", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -63,6 +74,7 @@ describe("XhrFileReader", function() {
       fileReader.loadRange([0, 4], throwOnError(function() {
         fileReader.loadRange([0, 4], throwOnError(resolve));
       }));
+      jest.runAllTimers();
     }).then(function(tags) {
       expect(fileReader.getByteAt(0)).toBe("T".charCodeAt(0));
     });

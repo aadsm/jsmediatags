@@ -8,8 +8,6 @@ const fs = require('fs');
 const ChunkedFileData = require('./ChunkedFileData');
 const MediaFileReader = require('./MediaFileReader');
 
-const CHUNK_SIZE = 4 * 1024;
-
 import type {
   LoadCallbackType
 } from './FlowTypes';
@@ -17,14 +15,12 @@ import type {
 
 class NodeFileReader extends MediaFileReader {
   _path: string;
-  _buffer: Buffer;
   // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
 
   constructor(path: string) {
     super();
     this._path = path;
-    this._buffer = new Buffer(CHUNK_SIZE);
     // $FlowIssue - Constructor cannot be called on exports
     this._fileData = new ChunkedFileData();
   }
@@ -76,8 +72,10 @@ class NodeFileReader extends MediaFileReader {
       }
 
       fd = _fd;
-      self._updateBufferSizeIfNeeded(length);
-      fs.read(fd, self._buffer, 0, length, range[0], processData);
+      // TODO: Should create a pool of Buffer objects across all instances of
+      //       NodeFileReader. This is fine for now.
+      var buffer = new Buffer(length);
+      fs.read(_fd, buffer, 0, length, range[0], processData);
     };
 
     var processData = function(err, bytesRead, buffer) {
@@ -102,12 +100,6 @@ class NodeFileReader extends MediaFileReader {
     }
 
     fs.open(this._path, "r", undefined, readData);
-  }
-
-  _updateBufferSizeIfNeeded(length: number) {
-    if (length > this._buffer.length) {
-      this._buffer = new Buffer(Math.ceil(length / CHUNK_SIZE) * CHUNK_SIZE);
-    }
   }
 }
 

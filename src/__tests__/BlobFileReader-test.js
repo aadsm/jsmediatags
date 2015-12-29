@@ -14,15 +14,6 @@ function throwOnError(onSuccess) {
   }
 }
 
-function throwOnSuccess(onError) {
-  return {
-    onSuccess: function() {
-      throw new Error();
-    },
-    onError: onError
-  }
-}
-
 describe("BlobFileReader", function() {
   var fileReader;
 

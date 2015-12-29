@@ -146,6 +146,13 @@ class Reader {
             return;
           }
         }
+
+        if (callbacks.onError) {
+          callbacks.onError({
+            "type": "tagFormat",
+            "tagFormat": "No suitable tag reader found"
+          });
+        }
       },
       onError: callbacks.onError
     };

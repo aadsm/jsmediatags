@@ -8,6 +8,15 @@ const XhrFileReader = require("../XhrFileReader");
 const ID3v1TagReader = require("../ID3v1TagReader");
 const ID3v2TagReader = require("../ID3v2TagReader");
 
+function throwOnSuccess(onError) {
+  return {
+    onSuccess: function() {
+      throw new Error();
+    },
+    onError: onError
+  }
+}
+
 describe("jsmediatags", function() {
   var mockFileReader;
   var mockTags = {};
@@ -113,6 +122,15 @@ describe("jsmediatags", function() {
         jsmediatags.Config.removeTagReader(MockTagReader);
 
         expect(TagReader).toBe(MockTagReader);
+      });
+    });
+
+    pit("should fail if no tag reader is found", function() {
+      ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
+      return new Promise(function(resolve, reject) {
+        var reader = new jsmediatags.Reader();
+        reader._getTagReader(new NodeFileReader(), throwOnSuccess(resolve));
+        jest.runAllTimers();
       });
     });
 

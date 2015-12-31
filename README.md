@@ -28,8 +28,8 @@ Run `npm install jsmediatags --save` to install.
 var jsmediatags = require("jsmediatags");
 
 jsmediatags.read("./music-file.mp3", {
-  onSuccess: function(tags) {
-    console.log(tags);
+  onSuccess: function(tag) {
+    console.log(tag);
   },
   onError: function(error) {
     console.log(':(', error.type, error[error.type]);
@@ -44,8 +44,8 @@ var jsmediatags = require("jsmediatags");
 new jsmediatags.Reader("http://www.example.com/music-file.mp3")
   .setTags(["title", "artist"])
   .read({
-    onSuccess: function(tags) {
-      console.log(tags);
+    onSuccess: function(tag) {
+      console.log(tag);
     },
     onError: function(error) {
       console.log(':(', error.type, error[error.type]);
@@ -61,7 +61,8 @@ UMD will give you multiple usage options to use it:
 ```javascript
 // As a global Object
 var jsmediatags = window.jsmediatags;
-
+```
+```javascript
 // As a CommonJS Module
 var jsmediatags = require("jsmediatags");
 ```
@@ -70,17 +71,19 @@ It supports loading files from remote hosts, Blob and File objects:
 ```javascript
 // From remote host
 jsmediatags.read("http://www.example.com/music-file.mp3", {
-  onSuccess: function(tags) {
-    console.log(tags);
+  onSuccess: function(tag) {
+    console.log(tag);
   },
   onError: function(error) {
     console.log(error);
   }
 });
-
+```
+```javascript
 // From Blob
 jsmediatags.read(blob, ...);
-
+```
+```javascript
 // From File
 inputTypeFile.addEventListener("change", function(event) {
   var file = event.target.files[0];
@@ -91,6 +94,82 @@ inputTypeFile.addEventListener("change", function(event) {
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
 
 ## Documentation
+
+### The Output
+This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` callback when reading an ID3v2 mp3 tag.
+
+```javascript
+{
+  type: "ID3",
+  version: "2.4.0",
+  major: 4,
+  revision: 0,
+  tags: {
+    artist: "Sam, The Kid",
+    album: "Pratica(mente)",
+    track: "12",
+    TPE1: {
+      id: "TPE1",
+      size: 14,
+      description: "Lead performer(s)/Soloist(s)",
+      data: "Sam, The Kid"
+    },
+    TALB: {
+      id: "TALB",
+      size: 16,
+      description: "Album/Movie/Show title",
+      data: "Pratica(mente)"
+    },
+    TRCK: {
+      id: "TRCK",
+      size: 3,
+      description: "Track number/Position in set",
+      data: "12",
+    }
+  },
+  size: 34423,
+  flags: {
+    unsynchronisation: false,
+    extended_header: false,
+    experimental_indicator: false,
+    footer_present: false
+  }
+}
+```
+
+The `tags` property includes all tags that were found or specified to be read.
+Since each tag type (e.g.: ID3, MP4) uses different tag names for the same type of data (e.g.: the artist name) the most common tags are also available under human readable names (aka shortcuts). In this example, `artist` will point to `TPE1.data`, `album` to `TALB.data` and so forth.
+
+The expected tag object depends on the type of tag read (ID3, MP4, etc.) but they all share a common structure:
+
+```
+{
+  type: <the tag type: ID3, MP4, etc.>
+  tags: {
+    <shortcut name>: <points to a tags data>
+    <tag name>: {
+      id: <tag name>,
+      data: <the actual tag data>
+    }
+  }
+}
+```
+
+### Shortcuts
+
+These are the supported shortcuts.
+
+* `title`
+* `artist`
+* `album`
+* `year`
+* `comment`
+* `track`
+* `genre`
+* `picture`
+* `lyrics`
+
+### File and Tag Readers
 
 This library uses file readers (MediaFileReader API) to read the file itself and media tag readers (MediaTagReader API) to parse the tags in the file.
 

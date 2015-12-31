@@ -1,7 +1,7 @@
 {
   "name": "jsmediatags",
-  "version": "1.2.0",
-  "description": "Media Tags Reader (ID3, ID4)",
+  "version": "1.3.0",
+  "description": "Media Tags Reader (ID3, MP4)",
   "author": {
     "name": "António Afonso",
     "email": "antonio.afonso@gmail.com"
@@ -15,7 +15,8 @@
     "ID3",
     "tags",
     "mp3",
-    "audio"
+    "audio",
+    "mp4"
   ],
   "license": "BSD-3-Clause",
   "bugs": {

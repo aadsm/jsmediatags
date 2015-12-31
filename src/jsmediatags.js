@@ -26,7 +26,7 @@ function read(location: Object, callbacks: CallbackType) {
 
 class Reader {
   _file: any;
-  _tags: Array<string>;
+  _tagsToRead: Array<string>;
   _fileReader: Class<MediaFileReader>;
   _tagReader: Class<MediaTagReader>;
 
@@ -34,8 +34,8 @@ class Reader {
     this._file = file;
   }
 
-  setTags(tags: Array<string>): Reader {
-    this._tags = tags;
+  setTagsToRead(tagsToRead: Array<string>): Reader {
+    this._tagsToRead = tagsToRead;
     return this;
   }
 
@@ -59,7 +59,7 @@ class Reader {
         self._getTagReader(fileReader, {
           onSuccess: function(TagReader: Class<MediaTagReader>) {
             new TagReader(fileReader)
-              .setTags(self._tags)
+              .setTagsToRead(self._tagsToRead)
               .read(callbacks);
           },
           onError: callbacks.onError

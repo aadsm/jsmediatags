@@ -42,7 +42,7 @@ jsmediatags.read("./music-file.mp3", {
 var jsmediatags = require("jsmediatags");
 
 new jsmediatags.Reader("http://www.example.com/music-file.mp3")
-  .setTags(["title", "artist"])
+  .setTagsToRead(["title", "artist"])
   .read({
     onSuccess: function(tag) {
       console.log(tag);
@@ -184,7 +184,7 @@ New file and tag readers can be implemented by extending the MediaFileReader and
 ### Reference
 
 * `jsmediatags.Reader`
-  * `setTags(tags: Array<string>)` - Specify which tags to read
+  * `setTagsToRead(tags: Array<string>)` - Specify which tags to read
   * `setFileReader(fileReader: typeof MediaFileReader)` - Use this particular file reader
   * `setTagReader(tagReader: typeof MediaTagReader)` - Use this particular tag reader
   * `read({onSuccess, onError})` - Read the tags.

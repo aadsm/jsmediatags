@@ -39,7 +39,7 @@ class MediaTagReader {
     throw new Error("Must implement");
   }
 
-  setTags(tags: Array<string>): MediaTagReader {
+  setTagsToRead(tags: Array<string>): MediaTagReader {
     this._tags = tags;
     return this;
   }

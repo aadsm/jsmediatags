@@ -96,7 +96,7 @@ describe("ID3v2TagReader", function() {
 
   pit("reads the specificed tag", function() {
     return new Promise(function(resolve, reject) {
-      tagReader.setTags(["TCOM"])
+      tagReader.setTagsToRead(["TCOM"])
         .read({
           onSuccess: resolve,
           onFailure: reject

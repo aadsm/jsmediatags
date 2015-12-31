@@ -349,18 +349,21 @@ var ID3v1TagReader = (function (_MediaTagReader) {
       }
 
       var tag = {
+        "type": "ID3",
         "version": version,
-        "title": title,
-        "artist": artist,
-        "album": album,
-        "year": year,
-        "comment": comment,
-        "genre": genre
+        "tags": {
+          "title": title,
+          "artist": artist,
+          "album": album,
+          "year": year,
+          "comment": comment,
+          "genre": genre
+        }
       };
 
       if (track) {
-        // $FlowIssue - flow is not happy with adding properties even when they're optional.
-        tag["track"] = track;
+        // $FlowIssue - flow is not happy with adding properties
+        tag.tags.track = track;
       }
 
       return tag;
@@ -574,7 +577,7 @@ var ID3v2TagReader = (function (_MediaTagReader) {
       var offset = 0;
       var major = data.getByteAt(offset + 3);
       if (major > 4) {
-        return { version: '>2.4' };
+        return { "type": "ID3", "version": ">2.4", "tags": {} };
       }
       var revision = data.getByteAt(offset + 4);
       var unsynch = data.isBitSetAt(offset + 5, 7);
@@ -591,6 +594,7 @@ var ID3v2TagReader = (function (_MediaTagReader) {
       }
 
       var id3 = {
+        "type": "ID3",
         "version": '2.' + major + '.' + revision,
         "major": major,
         "revision": revision,
@@ -1118,7 +1122,8 @@ var MP4TagReader = (function (_MediaTagReader) {
           }
         }
       }return {
-        tags: tags
+        "type": "ID4",
+        "tags": tags
       };
     }
   }, {
@@ -1549,8 +1554,8 @@ var MediaTagReader = (function () {
    */
 
   _createClass(MediaTagReader, [{
-    key: 'setTags',
-    value: function setTags(tags) {
+    key: 'setTagsToRead',
+    value: function setTagsToRead(tags) {
       this._tags = tags;
       return this;
     }
@@ -1915,9 +1920,9 @@ var Reader = (function () {
   }
 
   _createClass(Reader, [{
-    key: "setTags",
-    value: function setTags(tags) {
-      this._tags = tags;
+    key: "setTagsToRead",
+    value: function setTagsToRead(tagsToRead) {
+      this._tagsToRead = tagsToRead;
       return this;
     }
   }, {
@@ -1943,7 +1948,7 @@ var Reader = (function () {
         onSuccess: function () {
           self._getTagReader(fileReader, {
             onSuccess: function (TagReader) {
-              new TagReader(fileReader).setTags(self._tags).read(callbacks);
+              new TagReader(fileReader).setTagsToRead(self._tagsToRead).read(callbacks);
             },
             onError: callbacks.onError
           });

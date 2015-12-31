@@ -43,7 +43,7 @@ describe("jsmediatags", function() {
     ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
       {offset: 0, length: 0}
     );
-    ID3v2TagReader.prototype.setTags = jest.genMockFunction().mockReturnThis();
+    ID3v2TagReader.prototype.setTagsToRead = jest.genMockFunction().mockReturnThis();
   });
 
   pit("should read tags with the shortcut function", function() {

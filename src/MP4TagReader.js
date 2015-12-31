@@ -118,6 +118,19 @@ class MP4TagReader extends MediaTagReader {
   _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): Object {
     var tags = {};
     this._readAtom(tags, data, 0, data.getSize());
+
+    // create shortcuts for most common data.
+    for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
+      var tag = tags[SHORTCUTS[name]];
+      if (tag) {
+        if (name === "track") {
+          tags[name] = tag.data.track;
+        } else {
+          tags[name] = tag.data;
+        }
+      }
+    }
+
     return {
       tags: tags
     };
@@ -258,6 +271,18 @@ const ATOM_DESCRIPTIONS = {
 
 const UNSUPPORTED_ATOMS = {
   "----": 1,
-}
+};
+
+const SHORTCUTS = {
+  "title"     : "©nam",
+  "artist"    : "©ART",
+  "album"     : "©alb",
+  "year"      : "©day",
+  "comment"   : "©cmt",
+  "track"     : "trkn",
+  "genre"     : "©gen",
+  "picture"   : "covr",
+  "lyrics"    : "©lyr"
+};
 
 module.exports = MP4TagReader;

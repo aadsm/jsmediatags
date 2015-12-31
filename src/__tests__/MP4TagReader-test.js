@@ -103,4 +103,18 @@ describe("MP4TagReader", function() {
       expect("covr" in tags).toBeTruthy();
     });
   });
+
+  pit("creates shorcuts", function() {
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tag) {
+      var tags = tag.tags;
+      expect("artist" in tags).toBeTruthy();
+      expect(tags.artist).toBe(tags["©ART"].data);
+    });
+  });
 });

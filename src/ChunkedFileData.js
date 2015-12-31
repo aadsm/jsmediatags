@@ -45,7 +45,7 @@ class ChunkedFileData {
       var firstChunk = this._fileData[chunkRange.startIx];
       var lastChunk = this._fileData[chunkRange.endIx];
       var needsPrepend = offset > firstChunk.offset;
-      var needsAppend = offsetEnd < lastChunk.offset + lastChunk.data.length;
+      var needsAppend = offsetEnd < lastChunk.offset + lastChunk.data.length - 1;
 
       var chunk = {
         offset: Math.min(offset, firstChunk.offset),
@@ -62,9 +62,9 @@ class ChunkedFileData {
 
       if (needsAppend) {
         // Use the lastChunk because the slice logic is easier to handle.
-        var slicedData = data.slice(
+        var slicedData = chunk.data.slice(
           0,
-          lastChunk.offset - offset
+          lastChunk.offset - chunk.offset
         );
         chunk.data = this._concatData(slicedData, lastChunk.data);
       }

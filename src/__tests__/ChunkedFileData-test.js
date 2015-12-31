@@ -135,6 +135,18 @@ describe("ChunkedFileData", function() {
         expect(chunk.data).toEqual(sliceData(180, 70));
       });
 
+      it("should replace chunks when data overlaps at the head and at the tail", function() {
+        var offset = 140;
+        var data = sliceData(offset, 70);
+        var chunksCount = chunkedFileData._fileData.length;
+        chunkedFileData.addData(offset, data);
+
+        expect(chunkedFileData._fileData.length).toBe(chunksCount - 1);
+        var chunk = chunkedFileData._fileData[0];
+        expect(chunk.offset).toBe(100);
+        expect(chunk.data).toEqual(sliceData(100, 150));
+      });
+
       it("should not change chunks when data is already stored", function() {
         var offset = 100;
         var data = sliceData(offset, 50);

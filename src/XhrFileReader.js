@@ -6,6 +6,8 @@
 const ChunkedFileData = require('./ChunkedFileData');
 const MediaFileReader = require('./MediaFileReader');
 
+const CHUNK_SIZE = 1024;
+
 import type {
   LoadCallbackType,
   CallbackType
@@ -50,6 +52,12 @@ class XhrFileReader extends MediaFileReader {
       return;
     }
 
+    // Always download in multiples of CHUNK_SIZE. If we're going to make a
+    // request might as well get a chunk that makes sense. The big cost is
+    // establishing the connection so getting 10bytes or 1K doesn't really
+    // make a difference.
+    range = this._roundRangeToChunkMultiple(range);
+
     this._makeXHRRequest("GET", range, {
       onSuccess: function(xhr: XMLHttpRequest) {
         var data = xhr.responseBody || xhr.responseText;
@@ -58,6 +66,12 @@ class XhrFileReader extends MediaFileReader {
       },
       onError: callbacks.onError
     });
+  }
+
+  _roundRangeToChunkMultiple(range: [number, number]): [number, number] {
+    var length = range[1] - range[0] + 1;
+    var newLength = Math.ceil(length/CHUNK_SIZE) * CHUNK_SIZE;
+    return [range[0], range[0] + newLength - 1];
   }
 
   _makeXHRRequest(

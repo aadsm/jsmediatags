@@ -139,7 +139,7 @@ var ChunkedFileData = (function () {
         var firstChunk = this._fileData[chunkRange.startIx];
         var lastChunk = this._fileData[chunkRange.endIx];
         var needsPrepend = offset > firstChunk.offset;
-        var needsAppend = offsetEnd < lastChunk.offset + lastChunk.data.length;
+        var needsAppend = offsetEnd < lastChunk.offset + lastChunk.data.length - 1;
 
         var chunk = {
           offset: Math.min(offset, firstChunk.offset),
@@ -153,7 +153,7 @@ var ChunkedFileData = (function () {
 
         if (needsAppend) {
           // Use the lastChunk because the slice logic is easier to handle.
-          var slicedData = data.slice(0, lastChunk.offset - offset);
+          var slicedData = chunk.data.slice(0, lastChunk.offset - chunk.offset);
           chunk.data = this._concatData(slicedData, lastChunk.data);
         }
 
@@ -1036,17 +1036,22 @@ var MP4TagReader = (function (_MediaTagReader) {
       // The metadata atoms can be find under the "moov.udta.meta.ilst" hierarchy.
 
       var self = this;
-      // load the header of the first atom
+      // Load the header of the first atom
       mediaFileReader.loadRange([0, 7], {
         onSuccess: function () {
-          self._loadAtom(mediaFileReader, 0, callbacks);
+          self._loadAtom(mediaFileReader, 0, "", callbacks);
         },
         onError: callbacks.onError
       });
     }
   }, {
     key: '_loadAtom',
-    value: function _loadAtom(mediaFileReader, offset, callbacks) {
+    value: function _loadAtom(mediaFileReader, offset, parentAtomFullName, callbacks) {
+      if (offset >= mediaFileReader.getSize()) {
+        callbacks.onSuccess();
+        return;
+      }
+
       var self = this;
       // 8 is the size of the atomSize and atomName fields.
       // When reading the current block we always read 8 more bytes in order
@@ -1057,25 +1062,28 @@ var MP4TagReader = (function (_MediaTagReader) {
         return;
       }
       var atomName = mediaFileReader.getStringAt(offset + 4, 4);
-
+      // console.log(parentAtomFullName, atomName, atomSize);
       // Container atoms (no actual data)
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {
           // The "meta" atom breaks convention and is a container with data.
           offset += 4; // next_item_id (uint32)
         }
-        mediaFileReader.loadRange([offset + 8, offset + 8 + 8], {
-          onSuccess: function () {
-            self._loadAtom(mediaFileReader, offset + 8, callbacks);
-          },
-          onError: callbacks.onError
-        });
+        var atomFullName = (parentAtomFullName ? parentAtomFullName + "." : "") + atomName;
+        if (atomFullName === "moov.udta.meta.ilst") {
+          mediaFileReader.loadRange([offset, offset + atomSize], callbacks);
+        } else {
+          mediaFileReader.loadRange([offset + 8, offset + 8 + 8], {
+            onSuccess: function () {
+              self._loadAtom(mediaFileReader, offset + 8, atomFullName, callbacks);
+            },
+            onError: callbacks.onError
+          });
+        }
       } else {
-        // Value atoms
-        var shouldReadAtom = atomName in ATOMS;
-        mediaFileReader.loadRange([offset + (shouldReadAtom ? 0 : atomSize), offset + atomSize + 8], {
+        mediaFileReader.loadRange([offset + atomSize, offset + atomSize + 8], {
           onSuccess: function () {
-            self._loadAtom(mediaFileReader, offset + atomSize, callbacks);
+            self._loadAtom(mediaFileReader, offset + atomSize, parentAtomFullName, callbacks);
           },
           onError: callbacks.onError
         });
@@ -1087,15 +1095,35 @@ var MP4TagReader = (function (_MediaTagReader) {
       return ["moov", "udta", "meta", "ilst"].indexOf(atomName) >= 0;
     }
   }, {
+    key: '_canReadAtom',
+    value: function _canReadAtom(atomName) {
+      return atomName !== "----";
+    }
+  }, {
     key: '_parseData',
-    value: function _parseData(data, tags) {
-      var tag = {};
-      this._readAtom(tag, data, 0, data.getSize());
-      return tag;
+    value: function _parseData(data, tagsToRead) {
+      var tags = {};
+      this._readAtom(tags, data, 0, data.getSize());
+
+      // create shortcuts for most common data.
+      for (var name in SHORTCUTS) {
+        if (SHORTCUTS.hasOwnProperty(name)) {
+          var tag = tags[SHORTCUTS[name]];
+          if (tag) {
+            if (name === "track") {
+              tags[name] = tag.data.track;
+            } else {
+              tags[name] = tag.data;
+            }
+          }
+        }
+      }return {
+        tags: tags
+      };
     }
   }, {
     key: '_readAtom',
-    value: function _readAtom(tag, data, offset, length, indent) {
+    value: function _readAtom(tags, data, offset, length, parentAtomFullName, indent) {
       indent = indent === undefined ? "" : indent + "  ";
 
       var seek = offset;
@@ -1105,36 +1133,38 @@ var MP4TagReader = (function (_MediaTagReader) {
           return;
         }
         var atomName = data.getStringAt(seek + 4, 4);
-        // console.log(indent + atomName, atomSize);
+        // console.log(seek, parentAtomFullName, atomName, atomSize);
         if (this._isContainerAtom(atomName)) {
           if (atomName == "meta") {
             seek += 4; // next_item_id (uint32)
           }
-          this._readAtom(tag, data, seek + 8, atomSize - 8, indent);
+          var atomFullName = (parentAtomFullName ? parentAtomFullName + "." : "") + atomName;
+          this._readAtom(tags, data, seek + 8, atomSize - 8, atomFullName, indent);
           return;
         }
 
         // Value atoms
-        if (atomName in ATOMS) {
+        if (parentAtomFullName === "moov.udta.meta.ilst" && this._canReadAtom(atomName)) {
           var klass = data.getInteger24At(seek + 16 + 1, true);
-          var atom = ATOMS[atomName];
           var type = TYPES[klass];
 
           if (atomName == "trkn") {
-            tag[atom[0]] = data.getByteAt(seek + 16 + 11);
-            tag["count"] = data.getByteAt(seek + 16 + 13);
+            atomData = {
+              "track": data.getByteAt(seek + 16 + 11),
+              "total": data.getByteAt(seek + 16 + 13)
+            };
           } else {
             // 16: name + size + "data" + size (4 bytes each)
             // 4: atom version (1 byte) + atom flags (3 bytes)
             // 4: NULL (usually locale indicator)
             var atomHeader = 16 + 4 + 4;
             var dataStart = seek + atomHeader;
-            var dataEnd = atomSize - atomHeader;
+            var dataLength = atomSize - atomHeader;
             var atomData;
 
             switch (type) {
               case "text":
-                atomData = data.getStringWithCharsetAt(dataStart, dataEnd, "utf-8").toString();
+                atomData = data.getStringWithCharsetAt(dataStart, dataLength, "utf-8").toString();
                 break;
 
               case "uint8":
@@ -1145,19 +1175,18 @@ var MP4TagReader = (function (_MediaTagReader) {
               case "png":
                 atomData = {
                   "format": "image/" + type,
-                  "data": data.getBytesAt(dataStart, dataEnd)
+                  "data": data.getBytesAt(dataStart, dataLength)
                 };
                 break;
             }
-
-            if (atom[0] === "comment") {
-              tag[atom[0]] = {
-                "text": atomData
-              };
-            } else {
-              tag[atom[0]] = atomData;
-            }
           }
+
+          tags[atomName] = {
+            id: atomName,
+            size: atomSize,
+            description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
+            data: atomData
+          };
         }
         seek += atomSize;
       }
@@ -1192,26 +1221,65 @@ var TYPES = {
   "21": "uint8"
 };
 
-var ATOMS = {
-  "©alb": ["album"],
-  "©art": ["artist"],
-  "©ART": ["artist"],
-  "aART": ["artist"],
-  "©day": ["year"],
-  "©nam": ["title"],
-  "©gen": ["genre"],
-  "trkn": ["track"],
-  "©wrt": ["composer"],
-  "©too": ["encoder"],
-  "cprt": ["copyright"],
-  "covr": ["picture"],
-  "©grp": ["grouping"],
-  "keyw": ["keyword"],
-  "©lyr": ["lyrics"],
-  "©cmt": ["comment"],
-  "tmpo": ["tempo"],
-  "cpil": ["compilation"],
-  "disk": ["disc"]
+var ATOM_DESCRIPTIONS = {
+  "©alb": "Album",
+  "©ART": "Artist",
+  "aART": "Album Artist",
+  "©day": "Release Date",
+  "©nam": "Title",
+  "©gen": "Genre",
+  "gnre": "Genre",
+  "trkn": "Track Number",
+  "©wrt": "Composer",
+  "©too": "Encoding Tool",
+  "©enc": "Encoded By",
+  "cprt": "Copyright",
+  "covr": "Cover Art",
+  "©grp": "Grouping",
+  "keyw": "Keywords",
+  "©lyr": "Lyrics",
+  "©cmt": "Comment",
+  "tmpo": "Tempo",
+  "cpil": "Compilation",
+  "disk": "Disc Number",
+  "tvsh": "TV Show Name",
+  "tven": "TV Episode ID",
+  "tvsn": "TV Season",
+  "tves": "TV Episode",
+  "tvnn": "TV Network",
+  "desc": "Description",
+  "ldes": "Long Description",
+  "sonm": "Sort Name",
+  "soar": "Sort Artist",
+  "soaa": "Sort Album",
+  "soco": "Sort Composer",
+  "sosn": "Sort Show",
+  "purd": "Purchase Date",
+  "pcst": "Podcast",
+  "purl": "Podcast URL",
+  "catg": "Category",
+  "hdvd": "HD Video",
+  "stik": "Media Type",
+  "rtng": "Content Rating",
+  "pgap": "Gapless Playback",
+  "apID": "Purchase Account",
+  "sfID": "Country Code"
+};
+
+var UNSUPPORTED_ATOMS = {
+  "----": 1
+};
+
+var SHORTCUTS = {
+  "title": "©nam",
+  "artist": "©ART",
+  "album": "©alb",
+  "year": "©day",
+  "comment": "©cmt",
+  "track": "trkn",
+  "genre": "©gen",
+  "picture": "covr",
+  "lyrics": "©lyr"
 };
 
 module.exports = MP4TagReader;
@@ -1681,6 +1749,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ChunkedFileData = require('./ChunkedFileData');
 var MediaFileReader = require('./MediaFileReader');
 
+var CHUNK_SIZE = 1024;
+
 var XhrFileReader = (function (_MediaFileReader) {
   _inherits(XhrFileReader, _MediaFileReader);
 
@@ -1719,6 +1789,12 @@ var XhrFileReader = (function (_MediaFileReader) {
         return;
       }
 
+      // Always download in multiples of CHUNK_SIZE. If we're going to make a
+      // request might as well get a chunk that makes sense. The big cost is
+      // establishing the connection so getting 10bytes or 1K doesn't really
+      // make a difference.
+      range = this._roundRangeToChunkMultiple(range);
+
       this._makeXHRRequest("GET", range, {
         onSuccess: function (xhr) {
           var data = xhr.responseBody || xhr.responseText;
@@ -1727,6 +1803,13 @@ var XhrFileReader = (function (_MediaFileReader) {
         },
         onError: callbacks.onError
       });
+    }
+  }, {
+    key: '_roundRangeToChunkMultiple',
+    value: function _roundRangeToChunkMultiple(range) {
+      var length = range[1] - range[0] + 1;
+      var newLength = Math.ceil(length / CHUNK_SIZE) * CHUNK_SIZE;
+      return [range[0], range[0] + newLength - 1];
     }
   }, {
     key: '_makeXHRRequest',

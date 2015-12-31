@@ -105,4 +105,13 @@ describe("XhrFileReader", function() {
       expect(true).toBe(true);
     });
   });
+
+  pit("should fetch in multples of 1K", function() {
+    return new Promise(function(resolve, reject) {
+      fileReader.loadRange([0, 4], throwOnError(resolve));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(require('xhr2').XMLHttpRequest.setRequestHeader.mock.calls[0][1]).toBe("bytes=0-1023");
+    });
+  });
 });

@@ -78,7 +78,7 @@ class MP4TagReader extends MediaTagReader {
       return;
     }
     var atomName = mediaFileReader.getStringAt(offset + 4, 4);
-
+    // console.log(parentAtomFullName, atomName, atomSize);
     // Container atoms (no actual data)
     if (this._isContainerAtom(atomName)) {
       if (atomName == "meta") {
@@ -115,14 +115,16 @@ class MP4TagReader extends MediaTagReader {
     return atomName !== "----";
   }
 
-  _parseData(data: MediaFileReader, tags: ?Array<string>): Object {
-    var tag = {};
-    this._readAtom(tag, data, 0, data.getSize());
-    return tag;
+  _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): Object {
+    var tags = {};
+    this._readAtom(tags, data, 0, data.getSize());
+    return {
+      tags: tags
+    };
   }
 
   _readAtom(
-    tag: Object,
+    tags: Object,
     data: MediaFileReader,
     offset: number,
     length: number,
@@ -138,13 +140,13 @@ class MP4TagReader extends MediaTagReader {
         return;
       }
       var atomName = data.getStringAt(seek + 4, 4);
-      // console.log(indent + atomName, parentAtomFullName, atomSize);
+      // console.log(seek, parentAtomFullName, atomName, atomSize);
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {
           seek += 4; // next_item_id (uint32)
         }
         var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
-        this._readAtom(tag, data, seek + 8, atomSize - 8, atomFullName, indent);
+        this._readAtom(tags, data, seek + 8, atomSize - 8, atomFullName, indent);
         return;
       }
 
@@ -154,12 +156,13 @@ class MP4TagReader extends MediaTagReader {
         this._canReadAtom(atomName)
       ) {
         var klass = data.getInteger24At(seek + 16 + 1, true);
-        var atom = ATOMS[atomName];
         var type = TYPES[klass];
 
         if (atomName == "trkn") {
-          tag[atomName] = data.getByteAt(seek + 16 + 11);
-          tag["count"] = data.getByteAt(seek + 16 + 13);
+          atomData = {
+            "track": data.getByteAt(seek + 16 + 11),
+            "total": data.getByteAt(seek + 16 + 13)
+          };
         } else {
           // 16: name + size + "data" + size (4 bytes each)
           // 4: atom version (1 byte) + atom flags (3 bytes)
@@ -186,15 +189,14 @@ class MP4TagReader extends MediaTagReader {
             };
             break;
           }
-
-          if (atomName === "©cmt") {
-            tag[atomName] = {
-              "text": atomData
-            };
-          } else {
-            tag[atomName] = atomData;
-          }
         }
+
+        tags[atomName] = {
+          id: atomName,
+          size: atomSize,
+          description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
+          data: atomData
+        };
       }
       seek += atomSize;
     }
@@ -209,26 +211,49 @@ const TYPES = {
   "21": "uint8"
 };
 
-const ATOMS = {
-  "©alb": ["album"],
-  "©art": ["artist"],
-  "©ART": ["artist"],
-  "aART": ["artist"],
-  "©day": ["year"],
-  "©nam": ["title"],
-  "©gen": ["genre"],
-  "trkn": ["track"],
-  "©wrt": ["composer"],
-  "©too": ["encoder"],
-  "cprt": ["copyright"],
-  "covr": ["picture"],
-  "©grp": ["grouping"],
-  "keyw": ["keyword"],
-  "©lyr": ["lyrics"],
-  "©cmt": ["comment"],
-  "tmpo": ["tempo"],
-  "cpil": ["compilation"],
-  "disk": ["disc"]
+const ATOM_DESCRIPTIONS = {
+  "©alb": "Album",
+  "©ART": "Artist",
+  "aART": "Album Artist",
+  "©day": "Release Date",
+  "©nam": "Title",
+  "©gen": "Genre",
+  "gnre": "Genre",
+  "trkn": "Track Number",
+  "©wrt": "Composer",
+  "©too": "Encoding Tool",
+  "©enc": "Encoded By",
+  "cprt": "Copyright",
+  "covr": "Cover Art",
+  "©grp": "Grouping",
+  "keyw": "Keywords",
+  "©lyr": "Lyrics",
+  "©cmt": "Comment",
+  "tmpo": "Tempo",
+  "cpil": "Compilation",
+  "disk": "Disc Number",
+  "tvsh": "TV Show Name",
+  "tven": "TV Episode ID",
+  "tvsn": "TV Season",
+  "tves": "TV Episode",
+  "tvnn": "TV Network",
+  "desc": "Description",
+  "ldes": "Long Description",
+  "sonm": "Sort Name",
+  "soar": "Sort Artist",
+  "soaa": "Sort Album",
+  "soco": "Sort Composer",
+  "sosn": "Sort Show",
+  "purd": "Purchase Date",
+  "pcst": "Podcast",
+  "purl": "Podcast URL",
+  "catg": "Category",
+  "hdvd": "HD Video",
+  "stik": "Media Type",
+  "rtng": "Content Rating",
+  "pgap": "Gapless Playback",
+  "apID": "Purchase Account",
+  "sfID": "Country Code",
 };
 
 const UNSUPPORTED_ATOMS = {

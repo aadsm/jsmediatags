@@ -51,8 +51,9 @@ describe("MP4TagReader", function() {
         onFailure: reject
       });
       jest.runAllTimers();
-    }).then(function(tags) {
-      expect(tags['©nam']).toBe("A Title");
+    }).then(function(tag) {
+      var tags = tag.tags;
+      expect(tags['©nam'].data).toBe("A Title");
     });
   });
 
@@ -63,8 +64,9 @@ describe("MP4TagReader", function() {
         onFailure: reject
       });
       jest.runAllTimers();
-    }).then(function(tags) {
-      expect(tags.cpil).toBeTruthy();
+    }).then(function(tag) {
+      var tags = tag.tags;
+      expect(tags.cpil.data).toBeTruthy();
     });
   });
 
@@ -75,10 +77,11 @@ describe("MP4TagReader", function() {
         onFailure: reject
       });
       jest.runAllTimers();
-    }).then(function(tags) {
+    }).then(function(tag) {
+      var tags = tag.tags;
       expect("covr" in tags).toBeTruthy();
-      expect(tags.covr.format).toBe("image/jpeg");
-      expect(tags.covr.data).toEqual([0x01, 0x02, 0x03]);
+      expect(tags.covr.data.format).toBe("image/jpeg");
+      expect(tags.covr.data.data).toEqual([0x01, 0x02, 0x03]);
     });
   });
 
@@ -89,12 +92,12 @@ describe("MP4TagReader", function() {
         onFailure: reject
       });
       jest.runAllTimers();
-    }).then(function(tags) {
+    }).then(function(tag) {
+      var tags = tag.tags;
       expect("©nam" in tags).toBeTruthy();
       expect("©ART" in tags).toBeTruthy();
       expect("©alb" in tags).toBeTruthy();
       expect("trkn" in tags).toBeTruthy();
-      expect("count" in tags).toBeTruthy();
       expect("©cmt" in tags).toBeTruthy();
       expect("cpil" in tags).toBeTruthy();
       expect("covr" in tags).toBeTruthy();

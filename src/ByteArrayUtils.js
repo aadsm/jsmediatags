@@ -18,6 +18,16 @@ const bin = function(string: string): ByteArray {
   return binaryArray;
 };
 
+/**
+ * Pads an array with \0 until it is size length.
+ */
+const pad = function(array: Array<any>, size: number): Array<any> {
+  for (var i = array.length; i < size; i++) {
+    array.push(0);
+  }
+  return array;
+}
+
 // The ID3v2 tag/frame size is encoded with four bytes where the most
 // significant bit (bit 7) is set to zero in every byte, making a total of 28
 // bits. The zeroed bits are ignored, so a 257 bytes long tag is represented
@@ -51,6 +61,7 @@ const getInteger24 = function(number: number): ByteArray {
 
 module.exports = {
   bin: bin,
+  pad: pad,
   getSynchsafeInteger32: getSynchsafeInteger32,
   getInteger32: getInteger32,
   getInteger24: getInteger24

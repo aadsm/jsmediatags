@@ -101,3 +101,14 @@ export type FrameType = {
 };
 
 type ShortcutType = any;
+
+type ShortcutNameType =
+  "title" |
+  "artist" |
+  "album" |
+  "year" |
+  "comment" |
+  "track" |
+  "genre" |
+  "picture" |
+  "lyrics";

@@ -10,6 +10,7 @@ const BlobFileReader = require("./BlobFileReader");
 const MediaTagReader = require("./MediaTagReader");
 const ID3v1TagReader = require("./ID3v1TagReader");
 const ID3v2TagReader = require("./ID3v2TagReader");
+const MP4TagReader = require("./MP4TagReader");
 
 import type {
   CallbackType,
@@ -221,7 +222,9 @@ Config
   // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addTagReader(ID3v2TagReader)
   // $FlowIssue - flow doesn't allow type to pass as their supertype
-  .addTagReader(ID3v1TagReader);
+  .addTagReader(ID3v1TagReader)
+  // $FlowIssue - flow doesn't allow type to pass as their supertype
+  .addTagReader(MP4TagReader);
 
 if (typeof process !== "undefined") {
   Config

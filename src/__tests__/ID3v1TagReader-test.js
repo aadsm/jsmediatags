@@ -4,16 +4,7 @@ const ID3v1TagReader = require('../ID3v1TagReader');
 const ArrayFileReader = require('../ArrayFileReader');
 
 const bin = require('../ByteArrayUtils').bin;
-
-/**
- * Pads an array with \0 until it is size length.
- */
-const pad = function(array, size) {
-  for (var i = array.length; i < size; i++) {
-    array.push(0);
-  }
-  return array;
-}
+const pad = require('../ByteArrayUtils').pad;
 
 describe("ID3v1TagReader", function() {
   pit("reads 1.0 tags", function() {

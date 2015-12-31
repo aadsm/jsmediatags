@@ -79,7 +79,7 @@ var BlobFileReader = (function (_MediaFileReader) {
 
 module.exports = BlobFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":9}],4:[function(require,module,exports){
+},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":10}],4:[function(require,module,exports){
 /**
  * This class represents a file that might not have all its data loaded yet.
  * It is used when loading the entire file is not an option because it's too
@@ -289,7 +289,7 @@ module.exports = ChunkedFileData;
 
 var MediaFileReader = require('./MediaFileReader');
 
-},{"./MediaFileReader":9}],6:[function(require,module,exports){
+},{"./MediaFileReader":10}],6:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -306,92 +306,92 @@ var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
 
 var ID3v1TagReader = (function (_MediaTagReader) {
-		_inherits(ID3v1TagReader, _MediaTagReader);
+  _inherits(ID3v1TagReader, _MediaTagReader);
 
-		function ID3v1TagReader() {
-				_classCallCheck(this, ID3v1TagReader);
+  function ID3v1TagReader() {
+    _classCallCheck(this, ID3v1TagReader);
 
-				return _possibleConstructorReturn(this, Object.getPrototypeOf(ID3v1TagReader).apply(this, arguments));
-		}
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(ID3v1TagReader).apply(this, arguments));
+  }
 
-		_createClass(ID3v1TagReader, [{
-				key: '_loadData',
-				value: function _loadData(mediaFileReader, callbacks) {
-						var fileSize = mediaFileReader.getSize();
-						mediaFileReader.loadRange([fileSize - 128, fileSize - 1], callbacks);
-				}
-		}, {
-				key: '_parseData',
-				value: function _parseData(data, tags) {
-						var offset = data.getSize() - 128;
+  _createClass(ID3v1TagReader, [{
+    key: '_loadData',
+    value: function _loadData(mediaFileReader, callbacks) {
+      var fileSize = mediaFileReader.getSize();
+      mediaFileReader.loadRange([fileSize - 128, fileSize - 1], callbacks);
+    }
+  }, {
+    key: '_parseData',
+    value: function _parseData(data, tags) {
+      var offset = data.getSize() - 128;
 
-						var title = data.getStringWithCharsetAt(offset + 3, 30).toString();
-						var artist = data.getStringWithCharsetAt(offset + 33, 30).toString();
-						var album = data.getStringWithCharsetAt(offset + 63, 30).toString();
-						var year = data.getStringWithCharsetAt(offset + 93, 4).toString();
+      var title = data.getStringWithCharsetAt(offset + 3, 30).toString();
+      var artist = data.getStringWithCharsetAt(offset + 33, 30).toString();
+      var album = data.getStringWithCharsetAt(offset + 63, 30).toString();
+      var year = data.getStringWithCharsetAt(offset + 93, 4).toString();
 
-						var trackFlag = data.getByteAt(offset + 97 + 28);
-						var track = data.getByteAt(offset + 97 + 29);
-						if (trackFlag == 0 && track != 0) {
-								var version = "1.1";
-								var comment = data.getStringWithCharsetAt(offset + 97, 28).toString();
-						} else {
-								var version = "1.0";
-								var comment = data.getStringWithCharsetAt(offset + 97, 30).toString();
-								track = 0;
-						}
+      var trackFlag = data.getByteAt(offset + 97 + 28);
+      var track = data.getByteAt(offset + 97 + 29);
+      if (trackFlag == 0 && track != 0) {
+        var version = "1.1";
+        var comment = data.getStringWithCharsetAt(offset + 97, 28).toString();
+      } else {
+        var version = "1.0";
+        var comment = data.getStringWithCharsetAt(offset + 97, 30).toString();
+        track = 0;
+      }
 
-						var genreIdx = data.getByteAt(offset + 97 + 30);
-						if (genreIdx < 255) {
-								var genre = GENRES[genreIdx];
-						} else {
-								var genre = "";
-						}
+      var genreIdx = data.getByteAt(offset + 97 + 30);
+      if (genreIdx < 255) {
+        var genre = GENRES[genreIdx];
+      } else {
+        var genre = "";
+      }
 
-						var tag = {
-								"version": version,
-								"title": title,
-								"artist": artist,
-								"album": album,
-								"year": year,
-								"comment": comment,
-								"genre": genre
-						};
+      var tag = {
+        "version": version,
+        "title": title,
+        "artist": artist,
+        "album": album,
+        "year": year,
+        "comment": comment,
+        "genre": genre
+      };
 
-						if (track) {
-								// $FlowIssue - flow is not happy with adding properties even when they're optional.
-								tag["track"] = track;
-						}
+      if (track) {
+        // $FlowIssue - flow is not happy with adding properties even when they're optional.
+        tag["track"] = track;
+      }
 
-						return tag;
-				}
-		}], [{
-				key: 'getTagIdentifierByteRange',
-				value: function getTagIdentifierByteRange() {
-						// The identifier is TAG and is at offset: -128. However, to avoid a
-						// fetch for the tag identifier and another for the data, we load the
-						// entire data since it's so small.
-						return {
-								offset: -128,
-								length: 128
-						};
-				}
-		}, {
-				key: 'canReadTagFormat',
-				value: function canReadTagFormat(tagIdentifier) {
-						var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
-						return id === "TAG";
-				}
-		}]);
+      return tag;
+    }
+  }], [{
+    key: 'getTagIdentifierByteRange',
+    value: function getTagIdentifierByteRange() {
+      // The identifier is TAG and is at offset: -128. However, to avoid a
+      // fetch for the tag identifier and another for the data, we load the
+      // entire data since it's so small.
+      return {
+        offset: -128,
+        length: 128
+      };
+    }
+  }, {
+    key: 'canReadTagFormat',
+    value: function canReadTagFormat(tagIdentifier) {
+      var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
+      return id === "TAG";
+    }
+  }]);
 
-		return ID3v1TagReader;
+  return ID3v1TagReader;
 })(MediaTagReader);
 
 var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock", "Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk", "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock", "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music", "Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle", "Duet", "Punk Rock", "Drum Solo", "Acapella", "Euro-House", "Dance Hall"];
 
 module.exports = ID3v1TagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":9,"./MediaTagReader":10}],7:[function(require,module,exports){
+},{"./FlowTypes":5,"./MediaFileReader":10,"./MediaTagReader":11}],7:[function(require,module,exports){
 'use strict';
 
 var _FlowTypes = require('./FlowTypes');
@@ -532,7 +532,7 @@ var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file 
 
 module.exports = ID3v2FrameReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":9}],8:[function(require,module,exports){
+},{"./FlowTypes":5,"./MediaFileReader":10}],8:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -987,7 +987,236 @@ var SHORTCUTS = {
 
 module.exports = ID3v2TagReader;
 
-},{"./FlowTypes":5,"./ID3v2FrameReader":7,"./MediaFileReader":9,"./MediaTagReader":10}],9:[function(require,module,exports){
+},{"./FlowTypes":5,"./ID3v2FrameReader":7,"./MediaFileReader":10,"./MediaTagReader":11}],9:[function(require,module,exports){
+/**
+ * Support for iTunes-style m4a tags
+ * See:
+ *   http://atomicparsley.sourceforge.net/mpeg-4files.html
+ *   http://developer.apple.com/mac/library/documentation/QuickTime/QTFF/Metadata/Metadata.html
+ * Authored by Joshua Kifer <joshua.kifer gmail.com>
+ * 
+ */
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _FlowTypes = require('./FlowTypes');
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MediaTagReader = require('./MediaTagReader');
+var MediaFileReader = require('./MediaFileReader');
+
+var MP4TagReader = (function (_MediaTagReader) {
+  _inherits(MP4TagReader, _MediaTagReader);
+
+  function MP4TagReader() {
+    _classCallCheck(this, MP4TagReader);
+
+    return _possibleConstructorReturn(this, Object.getPrototypeOf(MP4TagReader).apply(this, arguments));
+  }
+
+  _createClass(MP4TagReader, [{
+    key: '_loadData',
+    value: function _loadData(mediaFileReader, callbacks) {
+      // MP4 metadata isn't located in a specific location of the file. Roughly
+      // speaking, it's composed of blocks chained together like a linked list.
+      // These blocks are called atoms (or boxes).
+      // Each atom of the list can have its own child linked list. Atoms in this
+      // situation do not possess any data and are called "container" as they only
+      // contain other atoms.
+      // Other atoms represent a particular set of data, like audio, video or
+      // metadata. In order to find and load all the interesting atoms we need
+      // to traverse the entire linked list of atoms and only load the ones
+      // associated with metadata.
+      // The metadata atoms can be find under the "moov.udta.meta.ilst" hierarchy.
+
+      var self = this;
+      // load the header of the first atom
+      mediaFileReader.loadRange([0, 7], {
+        onSuccess: function () {
+          self._loadAtom(mediaFileReader, 0, callbacks);
+        },
+        onError: callbacks.onError
+      });
+    }
+  }, {
+    key: '_loadAtom',
+    value: function _loadAtom(mediaFileReader, offset, callbacks) {
+      var self = this;
+      // 8 is the size of the atomSize and atomName fields.
+      // When reading the current block we always read 8 more bytes in order
+      // to also read the header of the next block.
+      var atomSize = mediaFileReader.getLongAt(offset, true);
+      if (atomSize == 0 || isNaN(atomSize)) {
+        callbacks.onSuccess();
+        return;
+      }
+      var atomName = mediaFileReader.getStringAt(offset + 4, 4);
+
+      // Container atoms (no actual data)
+      if (this._isContainerAtom(atomName)) {
+        if (atomName == "meta") {
+          // The "meta" atom breaks convention and is a container with data.
+          offset += 4; // next_item_id (uint32)
+        }
+        mediaFileReader.loadRange([offset + 8, offset + 8 + 8], {
+          onSuccess: function () {
+            self._loadAtom(mediaFileReader, offset + 8, callbacks);
+          },
+          onError: callbacks.onError
+        });
+      } else {
+        // Value atoms
+        var shouldReadAtom = atomName in ATOMS;
+        mediaFileReader.loadRange([offset + (shouldReadAtom ? 0 : atomSize), offset + atomSize + 8], {
+          onSuccess: function () {
+            self._loadAtom(mediaFileReader, offset + atomSize, callbacks);
+          },
+          onError: callbacks.onError
+        });
+      }
+    }
+  }, {
+    key: '_isContainerAtom',
+    value: function _isContainerAtom(atomName) {
+      return ["moov", "udta", "meta", "ilst"].indexOf(atomName) >= 0;
+    }
+  }, {
+    key: '_parseData',
+    value: function _parseData(data, tags) {
+      var tag = {};
+      this._readAtom(tag, data, 0, data.getSize());
+      return tag;
+    }
+  }, {
+    key: '_readAtom',
+    value: function _readAtom(tag, data, offset, length, indent) {
+      indent = indent === undefined ? "" : indent + "  ";
+
+      var seek = offset;
+      while (seek < offset + length) {
+        var atomSize = data.getLongAt(seek, true);
+        if (atomSize == 0) {
+          return;
+        }
+        var atomName = data.getStringAt(seek + 4, 4);
+        // console.log(indent + atomName, atomSize);
+        if (this._isContainerAtom(atomName)) {
+          if (atomName == "meta") {
+            seek += 4; // next_item_id (uint32)
+          }
+          this._readAtom(tag, data, seek + 8, atomSize - 8, indent);
+          return;
+        }
+
+        // Value atoms
+        if (atomName in ATOMS) {
+          var klass = data.getInteger24At(seek + 16 + 1, true);
+          var atom = ATOMS[atomName];
+          var type = TYPES[klass];
+
+          if (atomName == "trkn") {
+            tag[atom[0]] = data.getByteAt(seek + 16 + 11);
+            tag["count"] = data.getByteAt(seek + 16 + 13);
+          } else {
+            // 16: name + size + "data" + size (4 bytes each)
+            // 4: atom version (1 byte) + atom flags (3 bytes)
+            // 4: NULL (usually locale indicator)
+            var atomHeader = 16 + 4 + 4;
+            var dataStart = seek + atomHeader;
+            var dataEnd = atomSize - atomHeader;
+            var atomData;
+
+            switch (type) {
+              case "text":
+                atomData = data.getStringWithCharsetAt(dataStart, dataEnd, "utf-8").toString();
+                break;
+
+              case "uint8":
+                atomData = data.getShortAt(dataStart, false);
+                break;
+
+              case "jpeg":
+              case "png":
+                atomData = {
+                  "format": "image/" + type,
+                  "data": data.getBytesAt(dataStart, dataEnd)
+                };
+                break;
+            }
+
+            if (atom[0] === "comment") {
+              tag[atom[0]] = {
+                "text": atomData
+              };
+            } else {
+              tag[atom[0]] = atomData;
+            }
+          }
+        }
+        seek += atomSize;
+      }
+    }
+  }], [{
+    key: 'getTagIdentifierByteRange',
+    value: function getTagIdentifierByteRange() {
+      // The tag identifier is located in [4, 11] but since we'll need to reader
+      // the header of the first block anyway, we load it instead to avoid
+      // making two requests.
+      return {
+        offset: 0,
+        length: 11
+      };
+    }
+  }, {
+    key: 'canReadTagFormat',
+    value: function canReadTagFormat(tagIdentifier) {
+      var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 11));
+      return id === "ftypM4A";
+    }
+  }]);
+
+  return MP4TagReader;
+})(MediaTagReader);
+
+var TYPES = {
+  "0": "uint8",
+  "1": "text",
+  "13": "jpeg",
+  "14": "png",
+  "21": "uint8"
+};
+
+var ATOMS = {
+  "©alb": ["album"],
+  "©art": ["artist"],
+  "©ART": ["artist"],
+  "aART": ["artist"],
+  "©day": ["year"],
+  "©nam": ["title"],
+  "©gen": ["genre"],
+  "trkn": ["track"],
+  "©wrt": ["composer"],
+  "©too": ["encoder"],
+  "cprt": ["copyright"],
+  "covr": ["picture"],
+  "©grp": ["grouping"],
+  "keyw": ["keyword"],
+  "©lyr": ["lyrics"],
+  "©cmt": ["comment"],
+  "tmpo": ["tempo"],
+  "cpil": ["compilation"],
+  "disk": ["disc"]
+};
+
+module.exports = MP4TagReader;
+
+},{"./FlowTypes":5,"./MediaFileReader":10,"./MediaTagReader":11}],10:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1226,7 +1455,7 @@ var MediaFileReader = (function () {
 
 module.exports = MediaFileReader;
 
-},{"./FlowTypes":5,"./StringUtils":11}],10:[function(require,module,exports){
+},{"./FlowTypes":5,"./StringUtils":12}],11:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1320,7 +1549,7 @@ var MediaTagReader = (function () {
 
 module.exports = MediaTagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":9}],11:[function(require,module,exports){
+},{"./FlowTypes":5,"./MediaFileReader":10}],12:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1436,7 +1665,7 @@ var StringUtils = {
 
 module.exports = StringUtils;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1570,7 +1799,7 @@ var XhrFileReader = (function (_MediaFileReader) {
 
 module.exports = XhrFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":9,"xhr2":2}],13:[function(require,module,exports){
+},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":10,"xhr2":2}],14:[function(require,module,exports){
 'use strict';
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
@@ -1586,6 +1815,7 @@ var BlobFileReader = require("./BlobFileReader");
 var MediaTagReader = require("./MediaTagReader");
 var ID3v1TagReader = require("./ID3v1TagReader");
 var ID3v2TagReader = require("./ID3v2TagReader");
+var MP4TagReader = require("./MP4TagReader");
 
 var mediaFileReaders = [];
 var mediaTagReaders = [];
@@ -1715,6 +1945,13 @@ var Reader = (function () {
               return;
             }
           }
+
+          if (callbacks.onError) {
+            callbacks.onError({
+              "type": "tagFormat",
+              "tagFormat": "No suitable tag reader found"
+            });
+          }
         },
         onError: callbacks.onError
       };
@@ -1794,7 +2031,9 @@ Config
 // $FlowIssue - flow doesn't allow type to pass as their supertype
 .addTagReader(ID3v2TagReader)
 // $FlowIssue - flow doesn't allow type to pass as their supertype
-.addTagReader(ID3v1TagReader);
+.addTagReader(ID3v1TagReader)
+// $FlowIssue - flow doesn't allow type to pass as their supertype
+.addTagReader(MP4TagReader);
 
 if (typeof process !== "undefined") {
   Config
@@ -1808,5 +2047,5 @@ module.exports = {
   "Config": Config
 };
 
-},{"./BlobFileReader":3,"./FlowTypes":5,"./ID3v1TagReader":6,"./ID3v2TagReader":8,"./MediaFileReader":9,"./MediaTagReader":10,"./NodeFileReader":1,"./XhrFileReader":12}]},{},[13])(13)
+},{"./BlobFileReader":3,"./FlowTypes":5,"./ID3v1TagReader":6,"./ID3v2TagReader":8,"./MP4TagReader":9,"./MediaFileReader":10,"./MediaTagReader":11,"./NodeFileReader":1,"./XhrFileReader":13}]},{},[14])(14)
 });

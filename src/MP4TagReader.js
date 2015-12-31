@@ -48,7 +48,7 @@ class MP4TagReader extends MediaTagReader {
     // The metadata atoms can be find under the "moov.udta.meta.ilst" hierarchy.
 
     var self = this;
-    // load the header of the first atom
+    // Load the header of the first atom
     mediaFileReader.loadRange([0, 7], {
       onSuccess: function() {
         self._loadAtom(mediaFileReader, 0, "", callbacks);
@@ -86,24 +86,23 @@ class MP4TagReader extends MediaTagReader {
         offset += 4; // next_item_id (uint32)
       }
       var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
-      mediaFileReader.loadRange([offset+8, offset+8 + 8], {
+      if (atomFullName === "moov.udta.meta.ilst") {
+        mediaFileReader.loadRange([offset, offset + atomSize], callbacks);
+      } else {
+        mediaFileReader.loadRange([offset+8, offset+8 + 8], {
+          onSuccess: function() {
+            self._loadAtom(mediaFileReader, offset + 8, atomFullName, callbacks);
+          },
+          onError: callbacks.onError
+        });
+      }
+    } else {
+      mediaFileReader.loadRange([offset+atomSize, offset+atomSize + 8], {
         onSuccess: function() {
-          self._loadAtom(mediaFileReader, offset + 8, atomFullName, callbacks);
+          self._loadAtom(mediaFileReader, offset+atomSize, parentAtomFullName, callbacks);
         },
         onError: callbacks.onError
       });
-    } else {
-      // Value atoms
-      var shouldReadAtom = parentAtomFullName === "moov.udta.meta.ilst";
-      mediaFileReader.loadRange(
-        [offset+(shouldReadAtom?0:atomSize), offset+atomSize + 8],
-        {
-          onSuccess: function() {
-            self._loadAtom(mediaFileReader, offset+atomSize, parentAtomFullName, callbacks);
-          },
-          onError: callbacks.onError
-        }
-      );
     }
   }
 

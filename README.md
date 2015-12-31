@@ -15,6 +15,7 @@ This is a work in progress. The API is most likely to change during development.
 * Tag Readers
   * ID3v1
   * ID3v2 (unsynchronisation is not supported)
+  * MP4
 
 ## How to use
 
@@ -175,6 +176,7 @@ Extend the `MediaTagReader` class to implement a new tag reader. Methods to impl
 Current Implementations:
 * [ID3v1TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v1TagReader.js)
 * [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.js)
+* [MP4TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/MP4TagReader.js)
 
 ### Unit Testing
 

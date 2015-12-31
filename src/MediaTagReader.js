@@ -8,7 +8,8 @@ const MediaFileReader = require('./MediaFileReader');
 import type {
   CallbackType,
   LoadCallbackType,
-  ByteRange
+  ByteRange,
+  TagType
 } from './FlowTypes';
 
 class MediaTagReader {
@@ -74,7 +75,7 @@ class MediaTagReader {
   /**
    * Parse the loaded data to read the media tags.
    */
-  _parseData(mediaFileReader: MediaFileReader, tags: ?Array<string>): Object {
+  _parseData(mediaFileReader: MediaFileReader, tags: ?Array<string>): TagType {
     throw new Error("Must implement _parseData function");
   }
 }

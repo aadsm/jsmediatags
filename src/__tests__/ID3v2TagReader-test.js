@@ -36,6 +36,7 @@ describe("ID3v2TagReader", function() {
     }).then(function(tags) {
       delete tags.tags;
       expect(tags).toEqual({
+        type: "ID3",
         version: "2.4.3",
         flags: {
           experimental_indicator: false,

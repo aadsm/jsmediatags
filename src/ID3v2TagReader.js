@@ -15,7 +15,8 @@ import type {
   TagFrameHeader,
   TagFrameFlags,
   CharsetType,
-  ByteRange
+  ByteRange,
+  TagType,
 } from './FlowTypes';
 
 class ID3v2TagReader extends MediaTagReader {
@@ -44,10 +45,10 @@ class ID3v2TagReader extends MediaTagReader {
     });
   }
 
-  _parseData(data: MediaFileReader, tags: ?Array<string>): Object {
+  _parseData(data: MediaFileReader, tags: ?Array<string>): TagType {
     var offset = 0;
     var major = data.getByteAt(offset+3);
-    if( major > 4 ) { return {version: '>2.4'}; }
+    if (major > 4) { return {"type": "ID3", "version": ">2.4", "tags": {}}; }
     var revision = data.getByteAt(offset+4);
     var unsynch = data.isBitSetAt(offset+5, 7);
     var xheader = data.isBitSetAt(offset+5, 6);
@@ -63,6 +64,7 @@ class ID3v2TagReader extends MediaTagReader {
     }
 
     var id3 = {
+      "type": "ID3",
       "version" : '2.' + major + '.' + revision,
       "major" : major,
       "revision" : revision,

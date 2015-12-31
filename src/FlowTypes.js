@@ -89,13 +89,15 @@ export type TagHeaderFlags = {
   footer_present: boolean
 };
 
-export type ID3v1TagType = {
-  version: "1.0" | "1.1",
-  title: string,
-  artist: string,
-  album: string,
-  year: string,
-  comment: string,
-  track?: number,
-  genre: string
+export type TagType = {
+  type: string,
+  tags: {[key: string]: FrameType | ShortcutType}
 };
+
+export type FrameType = {
+  id: string,
+  description: string,
+  data: any
+};
+
+type ShortcutType = any;

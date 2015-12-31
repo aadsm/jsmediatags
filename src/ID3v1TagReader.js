@@ -9,7 +9,7 @@ var MediaFileReader = require('./MediaFileReader');
 import type {
   LoadCallbackType,
   ByteRange,
-  ID3v1TagType
+  TagType
 } from './FlowTypes';
 
 class ID3v1TagReader extends MediaTagReader {
@@ -33,7 +33,7 @@ class ID3v1TagReader extends MediaTagReader {
     mediaFileReader.loadRange([fileSize - 128, fileSize - 1], callbacks);
   }
 
-  _parseData(data: MediaFileReader, tags: ?Array<string>): ID3v1TagType {
+  _parseData(data: MediaFileReader, tags: ?Array<string>): TagType {
     var offset = data.getSize() - 128;
 
     var title = data.getStringWithCharsetAt(offset + 3, 30).toString();
@@ -60,18 +60,21 @@ class ID3v1TagReader extends MediaTagReader {
     }
 
     var tag = {
+      "type": "ID3",
       "version" : version,
-      "title" : title,
-      "artist" : artist,
-      "album" : album,
-      "year" : year,
-      "comment" : comment,
-      "genre" : genre
+      "tags": {
+        "title" : title,
+        "artist" : artist,
+        "album" : album,
+        "year" : year,
+        "comment" : comment,
+        "genre" : genre
+      }
     };
 
     if (track) {
-      // $FlowIssue - flow is not happy with adding properties even when they're optional.
-      tag["track"] = track;
+      // $FlowIssue - flow is not happy with adding properties
+      tag.tags.track = track;
     }
 
     return tag;

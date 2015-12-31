@@ -15,7 +15,8 @@ import type {
   CallbackType,
   LoadCallbackType,
   CharsetType,
-  ByteRange
+  ByteRange,
+  TagType
 } from './FlowTypes';
 
 class MP4TagReader extends MediaTagReader {
@@ -114,7 +115,7 @@ class MP4TagReader extends MediaTagReader {
     return atomName !== "----";
   }
 
-  _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): Object {
+  _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): TagType {
     var tags = {};
     this._readAtom(tags, data, 0, data.getSize());
 
@@ -131,7 +132,8 @@ class MP4TagReader extends MediaTagReader {
     }
 
     return {
-      tags: tags
+      "type": "ID4",
+      "tags": tags
     };
   }
 

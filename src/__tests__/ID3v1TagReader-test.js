@@ -28,13 +28,16 @@ describe("ID3v1TagReader", function() {
       jest.runAllTimers();
     }).then(function(tags) {
       expect(tags).toEqual({
+        type: 'ID3',
         version: '1.0',
-        title: 'Song Title',
-        artist: 'The Artist',
-        album: 'The Album',
-        year: '1995',
-        comment: 'A Comment',
-        genre: 'Fusion'
+        tags: {
+          title: 'Song Title',
+          artist: 'The Artist',
+          album: 'The Album',
+          year: '1995',
+          comment: 'A Comment',
+          genre: 'Fusion'
+        }
       });
     });
   });
@@ -61,14 +64,17 @@ describe("ID3v1TagReader", function() {
       jest.runAllTimers();
     }).then(function(tags) {
       expect(tags).toEqual({
+        type: 'ID3',
         version: '1.1',
-        title: 'Song Title',
-        artist: 'The Artist',
-        album: 'The Album',
-        year: '1995',
-        comment: 'A Comment',
-        track: 3,
-        genre: 'Fusion'
+        tags: {
+          title: 'Song Title',
+          artist: 'The Artist',
+          album: 'The Album',
+          year: '1995',
+          comment: 'A Comment',
+          track: 3,
+          genre: 'Fusion'
+        }
       });
     });
   });

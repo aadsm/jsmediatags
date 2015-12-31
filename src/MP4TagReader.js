@@ -51,7 +51,7 @@ class MP4TagReader extends MediaTagReader {
     // load the header of the first atom
     mediaFileReader.loadRange([0, 7], {
       onSuccess: function() {
-        self._loadAtom(mediaFileReader, 0, callbacks);
+        self._loadAtom(mediaFileReader, 0, "", callbacks);
       },
       onError: callbacks.onError
     });
@@ -60,6 +60,7 @@ class MP4TagReader extends MediaTagReader {
   _loadAtom(
     mediaFileReader: MediaFileReader,
     offset: number,
+    parentAtomFullName: string,
     callbacks: LoadCallbackType
   ) {
     if (offset >= mediaFileReader.getSize()) {
@@ -84,20 +85,21 @@ class MP4TagReader extends MediaTagReader {
         // The "meta" atom breaks convention and is a container with data.
         offset += 4; // next_item_id (uint32)
       }
+      var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
       mediaFileReader.loadRange([offset+8, offset+8 + 8], {
         onSuccess: function() {
-          self._loadAtom(mediaFileReader, offset + 8, callbacks);
+          self._loadAtom(mediaFileReader, offset + 8, atomFullName, callbacks);
         },
         onError: callbacks.onError
       });
     } else {
       // Value atoms
-      var shouldReadAtom = atomName in ATOMS;
+      var shouldReadAtom = parentAtomFullName === "moov.udta.meta.ilst";
       mediaFileReader.loadRange(
         [offset+(shouldReadAtom?0:atomSize), offset+atomSize + 8],
         {
           onSuccess: function() {
-            self._loadAtom(mediaFileReader, offset+atomSize, callbacks);
+            self._loadAtom(mediaFileReader, offset+atomSize, parentAtomFullName, callbacks);
           },
           onError: callbacks.onError
         }
@@ -107,6 +109,10 @@ class MP4TagReader extends MediaTagReader {
 
   _isContainerAtom(atomName: string): boolean {
     return ["moov", "udta", "meta", "ilst"].indexOf(atomName) >= 0;
+  }
+
+  _canReadAtom(atomName: string): boolean {
+    return atomName !== "----";
   }
 
   _parseData(data: MediaFileReader, tags: ?Array<string>): Object {
@@ -120,6 +126,7 @@ class MP4TagReader extends MediaTagReader {
     data: MediaFileReader,
     offset: number,
     length: number,
+    parentAtomFullName?: string,
     indent?: string
   ) {
     indent = indent === undefined ? "" : indent + "  ";
@@ -131,23 +138,27 @@ class MP4TagReader extends MediaTagReader {
         return;
       }
       var atomName = data.getStringAt(seek + 4, 4);
-      // console.log(indent + atomName, atomSize);
+      // console.log(indent + atomName, parentAtomFullName, atomSize);
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {
           seek += 4; // next_item_id (uint32)
         }
-        this._readAtom(tag, data, seek + 8, atomSize - 8, indent);
+        var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
+        this._readAtom(tag, data, seek + 8, atomSize - 8, atomFullName, indent);
         return;
       }
 
       // Value atoms
-      if (atomName in ATOMS) {
+      if (
+        parentAtomFullName === "moov.udta.meta.ilst" &&
+        this._canReadAtom(atomName)
+      ) {
         var klass = data.getInteger24At(seek + 16 + 1, true);
         var atom = ATOMS[atomName];
         var type = TYPES[klass];
 
         if (atomName == "trkn") {
-          tag[atom[0]] = data.getByteAt(seek + 16 + 11);
+          tag[atomName] = data.getByteAt(seek + 16 + 11);
           tag["count"] = data.getByteAt(seek + 16 + 13);
         } else {
           // 16: name + size + "data" + size (4 bytes each)
@@ -155,12 +166,12 @@ class MP4TagReader extends MediaTagReader {
           // 4: NULL (usually locale indicator)
           var atomHeader = 16 + 4 + 4;
           var dataStart = seek + atomHeader;
-          var dataEnd = atomSize - atomHeader;
+          var dataLength = atomSize - atomHeader;
           var atomData;
 
           switch (type) {
             case "text":
-            atomData = data.getStringWithCharsetAt(dataStart, dataEnd, "utf-8").toString();
+            atomData = data.getStringWithCharsetAt(dataStart, dataLength, "utf-8").toString();
             break;
 
             case "uint8":
@@ -171,17 +182,17 @@ class MP4TagReader extends MediaTagReader {
             case "png":
             atomData = {
               "format": "image/" + type,
-              "data": data.getBytesAt(dataStart, dataEnd)
+              "data": data.getBytesAt(dataStart, dataLength)
             };
             break;
           }
 
-          if (atom[0] === "comment") {
-            tag[atom[0]] = {
+          if (atomName === "©cmt") {
+            tag[atomName] = {
               "text": atomData
             };
           } else {
-            tag[atom[0]] = atomData;
+            tag[atomName] = atomData;
           }
         }
       }
@@ -219,5 +230,9 @@ const ATOMS = {
   "cpil": ["compilation"],
   "disk": ["disc"]
 };
+
+const UNSUPPORTED_ATOMS = {
+  "----": 1,
+}
 
 module.exports = MP4TagReader;

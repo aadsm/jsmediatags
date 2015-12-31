@@ -52,7 +52,7 @@ describe("MP4TagReader", function() {
       });
       jest.runAllTimers();
     }).then(function(tags) {
-      expect(tags.title).toBe("A Title");
+      expect(tags['©nam']).toBe("A Title");
     });
   });
 
@@ -64,7 +64,7 @@ describe("MP4TagReader", function() {
       });
       jest.runAllTimers();
     }).then(function(tags) {
-      expect(tags.compilation).toBeTruthy();
+      expect(tags.cpil).toBeTruthy();
     });
   });
 
@@ -76,9 +76,9 @@ describe("MP4TagReader", function() {
       });
       jest.runAllTimers();
     }).then(function(tags) {
-      expect("picture" in tags).toBeTruthy();
-      expect(tags.picture.format).toBe("image/jpeg");
-      expect(tags.picture.data).toEqual([0x01, 0x02, 0x03]);
+      expect("covr" in tags).toBeTruthy();
+      expect(tags.covr.format).toBe("image/jpeg");
+      expect(tags.covr.data).toEqual([0x01, 0x02, 0x03]);
     });
   });
 
@@ -90,14 +90,14 @@ describe("MP4TagReader", function() {
       });
       jest.runAllTimers();
     }).then(function(tags) {
-      expect("title" in tags).toBeTruthy();
-      expect("artist" in tags).toBeTruthy();
-      expect("album" in tags).toBeTruthy();
-      expect("track" in tags).toBeTruthy();
+      expect("©nam" in tags).toBeTruthy();
+      expect("©ART" in tags).toBeTruthy();
+      expect("©alb" in tags).toBeTruthy();
+      expect("trkn" in tags).toBeTruthy();
       expect("count" in tags).toBeTruthy();
-      expect("comment" in tags).toBeTruthy();
-      expect("compilation" in tags).toBeTruthy();
-      expect("picture" in tags).toBeTruthy();
+      expect("©cmt" in tags).toBeTruthy();
+      expect("cpil" in tags).toBeTruthy();
+      expect("covr" in tags).toBeTruthy();
     });
   });
 });

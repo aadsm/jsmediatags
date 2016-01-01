@@ -117,4 +117,18 @@ describe("MP4TagReader", function() {
       expect(tags.artist).toBe(tags["©ART"].data);
     });
   });
+
+  pit("reads the specificed tag", function() {
+    return new Promise(function(resolve, reject) {
+      tagReader.setTagsToRead(["©cmt"])
+        .read({
+          onSuccess: resolve,
+          onFailure: reject
+        });
+      jest.runAllTimers();
+    }).then(function(tag) {
+      expect(Object.keys(tag.tags)).not.toContain("©nam");
+      expect(Object.keys(tag.tags)).toContain("©cmt");
+    });
+  });
 });

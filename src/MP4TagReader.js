@@ -117,7 +117,7 @@ class MP4TagReader extends MediaTagReader {
 
   _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): TagType {
     var tags = {};
-    this._readAtom(tags, data, 0, data.getSize());
+    this._readAtom(tags, data, 0, data.getSize(), tagsToRead);
 
     // create shortcuts for most common data.
     for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
@@ -142,6 +142,7 @@ class MP4TagReader extends MediaTagReader {
     data: MediaFileReader,
     offset: number,
     length: number,
+    tagsToRead: ?Array<string>,
     parentAtomFullName?: string,
     indent?: string
   ) {
@@ -154,18 +155,20 @@ class MP4TagReader extends MediaTagReader {
         return;
       }
       var atomName = data.getStringAt(seek + 4, 4);
+
       // console.log(seek, parentAtomFullName, atomName, atomSize);
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {
           seek += 4; // next_item_id (uint32)
         }
         var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
-        this._readAtom(tags, data, seek + 8, atomSize - 8, atomFullName, indent);
+        this._readAtom(tags, data, seek + 8, atomSize - 8, tagsToRead, atomFullName, indent);
         return;
       }
 
       // Value atoms
       if (
+        (!tagsToRead || tagsToRead.indexOf(atomName) >= 0) &&
         parentAtomFullName === "moov.udta.meta.ilst" &&
         this._canReadAtom(atomName)
       ) {

@@ -45,11 +45,11 @@ export type FrameReaderSignature = (
 
 export type TagFrames = {[key: string]: TagFrame};
 
-type TagFrame = {
+export type TagFrame = {
   id: string,
   size: number,
   description: string,
-  data: Object
+  data: ?Object
 };
 
 export type TagFrameHeader = {

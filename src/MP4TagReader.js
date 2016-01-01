@@ -16,7 +16,8 @@ import type {
   LoadCallbackType,
   CharsetType,
   ByteRange,
-  TagType
+  TagType,
+  TagFrame
 } from './FlowTypes';
 
 class MP4TagReader extends MediaTagReader {
@@ -172,51 +173,62 @@ class MP4TagReader extends MediaTagReader {
         parentAtomFullName === "moov.udta.meta.ilst" &&
         this._canReadAtom(atomName)
       ) {
-        var klass = data.getInteger24At(seek + 16 + 1, true);
-        var type = TYPES[klass];
-
-        if (atomName == "trkn") {
-          atomData = {
-            "track": data.getByteAt(seek + 16 + 11),
-            "total": data.getByteAt(seek + 16 + 13)
-          };
-        } else {
-          // 16: name + size + "data" + size (4 bytes each)
-          // 4: atom version (1 byte) + atom flags (3 bytes)
-          // 4: NULL (usually locale indicator)
-          var atomHeader = 16 + 4 + 4;
-          var dataStart = seek + atomHeader;
-          var dataLength = atomSize - atomHeader;
-          var atomData;
-
-          switch (type) {
-            case "text":
-            atomData = data.getStringWithCharsetAt(dataStart, dataLength, "utf-8").toString();
-            break;
-
-            case "uint8":
-            atomData = data.getShortAt(dataStart, false);
-            break;
-
-            case "jpeg":
-            case "png":
-            atomData = {
-              "format": "image/" + type,
-              "data": data.getBytesAt(dataStart, dataLength)
-            };
-            break;
-          }
-        }
-
-        tags[atomName] = {
-          id: atomName,
-          size: atomSize,
-          description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
-          data: atomData
-        };
+        tags[atomName] = this._readMetadataAtom(data, seek);
       }
+
       seek += atomSize;
     }
+  }
+
+  _readMetadataAtom(data: MediaFileReader, offset: number): TagFrame {
+    // 16: name + size + "data" + size (4 bytes each)
+    const METADATA_HEADER = 16;
+
+    var atomSize = data.getLongAt(offset, true);
+    var atomName = data.getStringAt(offset + 4, 4);
+
+    var klass = data.getInteger24At(offset + METADATA_HEADER + 1, true);
+    var type = TYPES[klass];
+    var atomData;
+
+    if (atomName == "trkn") {
+      atomData = {
+        "track": data.getByteAt(offset + METADATA_HEADER + 11),
+        "total": data.getByteAt(offset + METADATA_HEADER + 13)
+      };
+    } else {
+      // 4: atom version (1 byte) + atom flags (3 bytes)
+      // 4: NULL (usually locale indicator)
+      var atomHeader = METADATA_HEADER + 4 + 4;
+      var dataStart = offset + atomHeader;
+      var dataLength = atomSize - atomHeader;
+      var atomData;
+
+      switch (type) {
+        case "text":
+        atomData = data.getStringWithCharsetAt(dataStart, dataLength, "utf-8").toString();
+        break;
+
+        case "uint8":
+        atomData = data.getShortAt(dataStart, false);
+        break;
+
+        case "jpeg":
+        case "png":
+        atomData = {
+          "format": "image/" + type,
+          "data": data.getBytesAt(dataStart, dataLength)
+        };
+        break;
+      }
+    }
+
+    return {
+      id: atomName,
+      size: atomSize,
+      description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
+      data: atomData
+    };
   }
 }
 

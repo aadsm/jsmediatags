@@ -1,9 +1,6 @@
 # JS MediaTags
 
-Intended to be the next version of https://github.com/aadsm/JavaScript-ID3-Reader.
-
-NOTE: DO NOT USE
-This is a work in progress. The API is most likely to change during development.
+The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
 
 ## Current Support
 

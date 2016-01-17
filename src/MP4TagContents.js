@@ -20,9 +20,9 @@ import type {
 class MP4TagContents {
   _atoms: Array<Atom>;
 
-  constructor(atoms?: Array<Atom>) {
+  constructor(ftyp: string, atoms?: Array<Atom>) {
     this._atoms = [
-      new Atom("ftyp", pad([], 24))
+      new Atom("ftyp", pad(bin(ftyp), 24))
     ].concat(atoms || []);
   }
 

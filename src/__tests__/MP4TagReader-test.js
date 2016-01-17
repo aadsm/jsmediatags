@@ -9,6 +9,7 @@ const pad = require('../ByteArrayUtils').pad;
 
 function createMP4FileContents(atoms) {
   return new MP4TagContents(
+    "M4A ",
     MP4TagContents.createContainerAtom("moov", [
       MP4TagContents.createAtom("mvhd"),
       MP4TagContents.createAtom("trak"),
@@ -50,6 +51,19 @@ describe("MP4TagReader", function() {
 
     expect(canReadM4A).toBeTruthy();
     expect(canReadISOM).toBeTruthy();
+  });
+
+  pit("reads the type and version", function() {
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tag) {
+      expect(tag.type).toBe("MP4");
+      expect(tag.ftyp).toBe("M4A ");
+    });
   });
 
   pit("reads string tag", function() {

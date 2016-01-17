@@ -27,7 +27,7 @@ class MP4TagReader extends MediaTagReader {
     // making two requests.
     return {
       offset: 0,
-      length: 8
+      length: 16
     };
   }
 
@@ -51,7 +51,7 @@ class MP4TagReader extends MediaTagReader {
 
     var self = this;
     // Load the header of the first atom
-    mediaFileReader.loadRange([0, 7], {
+    mediaFileReader.loadRange([0, 16], {
       onSuccess: function() {
         self._loadAtom(mediaFileReader, 0, "", callbacks);
       },
@@ -133,7 +133,9 @@ class MP4TagReader extends MediaTagReader {
     }
 
     return {
-      "type": "ID4",
+      "type": "MP4",
+      "ftyp": data.getStringAt(8, 4),
+      "version": data.getLongAt(12, true),
       "tags": tags
     };
   }

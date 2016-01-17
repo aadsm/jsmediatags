@@ -93,8 +93,9 @@ You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk
 ## Documentation
 
 ### The Output
-This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` callback when reading an ID3v2 mp3 tag.
+This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` callback.
 
+#### ID3v2
 ```javascript
 {
   type: "ID3",
@@ -130,6 +131,23 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     extended_header: false,
     experimental_indicator: false,
     footer_present: false
+  }
+}
+```
+
+#### MP4
+```javascript
+{
+  type: "MP4",
+  ftyp: "M4A",
+  version: 0,
+  tags: {
+    "©too": {
+      id: "©too",
+      size: 35,
+      description: 'Encoding Tool',
+      data: 'Lavf53.24.2'
+    }
   }
 }
 ```

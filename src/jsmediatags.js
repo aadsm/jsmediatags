@@ -151,7 +151,7 @@ class Reader {
         if (callbacks.onError) {
           callbacks.onError({
             "type": "tagFormat",
-            "tagFormat": "No suitable tag reader found"
+            "info": "No suitable tag reader found"
           });
         }
       },

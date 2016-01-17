@@ -87,7 +87,11 @@ class XhrFileReader extends MediaFileReader {
       if (xhr.status === 200 || xhr.status === 206) {
         callbacks.onSuccess(xhr);
       } else if (callbacks.onError) {
-        callbacks.onError({"type": "xhr", "xhr": xhr});
+        callbacks.onError({
+          "type": "xhr",
+          "info": "Unexpected HTTP status " + xhr.status + ".",
+          "xhr": xhr
+        });
       }
       xhr = null;
     };
@@ -96,7 +100,11 @@ class XhrFileReader extends MediaFileReader {
       xhr.onload = onXHRLoad;
       xhr.onerror = function() {
         if (callbacks.onError) {
-          callbacks.onError({"type": "xhr", "xhr": xhr});
+          callbacks.onError({
+            "type": "xhr",
+            "info": "Generic XHR error, check xhr object.",
+            "xhr": xhr,
+          });
         }
       }
     } else {

@@ -57,7 +57,7 @@ var BlobFileReader = (function (_MediaFileReader) {
       };
       browserFileReader.onerror = browserFileReader.onabort = function (event) {
         if (callbacks.onError) {
-          callbacks.onError({ "type": "blob", "blob": browserFileReader.error });
+          callbacks.onError({ "type": "blob", "info": browserFileReader.error });
         }
       };
 
@@ -1045,7 +1045,7 @@ var MP4TagReader = (function (_MediaTagReader) {
 
       var self = this;
       // Load the header of the first atom
-      mediaFileReader.loadRange([0, 7], {
+      mediaFileReader.loadRange([0, 16], {
         onSuccess: function () {
           self._loadAtom(mediaFileReader, 0, "", callbacks);
         },
@@ -1126,7 +1126,9 @@ var MP4TagReader = (function (_MediaTagReader) {
           }
         }
       }return {
-        "type": "ID4",
+        "type": "MP4",
+        "ftyp": data.getStringAt(8, 4),
+        "version": data.getLongAt(12, true),
         "tags": tags
       };
     }
@@ -1216,19 +1218,19 @@ var MP4TagReader = (function (_MediaTagReader) {
   }], [{
     key: 'getTagIdentifierByteRange',
     value: function getTagIdentifierByteRange() {
-      // The tag identifier is located in [4, 11] but since we'll need to reader
+      // The tag identifier is located in [4, 8] but since we'll need to reader
       // the header of the first block anyway, we load it instead to avoid
       // making two requests.
       return {
         offset: 0,
-        length: 11
+        length: 16
       };
     }
   }, {
     key: 'canReadTagFormat',
     value: function canReadTagFormat(tagIdentifier) {
-      var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 11));
-      return id === "ftypM4A";
+      var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 8));
+      return id === "ftyp";
     }
   }]);
 
@@ -1848,7 +1850,11 @@ var XhrFileReader = (function (_MediaFileReader) {
         if (xhr.status === 200 || xhr.status === 206) {
           callbacks.onSuccess(xhr);
         } else if (callbacks.onError) {
-          callbacks.onError({ "type": "xhr", "xhr": xhr });
+          callbacks.onError({
+            "type": "xhr",
+            "info": "Unexpected HTTP status " + xhr.status + ".",
+            "xhr": xhr
+          });
         }
         xhr = null;
       };
@@ -1857,7 +1863,11 @@ var XhrFileReader = (function (_MediaFileReader) {
         xhr.onload = onXHRLoad;
         xhr.onerror = function () {
           if (callbacks.onError) {
-            callbacks.onError({ "type": "xhr", "xhr": xhr });
+            callbacks.onError({
+              "type": "xhr",
+              "info": "Generic XHR error, check xhr object.",
+              "xhr": xhr
+            });
           }
         };
       } else {
@@ -2059,7 +2069,7 @@ var Reader = (function () {
           if (callbacks.onError) {
             callbacks.onError({
               "type": "tagFormat",
-              "tagFormat": "No suitable tag reader found"
+              "info": "No suitable tag reader found"
             });
           }
         },

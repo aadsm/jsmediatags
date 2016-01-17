@@ -49,7 +49,7 @@ class BlobFileReader extends MediaFileReader {
     browserFileReader.onerror =
     browserFileReader.onabort = function(event) {
       if (callbacks.onError) {
-        callbacks.onError({"type": "blob", "blob": browserFileReader.error});
+        callbacks.onError({"type": "blob", "info": browserFileReader.error});
       }
     };
 

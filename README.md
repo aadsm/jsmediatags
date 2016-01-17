@@ -29,7 +29,7 @@ jsmediatags.read("./music-file.mp3", {
     console.log(tag);
   },
   onError: function(error) {
-    console.log(':(', error.type, error[error.type]);
+    console.log(':(', error.type, error.info]);
   }
 });
 ```
@@ -45,7 +45,7 @@ new jsmediatags.Reader("http://www.example.com/music-file.mp3")
       console.log(tag);
     },
     onError: function(error) {
-      console.log(':(', error.type, error[error.type]);
+      console.log(':(', error.type, error.info);
     }
   });
 ```

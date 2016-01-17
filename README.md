@@ -276,6 +276,80 @@ Current Implementations:
 
 Jest is the framework used. Run `npm test` to execute all the tests.
 
+## JavaScript-ID3-Reader
+If you want to migrate your project from [JavaScript-ID3-Reader](https://github.com/aadsm/JavaScript-ID3-Reader) to `jsmediatags` use the following guiding examples:
+
+### All tags
+**JavaScript-ID3-Reader:**
+```javascript
+ID3.loadTags("filename.mp3", function() {
+  var tags = ID3.getAllTags("filename.mp3");
+  alert(tags.artist + " - " + tags.title + ", " + tags.album);
+});
+```
+**jsmediatags:**
+```javascript
+jsmediatags.read("filename.mp3", {
+  onSuccess: function(tag) {
+    var tags = tag.tags;
+    alert(tags.artist + " - " + tags.title + ", " + tags.album);
+  }
+);
+```
+
+### Specific tags
+**JavaScript-ID3-Reader:**
+```javascript
+ID3.loadTags("filename.mp3", function() {
+  var tags = ID3.getAllTags("filename.mp3");
+  alert(tags.COMM.data + " - " + tags.TCON.data + ", " + tags.WXXX.data);
+},
+{tags: ["COMM", "TCON", "WXXX"]});
+```
+**jsmediatags:**
+```javascript
+new jsmediatags.Reader("filename.mp3")
+  .setTagsToRead(["COMM", "TCON", "WXXX"])
+  .read({
+    onSuccess: function(tag) {
+      var tags = tag.tags;
+      alert(tags.COMM.data + " - " + tags.TCON.data + ", " + tags.WXXX.data);
+    }
+  });
+```
+### Error handling
+**JavaScript-ID3-Reader:**
+```javascript
+ID3.loadTags("http://localhost/filename.mp3", function() {
+  var tags = ID3.getAllTags("http://localhost/filename.mp3");
+  alert(tags.comment + " - " + tags.track + ", " + tags.lyrics);
+},
+{
+  tags: ["comment", "track", "lyrics"],
+  onError: function(reason) {
+    if (reason.error === "xhr") {
+      console.log("There was a network error: ", reason.xhr);
+    }
+  }
+});
+```
+**jsmediatags:**
+```javascript
+new jsmediatags.Reader("filename.mp3")
+  .setTagsToRead(["comment", "track", "lyrics"])
+  .read({
+    onSuccess: function(tag) {
+      var tags = tag.tags;
+      alert(tags.comment + " - " + tags.track + ", " + tags.lyrics);
+    },
+    onError: function(error) {
+      if (error.type === "xhr") {
+        console.log("There was a network error: ", error.xhr);
+      }
+    }
+  });
+```
+
 ## Goals
 
 * Improve the API of JavaScript-ID3-Reader

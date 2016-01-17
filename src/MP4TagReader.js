@@ -22,18 +22,18 @@ import type {
 
 class MP4TagReader extends MediaTagReader {
   static getTagIdentifierByteRange(): ByteRange {
-    // The tag identifier is located in [4, 11] but since we'll need to reader
+    // The tag identifier is located in [4, 8] but since we'll need to reader
     // the header of the first block anyway, we load it instead to avoid
     // making two requests.
     return {
       offset: 0,
-      length: 11
+      length: 8
     };
   }
 
   static canReadTagFormat(tagIdentifier: Array<number>): boolean {
-    var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 11));
-    return id === "ftypM4A";
+    var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 8));
+    return id === "ftyp";
   }
 
   _loadData(mediaFileReader: MediaFileReader, callbacks: LoadCallbackType) {

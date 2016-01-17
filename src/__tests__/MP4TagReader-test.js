@@ -44,6 +44,14 @@ describe("MP4TagReader", function() {
     tagReader = new MP4TagReader(mediaFileReader);
   });
 
+  it("can read any ftyp type", function() {
+    var canReadM4A = MP4TagReader.canReadTagFormat([0x0, 0x0, 0x0, 0x0].concat(bin("ftypM4A ")));
+    var canReadISOM = MP4TagReader.canReadTagFormat([0x0, 0x0, 0x0, 0x0].concat(bin("ftypisom")));
+
+    expect(canReadM4A).toBeTruthy();
+    expect(canReadISOM).toBeTruthy();
+  });
+
   pit("reads string tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({

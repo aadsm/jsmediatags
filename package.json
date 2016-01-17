@@ -6,6 +6,18 @@
     "name": "António Afonso",
     "email": "antonio.afonso@gmail.com"
   },
+  "contributors": [
+    {
+      "name": "Jacob Seidelin"
+    },
+    {
+      "name": "Joshua Kifer"
+    },
+    {
+      "name": "Jesse Ditson",
+      "email": "jesse.ditson@gmail.com"
+    }
+  ],
   "main": "build/jsmediatags.js",
   "repository": {
     "type": "git",

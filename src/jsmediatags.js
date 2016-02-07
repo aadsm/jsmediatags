@@ -212,6 +212,12 @@ class Config {
 
     return this;
   }
+
+  static EXPERIMENTAL_avoidHeadRequests() {
+    XhrFileReader.setConfig({
+      avoidHeadRequests: true
+    });
+  }
 }
 
 Config

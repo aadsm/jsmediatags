@@ -29,7 +29,16 @@ describe("XhrFileReader", function() {
 
   beforeEach(function() {
     require('xhr2').__setMockUrls({
-      "http://www.example.fakedomain/music.mp3": "This is a simple file"
+      "http://www.example.fakedomain/music.mp3": "This is a simple file",
+      "http://www.example.fakedomain/big-file.mp3": new Array(100).join("This is a simple file"),
+      "http://www.example.fakedomain/range-not-supported.mp3": {
+        contents: new Array(100).join("This is a simple file"),
+        disableRange: true
+      },
+      "http://www.example.fakedomain/unknown-length.mp3": {
+        contents: new Array(100).join("This is a simple file"),
+        unknownLength: true
+      },
     });
     fileReader = new XhrFileReader("http://www.example.fakedomain/music.mp3");
   });
@@ -40,14 +49,57 @@ describe("XhrFileReader", function() {
     expect(XhrFileReader.canReadFile(new Blob())).toBe(false);
   });
 
-  pit("should have the right size information", function() {
-    return new Promise(function(resolve, reject) {
-      fileReader.init(throwOnError(resolve));
-      jest.runAllTimers();
-    }).then(function(tags) {
-      expect(fileReader.getSize()).toBe(21);
+  var describeFileSizeTests = function(avoidHeadRequests: boolean) {
+    describe("file size with" + avoidHeadRequests ? 'GET' : 'HEAD', function() {
+      beforeEach(function() {
+        XhrFileReader.setConfig({
+          avoidHeadRequests: avoidHeadRequests
+        });
+      });
+
+      pit("should have the right size information", function() {
+        return new Promise(function(resolve, reject) {
+          fileReader.init(throwOnError(resolve));
+          jest.runAllTimers();
+        }).then(function(tags) {
+          expect(fileReader.getSize()).toBe(21);
+        });
+      });
+
+      pit("should have the right size information for files bigger than the first range request", function() {
+        fileReader = new XhrFileReader("http://www.example.fakedomain/big-file.mp3");
+        return new Promise(function(resolve, reject) {
+          fileReader.init(throwOnError(resolve));
+          jest.runAllTimers();
+        }).then(function(tags) {
+          expect(fileReader.getSize()).toBe(2079);
+        });
+      });
+
+      pit("should have the right size information when range not supported", function() {
+        fileReader = new XhrFileReader("http://www.example.fakedomain/range-not-supported.mp3");
+        return new Promise(function(resolve, reject) {
+          fileReader.init(throwOnError(resolve));
+          jest.runAllTimers();
+        }).then(function(tags) {
+          expect(fileReader.getSize()).toBe(2079);
+        });
+      });
+
+      pit("should have the right size information when content length is unknown", function() {
+        fileReader = new XhrFileReader("http://www.example.fakedomain/unknown-length.mp3");
+        return new Promise(function(resolve, reject) {
+          fileReader.init(throwOnError(resolve));
+          jest.runAllTimers();
+        }).then(function(tags) {
+          expect(fileReader.getSize()).toBe(2079);
+        });
+      });
     });
-  });
+  }
+
+  describeFileSizeTests(true /*GET*/);
+  describeFileSizeTests(false /*HEAD*/);
 
   pit("should not fetch the same data twice", function() {
     return new Promise(function(resolve, reject) {
@@ -86,7 +138,7 @@ describe("XhrFileReader", function() {
       jest.runAllTimers();
     }).then(function(tags) {
       expect(function() {
-        var byte0 = fileReader.getByteAt(0);
+        var byte0 = fileReader.getByteAt(2000);
       }).toThrow();
     });
   });

@@ -13,7 +13,16 @@ import type {
   CallbackType
 } from './FlowTypes';
 
+type ContentRangeType = {
+  firstBytePosition: ?number,
+  lastBytePosition: ?number,
+  instanceLength: ?number,
+};
+
 class XhrFileReader extends MediaFileReader {
+  static _config: {
+    avoidHeadRequests: boolean
+  };
   _url: string;
   // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
@@ -32,16 +41,106 @@ class XhrFileReader extends MediaFileReader {
     );
   }
 
+  static setConfig(config: Object) {
+    this._config = config;
+  }
+
   _init(callbacks: LoadCallbackType): void {
+    if (XhrFileReader._config.avoidHeadRequests) {
+      this._fetchSizeWithGetRequest(callbacks);
+    } else {
+      this._fetchSizeWithHeadRequest(callbacks);
+    }
+  }
+
+  _fetchSizeWithHeadRequest(callbacks: LoadCallbackType): void {
     var self = this;
 
     this._makeXHRRequest("HEAD", null, {
       onSuccess: function(xhr: XMLHttpRequest) {
-        self._size = parseInt(xhr.getResponseHeader("Content-Length"), 10);
+        var contentLength = self._parseContentLength(xhr);
+        if (contentLength) {
+          self._size = contentLength;
+          callbacks.onSuccess();
+        } else {
+          // Content-Length not provided by the server, fallback to
+          // GET requests.
+          self._fetchSizeWithGetRequest(callbacks);
+        }
+      },
+      onError: callbacks.onError
+    });
+  }
+
+  _fetchSizeWithGetRequest(callbacks: LoadCallbackType): void {
+    var self = this;
+    var range = this._roundRangeToChunkMultiple([0, 0]);
+
+    this._makeXHRRequest("GET", range, {
+      onSuccess: function(xhr: XMLHttpRequest) {
+        var contentRange = self._parseContentRange(xhr);
+        var data = self._getXhrResponseContent(xhr);
+
+        if (contentRange) {
+          if (contentRange.instanceLength == null) {
+            // Last resort, server is not able to tell us the content length,
+            // need to fetch entire file then.
+            self._fetchEntireFile(callbacks);
+            return;
+          }
+          self._size = contentRange.instanceLength;
+        } else {
+          // Range request not supported, we got the entire file
+          self._size = self._parseContentLength(xhr);
+        }
+
+        self._fileData.addData(0, data);
         callbacks.onSuccess();
       },
       onError: callbacks.onError
-    })
+    });
+  }
+
+  _fetchEntireFile(callbacks: LoadCallbackType): void {
+    var self = this;
+    this._makeXHRRequest("GET", null, {
+      onSuccess: function(xhr: XMLHttpRequest) {
+        var data = self._getXhrResponseContent(xhr);
+        self._size = data.length;
+        self._fileData.addData(0, data);
+        callbacks.onSuccess();
+      },
+      onError: callbacks.onError
+    });
+  }
+
+  _getXhrResponseContent(xhr: XMLHttpRequest): string {
+    return xhr.responseBody || xhr.responseText || "";
+  }
+
+  _parseContentLength(xhr: XMLHttpRequest): number {
+    return parseInt(xhr.getResponseHeader("Content-Length"), 10);
+  }
+
+  _parseContentRange(xhr: XMLHttpRequest): ?ContentRangeType {
+    var contentRange = xhr.getResponseHeader("Content-Range");
+
+    if (contentRange) {
+      var parsedContentRange = contentRange.match(
+        /bytes (\d+)-(\d+)\/(?:(\d+)|\*)/i
+      );
+      if (!parsedContentRange) {
+        throw new Error("FIXME: Unknown Content-Range syntax: ", contentRange);
+      }
+
+      return {
+        firstBytePosition: parseInt(parsedContentRange[1], 10),
+        lastBytePosition: parseInt(parsedContentRange[2], 10),
+        instanceLength: parsedContentRange[3] ? parseInt(parsedContentRange[3], 10) : null
+      };
+    } else {
+      return null;
+    }
   }
 
   loadRange(range: [number, number], callbacks: LoadCallbackType): void {
@@ -60,7 +159,7 @@ class XhrFileReader extends MediaFileReader {
 
     this._makeXHRRequest("GET", range, {
       onSuccess: function(xhr: XMLHttpRequest) {
-        var data = xhr.responseBody || xhr.responseText;
+        var data = self._getXhrResponseContent(xhr);
         self._fileData.addData(range[0], data);
         callbacks.onSuccess();
       },
@@ -89,6 +188,7 @@ class XhrFileReader extends MediaFileReader {
       } else if (callbacks.onError) {
         callbacks.onError({
           "type": "xhr",
+          // $FlowIssue - xhr will not be null here
           "info": "Unexpected HTTP status " + xhr.status + ".",
           "xhr": xhr
         });
@@ -142,5 +242,9 @@ class XhrFileReader extends MediaFileReader {
     throw new Error("XMLHttpRequest is not supported");
   }
 }
+
+XhrFileReader._config = {
+  avoidHeadRequests: false
+};
 
 module.exports = XhrFileReader;

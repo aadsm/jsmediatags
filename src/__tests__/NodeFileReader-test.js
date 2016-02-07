@@ -76,7 +76,7 @@ describe("NodeFileReader", function() {
         onSuccess: reject,
         onError: function(error) {
           expect(error.type).toBe("fs");
-          expect(error.fs).toBeDefined();
+          expect(error.info).toBeDefined();
           resolve();
         }
       });

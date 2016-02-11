@@ -18,7 +18,7 @@
       "email": "jesse.ditson@gmail.com"
     }
   ],
-  "main": "build/jsmediatags.js",
+  "main": "build2/jsmediatags.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aadsm/jsmediatags.git"
@@ -55,8 +55,8 @@
   },
   "scripts": {
     "test": "jest",
-    "build": "babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build",
-    "watch": "babel --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build",
+    "build": "babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build2",
+    "watch": "babel --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build2",
     "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
     "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
     "dist": "npm run dist-dev && java -jar node_modules/google-closure-compiler/compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS --js dist/jsmediatags.js > dist/jsmediatags.min.js"

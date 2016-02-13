@@ -35,10 +35,17 @@ describe("XhrFileReader", function() {
         contents: new Array(100).join("This is a simple file"),
         disableRange: true
       },
+      "http://www.example.fakedomain/range-supported.mp3": {
+        contents: new Array(100).join("This is a simple file"),
+      },
       "http://www.example.fakedomain/unknown-length.mp3": {
         contents: new Array(100).join("This is a simple file"),
         unknownLength: true
-      },
+      }
+    });
+    XhrFileReader.setConfig({
+      avoidHeadRequests: false,
+      disallowedXhrHeaders: [],
     });
     fileReader = new XhrFileReader("http://www.example.fakedomain/music.mp3");
   });
@@ -88,6 +95,16 @@ describe("XhrFileReader", function() {
 
       pit("should have the right size information when content length is unknown", function() {
         fileReader = new XhrFileReader("http://www.example.fakedomain/unknown-length.mp3");
+        return new Promise(function(resolve, reject) {
+          fileReader.init(throwOnError(resolve));
+          jest.runAllTimers();
+        }).then(function(tags) {
+          expect(fileReader.getSize()).toBe(2079);
+        });
+      });
+
+      pit("should have the right size information when range is supported", function() {
+        fileReader = new XhrFileReader("http://www.example.fakedomain/range-supported.mp3");
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
           jest.runAllTimers();
@@ -164,6 +181,34 @@ describe("XhrFileReader", function() {
       jest.runAllTimers();
     }).then(function(tags) {
       expect(require('xhr2').XMLHttpRequest.setRequestHeader.mock.calls[0][1]).toBe("bytes=0-1023");
+    });
+  });
+
+  pit("should not use disallowed headers", function() {
+    return new Promise(function(resolve, reject) {
+      XhrFileReader.setConfig({
+        disallowedXhrHeaders: ["If-Modified-Since"]
+      });
+      fileReader.loadRange([0, 4], throwOnError(resolve));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      var calls = require('xhr2').XMLHttpRequest.setRequestHeader.mock.calls;
+      for (var i = 0; i < calls.length; i++) {
+        expect(calls[i][0].toLowerCase()).not.toBe("if-modified-since");
+      }
+    });
+  });
+
+  pit("should not rely on content-length when range is not supported", function() {
+    return new Promise(function(resolve, reject) {
+      XhrFileReader.setConfig({
+        avoidHeadRequests: true
+      });
+      require('xhr2').XMLHttpRequest.getAllResponseHeaders = jest.genMockFunction().mockReturnValue("");
+      fileReader.init(throwOnError(resolve));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(fileReader.getSize()).toBe(21);
     });
   });
 });

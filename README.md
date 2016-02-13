@@ -184,6 +184,21 @@ These are the supported shortcuts.
 * `picture`
 * `lyrics`
 
+### HTTP Access Control (CORS)
+
+When using HTTP [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) requests you need to make sure that the server is configured to receive `If-Modified-Since` and `Range` headers with the request.
+This can be configured by returning the `Access-Control-Allow-Headers` HTTP header with the OPTIONS request response.
+
+Similarly, you should also allow for the browser to read the `Content-Length` and `Content-Range` headers. This can be configured by returning the  `Access-Control-Expose-Headers` HTTP header.
+
+In short, the following headers are expected:
+```
+Access-Control-Allow-Headers: If-Modified-Since, Range
+Access-Control-Expose-Headers: Content-Length, Content-Range
+```
+
+This library still works without these options configured on the server. However it will download the entire file instead of only the necessary bytes for reading the tags.
+
 ### File and Tag Readers
 
 This library uses file readers (MediaFileReader API) to read the file itself and media tag readers (MediaTagReader API) to parse the tags in the file.

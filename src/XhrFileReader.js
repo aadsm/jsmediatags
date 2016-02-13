@@ -21,7 +21,8 @@ type ContentRangeType = {
 
 class XhrFileReader extends MediaFileReader {
   static _config: {
-    avoidHeadRequests: boolean
+    avoidHeadRequests: boolean,
+    disallowedXhrHeaders: Array<string>,
   };
   _url: string;
   // $FlowIssue - Flow gets confused with module.exports
@@ -42,7 +43,14 @@ class XhrFileReader extends MediaFileReader {
   }
 
   static setConfig(config: Object) {
-    this._config = config;
+    for (var key in config) if (config.hasOwnProperty(key)) {
+      this._config[key] = config[key];
+    }
+
+    var disallowedXhrHeaders = this._config.disallowedXhrHeaders;
+    for (var i = 0; i < disallowedXhrHeaders.length; i++) {
+      disallowedXhrHeaders[i] = disallowedXhrHeaders[i].toLowerCase();
+    }
   }
 
   _init(callbacks: LoadCallbackType): void {
@@ -91,7 +99,7 @@ class XhrFileReader extends MediaFileReader {
           self._size = contentRange.instanceLength;
         } else {
           // Range request not supported, we got the entire file
-          self._size = self._parseContentLength(xhr);
+          self._size = data.length;
         }
 
         self._fileData.addData(0, data);
@@ -118,12 +126,18 @@ class XhrFileReader extends MediaFileReader {
     return xhr.responseBody || xhr.responseText || "";
   }
 
-  _parseContentLength(xhr: XMLHttpRequest): number {
-    return parseInt(xhr.getResponseHeader("Content-Length"), 10);
+  _parseContentLength(xhr: XMLHttpRequest): ?number {
+    var contentLength = this._getResponseHeader(xhr, "Content-Length");
+
+    if (contentLength == null) {
+      return contentLength;
+    } else {
+      return parseInt(contentLength, 10);
+    }
   }
 
   _parseContentRange(xhr: XMLHttpRequest): ?ContentRangeType {
-    var contentRange = xhr.getResponseHeader("Content-Range");
+    var contentRange = this._getResponseHeader(xhr, "Content-Range");
 
     if (contentRange) {
       var parsedContentRange = contentRange.match(
@@ -218,10 +232,40 @@ class XhrFileReader extends MediaFileReader {
     xhr.open(method, this._url);
     xhr.overrideMimeType("text/plain; charset=x-user-defined");
     if (range) {
-      xhr.setRequestHeader("Range", "bytes=" + range[0] + "-" + range[1]);
+      this._setRequestHeader(xhr, "Range", "bytes=" + range[0] + "-" + range[1]);
     }
-    xhr.setRequestHeader("If-Modified-Since", "Sat, 01 Jan 1970 00:00:00 GMT");
+    this._setRequestHeader(xhr, "If-Modified-Since", "Sat, 01 Jan 1970 00:00:00 GMT");
     xhr.send(null);
+  }
+
+  _setRequestHeader(xhr: XMLHttpRequest, headerName: string, headerValue: string) {
+    if (XhrFileReader._config.disallowedXhrHeaders.indexOf(headerName.toLowerCase()) < 0) {
+      xhr.setRequestHeader(headerName, headerValue);
+    }
+  }
+
+  _hasResponseHeader(xhr: XMLHttpRequest, headerName: string): boolean {
+    var allResponseHeaders = xhr.getAllResponseHeaders();
+
+    if (!allResponseHeaders) {
+      return false;
+    }
+
+    var headers = allResponseHeaders.split("\r\n");
+    var headerNames = [];
+    for (var i = 0; i < headers.length; i++) {
+      headerNames[i] = headers[i].split(":")[0].toLowerCase();
+    }
+
+    return headerNames.indexOf(headerName.toLowerCase()) >= 0;
+  }
+
+  _getResponseHeader(xhr: XMLHttpRequest, headerName: string): ?string {
+    if (!this._hasResponseHeader(xhr, headerName)) {
+      return null;
+    }
+
+    return xhr.getResponseHeader(headerName);
   }
 
   getByteAt(offset: number): number {
@@ -244,7 +288,8 @@ class XhrFileReader extends MediaFileReader {
 }
 
 XhrFileReader._config = {
-  avoidHeadRequests: false
+  avoidHeadRequests: false,
+  disallowedXhrHeaders: [],
 };
 
 module.exports = XhrFileReader;

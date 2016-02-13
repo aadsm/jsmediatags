@@ -218,6 +218,12 @@ class Config {
       avoidHeadRequests: true
     });
   }
+
+  static setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>) {
+    XhrFileReader.setConfig({
+      disallowedXhrHeaders: disallowedXhrHeaders
+    });
+  }
 }
 
 Config

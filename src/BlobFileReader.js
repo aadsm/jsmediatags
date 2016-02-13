@@ -24,8 +24,10 @@ class BlobFileReader extends MediaFileReader {
 
   static canReadFile(file: any): boolean {
     return (
-      typeof Blob !== "undefined" &&
-      file instanceof Blob
+      (typeof Blob !== "undefined" && file instanceof Blob) ||
+      // File extends Blob but it seems that File instanceof Blob doesn't
+      // quite work as expected in Cordova/PhoneGap.
+      (typeof File !== "undefined" && file instanceof File)
     );
   }
 

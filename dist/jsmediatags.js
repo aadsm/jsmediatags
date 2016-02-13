@@ -71,7 +71,10 @@ var BlobFileReader = (function (_MediaFileReader) {
   }], [{
     key: 'canReadFile',
     value: function canReadFile(file) {
-      return typeof Blob !== "undefined" && file instanceof Blob;
+      return typeof Blob !== "undefined" && file instanceof Blob ||
+      // File extends Blob but it seems that File instanceof Blob doesn't
+      // quite work as expected in Cordova/PhoneGap.
+      typeof File !== "undefined" && file instanceof File;
     }
   }]);
 

@@ -265,12 +265,8 @@ class ID3v2TagReader extends MediaTagReader {
     }
   }
 
-  _expandShortcutTags(tagsWithShortcuts: Array<string>): Array<string> {
-    var tags = [];
-    for (var i = 0, tagOrShortcut; tagOrShortcut = tagsWithShortcuts[i]; i++ ) {
-      tags = tags.concat(SHORTCUTS[tagOrShortcut]||[tagOrShortcut]);
-    }
-    return tags;
+  getShortcuts(): {[key: string]: string|Array<string>} {
+    return SHORTCUTS;
   }
 }
 

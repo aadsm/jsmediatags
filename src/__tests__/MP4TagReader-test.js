@@ -153,4 +153,17 @@ describe("MP4TagReader", function() {
       expect(Object.keys(tag.tags)).toContain("©cmt");
     });
   });
+
+  pit("reads the specificed shortcut tag", function() {
+    return new Promise(function(resolve, reject) {
+      tagReader.setTagsToRead(["title"])
+        .read({
+          onSuccess: resolve,
+          onFailure: reject
+        });
+      jest.runAllTimers();
+    }).then(function(tag) {
+      expect(Object.keys(tag.tags)).toContain("title");
+    });
+  });
 });

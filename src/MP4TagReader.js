@@ -118,6 +118,8 @@ class MP4TagReader extends MediaTagReader {
 
   _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): TagType {
     var tags = {};
+
+    tagsToRead = this._expandShortcutTags(tagsToRead);
     this._readAtom(tags, data, 0, data.getSize(), tagsToRead);
 
     // create shortcuts for most common data.
@@ -231,6 +233,10 @@ class MP4TagReader extends MediaTagReader {
       description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
       data: atomData
     };
+  }
+
+  getShortcuts(): {[key: string]: string|Array<string>} {
+    return SHORTCUTS;
   }
 }
 

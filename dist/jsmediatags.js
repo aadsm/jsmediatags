@@ -796,13 +796,9 @@ var ID3v2TagReader = (function (_MediaTagReader) {
       }
     }
   }, {
-    key: '_expandShortcutTags',
-    value: function _expandShortcutTags(tagsWithShortcuts) {
-      var tags = [];
-      for (var i = 0, tagOrShortcut; tagOrShortcut = tagsWithShortcuts[i]; i++) {
-        tags = tags.concat(SHORTCUTS[tagOrShortcut] || [tagOrShortcut]);
-      }
-      return tags;
+    key: 'getShortcuts',
+    value: function getShortcuts() {
+      return SHORTCUTS;
     }
   }], [{
     key: 'getTagIdentifierByteRange',
@@ -1111,6 +1107,8 @@ var MP4TagReader = (function (_MediaTagReader) {
     key: '_parseData',
     value: function _parseData(data, tagsToRead) {
       var tags = {};
+
+      tagsToRead = this._expandShortcutTags(tagsToRead);
       this._readAtom(tags, data, 0, data.getSize(), tagsToRead);
 
       // create shortcuts for most common data.
@@ -1214,6 +1212,11 @@ var MP4TagReader = (function (_MediaTagReader) {
         description: ATOM_DESCRIPTIONS[atomName] || "Unknown",
         data: atomData
       };
+    }
+  }, {
+    key: 'getShortcuts',
+    value: function getShortcuts() {
+      return SHORTCUTS;
     }
   }], [{
     key: 'getTagIdentifierByteRange',
@@ -1599,6 +1602,11 @@ var MediaTagReader = (function () {
         onError: callbacks.onError
       });
     }
+  }, {
+    key: 'getShortcuts',
+    value: function getShortcuts() {
+      return {};
+    }
 
     /**
      * Load the necessary bytes from the media file.
@@ -1618,6 +1626,21 @@ var MediaTagReader = (function () {
     key: '_parseData',
     value: function _parseData(mediaFileReader, tags) {
       throw new Error("Must implement _parseData function");
+    }
+  }, {
+    key: '_expandShortcutTags',
+    value: function _expandShortcutTags(tagsWithShortcuts) {
+      if (!tagsWithShortcuts) {
+        return null;
+      }
+
+      var tags = [];
+      var shortcuts = this.getShortcuts();
+      for (var i = 0, tagOrShortcut; tagOrShortcut = tagsWithShortcuts[i]; i++) {
+        tags = tags.concat(shortcuts[tagOrShortcut] || [tagOrShortcut]);
+      }
+
+      return tags;
     }
   }], [{
     key: 'getTagIdentifierByteRange',

@@ -62,6 +62,10 @@ class MediaTagReader {
     });
   }
 
+  getShortcuts(): {[key: string]: (string|Array<string>)} {
+    return {};
+  }
+
   /**
    * Load the necessary bytes from the media file.
    */
@@ -77,6 +81,20 @@ class MediaTagReader {
    */
   _parseData(mediaFileReader: MediaFileReader, tags: ?Array<string>): TagType {
     throw new Error("Must implement _parseData function");
+  }
+
+  _expandShortcutTags(tagsWithShortcuts: ?Array<string>): ?Array<string> {
+    if (!tagsWithShortcuts) {
+      return null;
+    }
+
+    var tags = [];
+    var shortcuts = this.getShortcuts();
+    for (var i = 0, tagOrShortcut; tagOrShortcut = tagsWithShortcuts[i]; i++ ) {
+      tags = tags.concat(shortcuts[tagOrShortcut]||[tagOrShortcut]);
+    }
+
+    return tags;
   }
 }
 

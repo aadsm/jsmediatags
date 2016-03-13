@@ -309,7 +309,7 @@ jsmediatags.read("filename.mp3", {
     var tags = tag.tags;
     alert(tags.artist + " - " + tags.title + ", " + tags.album);
   }
-);
+});
 ```
 
 ### Specific tags

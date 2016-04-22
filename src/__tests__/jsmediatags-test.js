@@ -5,6 +5,7 @@ jest
 const jsmediatags = require("../jsmediatags");
 const NodeFileReader = require("../NodeFileReader");
 const XhrFileReader = require("../XhrFileReader");
+const ArrayFileReader = require("../ArrayFileReader");
 const ID3v1TagReader = require("../ID3v1TagReader");
 const ID3v2TagReader = require("../ID3v2TagReader");
 const MP4TagReader = require("../MP4TagReader");
@@ -80,6 +81,15 @@ describe("jsmediatags", function() {
       var FileReader = reader._getFileReader();
 
       expect(FileReader).toBe(NodeFileReader);
+    });
+
+    it("should use the Array file reader for Buffers", function() {
+      ArrayFileReader.canReadFile.mockReturnValue(true);
+
+      var reader = new jsmediatags.Reader();
+      var FileReader = reader._getFileReader();
+
+      expect(FileReader).toBe(ArrayFileReader);
     });
 
     it("should use the XHR file reader", function() {

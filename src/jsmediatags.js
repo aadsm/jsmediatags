@@ -7,6 +7,7 @@ const MediaFileReader = require("./MediaFileReader");
 const NodeFileReader = require("./NodeFileReader");
 const XhrFileReader = require("./XhrFileReader");
 const BlobFileReader = require("./BlobFileReader");
+const ArrayFileReader = require("./ArrayFileReader");
 const MediaTagReader = require("./MediaTagReader");
 const ID3v1TagReader = require("./ID3v1TagReader");
 const ID3v2TagReader = require("./ID3v2TagReader");
@@ -231,6 +232,8 @@ Config
   .addFileReader(XhrFileReader)
   // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addFileReader(BlobFileReader)
+  // $FlowIssue - flow doesn't allow type to pass as their supertype
+  .addFileReader(ArrayFileReader)
   // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addTagReader(ID3v2TagReader)
   // $FlowIssue - flow doesn't allow type to pass as their supertype

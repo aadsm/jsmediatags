@@ -22,6 +22,13 @@ class ArrayFileReader extends MediaFileReader {
     this._isInitialized = true;
   }
 
+  static canReadFile(file: any): boolean {
+    return (
+      Array.isArray(file) ||
+      (typeof Buffer === 'function' && Buffer.isBuffer(file))
+    );
+  }
+
   init(callbacks: LoadCallbackType) {
     setTimeout(callbacks.onSuccess, 0);
   }

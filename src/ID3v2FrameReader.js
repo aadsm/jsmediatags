@@ -17,6 +17,9 @@ var ID3v2FrameReader = {
     } else if (frameId[0] === "T") {
       // All frame ids starting with T are text tags.
       return frameReaderFunctions["T*"];
+    } else if (frameId[0] === "W") {
+      // All frame ids starting with W are url tags.
+      return frameReaderFunctions["W*"];
     } else {
       return null;
     }
@@ -119,6 +122,24 @@ frameReaderFunctions['T*'] = function readTextFrame(
   var charset = getTextEncoding(data.getByteAt(offset));
 
   return data.getStringWithCharsetAt(offset+1, length-1, charset).toString();
+};
+
+frameReaderFunctions['W*'] = function readUrlFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  majorVersion?: string
+): any {
+  // charset is only defined for user-defined URL link frames (http://id3.org/id3v2.3.0#User_defined_URL_link_frame)
+  // for the other URL link frames it is always iso-8859-1
+  var charset = getTextEncoding(data.getByteAt(offset));
+
+  if (charset !== undefined) {
+    return data.getStringWithCharsetAt(offset+1, length-1, charset).toString();
+  } else {
+    return data.getStringWithCharsetAt(offset, length, charset).toString();
+  }
 };
 
 frameReaderFunctions['TCON'] = function readGenreFrame(

@@ -9,6 +9,7 @@ The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
   * XMLHttpRequest
   * Blob
   * File
+  * Buffers/Arrays
 * Tag Readers
   * ID3v1
   * ID3v2 (unsynchronisation is not supported)

@@ -148,6 +148,22 @@ describe("ID3v2FrameReader ", function() {
     });
   });
 
+  describe("W* URL tags", function() {
+    it("should read urls with iso-8859-1 charset", function() {
+      var frameReader = ID3v2FrameReader.getFrameReaderFunction("W*");
+
+      expect(frameReader).toBeDefined();
+
+      var fileData = [].concat(
+        [0xe3]
+      );
+      var fileReader = new ArrayFileReader(fileData);
+      var data = frameReader(0, fileData.length, fileReader);
+
+      expect(data).toEqual("ã");
+    });
+  });
+
   it("should read TCON tag", function() {
     var frameReader = ID3v2FrameReader.getFrameReaderFunction("TCON");
 

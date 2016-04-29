@@ -51,6 +51,27 @@ describe("ID3v2TagReader", function() {
     });
   });
 
+  pit("loads the entire tag", function() {
+    mediaFileReader.loadRange = jest.genMockFunction().mockImplementation(
+      function() {
+        return ArrayFileReader.prototype.loadRange.apply(this, arguments);
+      }
+    );
+
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tags) {
+      console.log();
+      // The first call is the initial load to figure out the tag ID.
+      let callArguments = mediaFileReader.loadRange.mock.calls[1];
+      expect(callArguments[0]).toEqual([0, mediaFileReader._array.length-1]);
+    });
+  });
+
   pit("reads tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({

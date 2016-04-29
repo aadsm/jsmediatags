@@ -559,6 +559,8 @@ var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
 var ID3v2FrameReader = require('./ID3v2FrameReader');
 
+var ID3_HEADER_SIZE = 10;
+
 var ID3v2TagReader = (function (_MediaTagReader) {
   _inherits(ID3v2TagReader, _MediaTagReader);
 
@@ -573,7 +575,9 @@ var ID3v2TagReader = (function (_MediaTagReader) {
     value: function _loadData(mediaFileReader, callbacks) {
       mediaFileReader.loadRange([6, 9], {
         onSuccess: function () {
-          mediaFileReader.loadRange([0, mediaFileReader.getSynchsafeInteger32At(6)], callbacks);
+          mediaFileReader.loadRange(
+          // The tag size does not include the header size.
+          [0, ID3_HEADER_SIZE + mediaFileReader.getSynchsafeInteger32At(6) - 1], callbacks);
         },
         onError: callbacks.onError
       });
@@ -809,7 +813,7 @@ var ID3v2TagReader = (function (_MediaTagReader) {
       // ID3 header
       return {
         offset: 0,
-        length: 10
+        length: ID3_HEADER_SIZE
       };
     }
   }, {

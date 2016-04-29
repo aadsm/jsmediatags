@@ -19,12 +19,14 @@ import type {
   TagType,
 } from './FlowTypes';
 
+const ID3_HEADER_SIZE = 10;
+
 class ID3v2TagReader extends MediaTagReader {
   static getTagIdentifierByteRange(): ByteRange {
     // ID3 header
     return {
       offset: 0,
-      length: 10
+      length: ID3_HEADER_SIZE
     };
   }
 
@@ -37,7 +39,8 @@ class ID3v2TagReader extends MediaTagReader {
     mediaFileReader.loadRange([6, 9], {
       onSuccess: function() {
         mediaFileReader.loadRange(
-          [0, mediaFileReader.getSynchsafeInteger32At(6)],
+          // The tag size does not include the header size.
+          [0, ID3_HEADER_SIZE + mediaFileReader.getSynchsafeInteger32At(6) - 1],
           callbacks
         );
       },

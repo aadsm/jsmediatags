@@ -19,7 +19,7 @@ describe("MediaFileReader", function() {
   it("should throw when trying to get the size before init()", function() {
     expect(function() {
       mediaFileReader.getSize();
-    }).toThrow('init() must be called first.');
+    }).toThrow(new Error('init() must be called first.'));
   });
 
   describe("isBitSetAt", function() {

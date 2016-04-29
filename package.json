@@ -47,7 +47,7 @@
     "babel-jest": "~6.0.1",
     "babel-core": "~6.2.1",
     "babel-cli": "~6.2.0",
-    "jest-cli": "~0.7.1",
+    "jest-cli": "~12.0.2",
     "browserify": "~12.0.1",
     "watchify": "~3.6.1",
     "babelify": "~7.2.0",

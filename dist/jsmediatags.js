@@ -7,9 +7,62 @@ module.exports = XMLHttpRequest;
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _FlowTypes = require('./FlowTypes');
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MediaFileReader = require('./MediaFileReader');
+
+var ArrayFileReader = function (_MediaFileReader) {
+  _inherits(ArrayFileReader, _MediaFileReader);
+
+  function ArrayFileReader(array) {
+    _classCallCheck(this, ArrayFileReader);
+
+    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ArrayFileReader).call(this));
+
+    _this._array = array;
+    _this._size = array.length;
+    _this._isInitialized = true;
+    return _this;
+  }
+
+  _createClass(ArrayFileReader, [{
+    key: 'init',
+    value: function init(callbacks) {
+      setTimeout(callbacks.onSuccess, 0);
+    }
+  }, {
+    key: 'loadRange',
+    value: function loadRange(range, callbacks) {
+      setTimeout(callbacks.onSuccess, 0);
+    }
+  }, {
+    key: 'getByteAt',
+    value: function getByteAt(offset) {
+      return this._array[offset];
+    }
+  }], [{
+    key: 'canReadFile',
+    value: function canReadFile(file) {
+      return Array.isArray(file) || typeof Buffer === 'function' && Buffer.isBuffer(file);
+    }
+  }]);
+
+  return ArrayFileReader;
+}(MediaFileReader);
+
+module.exports = ArrayFileReader;
+
+},{"./MediaFileReader":10}],4:[function(require,module,exports){
+
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -20,7 +73,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ChunkedFileData = require('./ChunkedFileData');
 var MediaFileReader = require('./MediaFileReader');
 
-var BlobFileReader = (function (_MediaFileReader) {
+var BlobFileReader = function (_MediaFileReader) {
   _inherits(BlobFileReader, _MediaFileReader);
 
   function BlobFileReader(blob) {
@@ -34,6 +87,7 @@ var BlobFileReader = (function (_MediaFileReader) {
     return _this;
   }
   // $FlowIssue - Flow gets confused with module.exports
+
 
   _createClass(BlobFileReader, [{
     key: '_init',
@@ -79,11 +133,11 @@ var BlobFileReader = (function (_MediaFileReader) {
   }]);
 
   return BlobFileReader;
-})(MediaFileReader);
+}(MediaFileReader);
 
 module.exports = BlobFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":10}],4:[function(require,module,exports){
+},{"./ChunkedFileData":5,"./MediaFileReader":10}],5:[function(require,module,exports){
 /**
  * This class represents a file that might not have all its data loaded yet.
  * It is used when loading the entire file is not an option because it's too
@@ -97,15 +151,13 @@ module.exports = BlobFileReader;
  */
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var NOT_FOUND = -1;
 
-var ChunkedFileData = (function () {
+var ChunkedFileData = function () {
   _createClass(ChunkedFileData, null, [{
     key: 'NOT_FOUND',
 
@@ -124,6 +176,7 @@ var ChunkedFileData = (function () {
   /**
    * Adds data to the file storage at a specific offset.
    */
+
 
   _createClass(ChunkedFileData, [{
     key: 'addData',
@@ -284,22 +337,15 @@ var ChunkedFileData = (function () {
   }]);
 
   return ChunkedFileData;
-})();
+}();
 
 module.exports = ChunkedFileData;
 
-},{"./FlowTypes":5}],5:[function(require,module,exports){
-"use strict";
-
-var MediaFileReader = require('./MediaFileReader');
-
-},{"./MediaFileReader":10}],6:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -310,7 +356,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
 
-var ID3v1TagReader = (function (_MediaTagReader) {
+var ID3v1TagReader = function (_MediaTagReader) {
   _inherits(ID3v1TagReader, _MediaTagReader);
 
   function ID3v1TagReader() {
@@ -393,17 +439,15 @@ var ID3v1TagReader = (function (_MediaTagReader) {
   }]);
 
   return ID3v1TagReader;
-})(MediaTagReader);
+}(MediaTagReader);
 
 var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock", "Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk", "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock", "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music", "Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle", "Duet", "Punk Rock", "Drum Solo", "Acapella", "Euro-House", "Dance Hall"];
 
 module.exports = ID3v1TagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":10,"./MediaTagReader":11}],7:[function(require,module,exports){
+},{"./MediaFileReader":10,"./MediaTagReader":11}],7:[function(require,module,exports){
 
 'use strict';
-
-var _FlowTypes = require('./FlowTypes');
 
 var MediaFileReader = require('./MediaFileReader');
 
@@ -414,6 +458,9 @@ var ID3v2FrameReader = {
     } else if (frameId[0] === "T") {
       // All frame ids starting with T are text tags.
       return frameReaderFunctions["T*"];
+    } else if (frameId[0] === "W") {
+      // All frame ids starting with W are url tags.
+      return frameReaderFunctions["W*"];
     } else {
       return null;
     }
@@ -488,6 +535,18 @@ frameReaderFunctions['T*'] = function readTextFrame(offset, length, data, flags,
   return data.getStringWithCharsetAt(offset + 1, length - 1, charset).toString();
 };
 
+frameReaderFunctions['W*'] = function readUrlFrame(offset, length, data, flags, majorVersion) {
+  // charset is only defined for user-defined URL link frames (http://id3.org/id3v2.3.0#User_defined_URL_link_frame)
+  // for the other URL link frames it is always iso-8859-1
+  var charset = getTextEncoding(data.getByteAt(offset));
+
+  if (charset !== undefined) {
+    return data.getStringWithCharsetAt(offset + 1, length - 1, charset).toString();
+  } else {
+    return data.getStringWithCharsetAt(offset, length, charset).toString();
+  }
+};
+
 frameReaderFunctions['TCON'] = function readGenreFrame(offset, length, data, flags) {
   var text = frameReaderFunctions['T*'].apply(this, arguments);
   return text.replace(/^\(\d+\)/, '');
@@ -541,13 +600,11 @@ var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file 
 
 module.exports = ID3v2FrameReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":10}],8:[function(require,module,exports){
+},{"./MediaFileReader":10}],8:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -561,7 +618,7 @@ var ID3v2FrameReader = require('./ID3v2FrameReader');
 
 var ID3_HEADER_SIZE = 10;
 
-var ID3v2TagReader = (function (_MediaTagReader) {
+var ID3v2TagReader = function (_MediaTagReader) {
   _inherits(ID3v2TagReader, _MediaTagReader);
 
   function ID3v2TagReader() {
@@ -825,7 +882,7 @@ var ID3v2TagReader = (function (_MediaTagReader) {
   }]);
 
   return ID3v2TagReader;
-})(MediaTagReader);
+}(MediaTagReader);
 
 var FRAME_DESCRIPTIONS = {
   // v2.2
@@ -998,7 +1055,7 @@ var SHORTCUTS = {
 
 module.exports = ID3v2TagReader;
 
-},{"./FlowTypes":5,"./ID3v2FrameReader":7,"./MediaFileReader":10,"./MediaTagReader":11}],9:[function(require,module,exports){
+},{"./ID3v2FrameReader":7,"./MediaFileReader":10,"./MediaTagReader":11}],9:[function(require,module,exports){
 /**
  * Support for iTunes-style m4a tags
  * See:
@@ -1009,9 +1066,7 @@ module.exports = ID3v2TagReader;
  */
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1022,7 +1077,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
 
-var MP4TagReader = (function (_MediaTagReader) {
+var MP4TagReader = function (_MediaTagReader) {
   _inherits(MP4TagReader, _MediaTagReader);
 
   function MP4TagReader() {
@@ -1245,7 +1300,7 @@ var MP4TagReader = (function (_MediaTagReader) {
   }]);
 
   return MP4TagReader;
-})(MediaTagReader);
+}(MediaTagReader);
 
 var TYPES = {
   "0": "uint8",
@@ -1318,21 +1373,17 @@ var SHORTCUTS = {
 
 module.exports = MP4TagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":10,"./MediaTagReader":11}],10:[function(require,module,exports){
+},{"./MediaFileReader":10,"./MediaTagReader":11}],10:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _StringUtils = require('./StringUtils');
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var StringUtils = require('./StringUtils');
 
-var MediaFileReader = (function () {
+var MediaFileReader = function () {
   function MediaFileReader() {
     _classCallCheck(this, MediaFileReader);
 
@@ -1344,8 +1395,10 @@ var MediaFileReader = (function () {
    * Decides if this media file reader is able to read the given file.
    */
 
+
   _createClass(MediaFileReader, [{
     key: 'init',
+
 
     /**
      * This function needs to be called before any other function.
@@ -1554,23 +1607,21 @@ var MediaFileReader = (function () {
   }]);
 
   return MediaFileReader;
-})();
+}();
 
 module.exports = MediaFileReader;
 
-},{"./FlowTypes":5,"./StringUtils":12}],11:[function(require,module,exports){
+},{"./StringUtils":12}],11:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var MediaFileReader = require('./MediaFileReader');
 
-var MediaTagReader = (function () {
+var MediaTagReader = function () {
   function MediaTagReader(mediaFileReader) {
     _classCallCheck(this, MediaTagReader);
 
@@ -1583,6 +1634,7 @@ var MediaTagReader = (function () {
    * _canReadTagFormat in order to identify if the file contains tag
    * information that can be read.
    */
+
 
   _createClass(MediaTagReader, [{
     key: 'setTagsToRead',
@@ -1669,19 +1721,19 @@ var MediaTagReader = (function () {
   }]);
 
   return MediaTagReader;
-})();
+}();
 
 module.exports = MediaTagReader;
 
-},{"./FlowTypes":5,"./MediaFileReader":10}],12:[function(require,module,exports){
+},{"./MediaFileReader":10}],12:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var InternalDecodedString = (function () {
+var InternalDecodedString = function () {
   function InternalDecodedString(value, bytesReadCount) {
     _classCallCheck(this, InternalDecodedString);
 
@@ -1698,7 +1750,7 @@ var InternalDecodedString = (function () {
   }]);
 
   return InternalDecodedString;
-})();
+}();
 
 var StringUtils = {
   readUTF16String: function (bytes, bigEndian, maxBytes) {
@@ -1794,9 +1846,7 @@ module.exports = StringUtils;
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require('./FlowTypes');
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1809,7 +1859,7 @@ var MediaFileReader = require('./MediaFileReader');
 
 var CHUNK_SIZE = 1024;
 
-var XhrFileReader = (function (_MediaFileReader) {
+var XhrFileReader = function (_MediaFileReader) {
   _inherits(XhrFileReader, _MediaFileReader);
 
   function XhrFileReader(url) {
@@ -1823,6 +1873,7 @@ var XhrFileReader = (function (_MediaFileReader) {
     return _this;
   }
   // $FlowIssue - Flow gets confused with module.exports
+
 
   _createClass(XhrFileReader, [{
     key: '_init',
@@ -2086,7 +2137,7 @@ var XhrFileReader = (function (_MediaFileReader) {
   }]);
 
   return XhrFileReader;
-})(MediaFileReader);
+}(MediaFileReader);
 
 XhrFileReader._config = {
   avoidHeadRequests: false,
@@ -2095,13 +2146,11 @@ XhrFileReader._config = {
 
 module.exports = XhrFileReader;
 
-},{"./ChunkedFileData":4,"./FlowTypes":5,"./MediaFileReader":10,"xhr2":2}],14:[function(require,module,exports){
+},{"./ChunkedFileData":5,"./MediaFileReader":10,"xhr2":2}],14:[function(require,module,exports){
 
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _FlowTypes = require("./FlowTypes");
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2109,6 +2158,7 @@ var MediaFileReader = require("./MediaFileReader");
 var NodeFileReader = require("./NodeFileReader");
 var XhrFileReader = require("./XhrFileReader");
 var BlobFileReader = require("./BlobFileReader");
+var ArrayFileReader = require("./ArrayFileReader");
 var MediaTagReader = require("./MediaTagReader");
 var ID3v1TagReader = require("./ID3v1TagReader");
 var ID3v2TagReader = require("./ID3v2TagReader");
@@ -2121,7 +2171,7 @@ function read(location, callbacks) {
   new Reader(location).read(callbacks);
 }
 
-var Reader = (function () {
+var Reader = function () {
   function Reader(file) {
     _classCallCheck(this, Reader);
 
@@ -2285,9 +2335,9 @@ var Reader = (function () {
   }]);
 
   return Reader;
-})();
+}();
 
-var Config = (function () {
+var Config = function () {
   function Config() {
     _classCallCheck(this, Config);
   }
@@ -2332,13 +2382,15 @@ var Config = (function () {
   }]);
 
   return Config;
-})();
+}();
 
 Config
 // $FlowIssue - flow doesn't allow type to pass as their supertype
 .addFileReader(XhrFileReader)
 // $FlowIssue - flow doesn't allow type to pass as their supertype
 .addFileReader(BlobFileReader)
+// $FlowIssue - flow doesn't allow type to pass as their supertype
+.addFileReader(ArrayFileReader)
 // $FlowIssue - flow doesn't allow type to pass as their supertype
 .addTagReader(ID3v2TagReader)
 // $FlowIssue - flow doesn't allow type to pass as their supertype
@@ -2358,5 +2410,5 @@ module.exports = {
   "Config": Config
 };
 
-},{"./BlobFileReader":3,"./FlowTypes":5,"./ID3v1TagReader":6,"./ID3v2TagReader":8,"./MP4TagReader":9,"./MediaFileReader":10,"./MediaTagReader":11,"./NodeFileReader":1,"./XhrFileReader":13}]},{},[14])(14)
+},{"./ArrayFileReader":3,"./BlobFileReader":4,"./ID3v1TagReader":6,"./ID3v2TagReader":8,"./MP4TagReader":9,"./MediaFileReader":10,"./MediaTagReader":11,"./NodeFileReader":1,"./XhrFileReader":13}]},{},[14])(14)
 });

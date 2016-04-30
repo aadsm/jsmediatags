@@ -196,12 +196,12 @@ class Reader {
 class Config {
   static addFileReader(fileReader: Class<MediaFileReader>): Class<Config> {
     mediaFileReaders.push(fileReader);
-    return this;
+    return Config;
   }
 
   static addTagReader(tagReader: Class<MediaTagReader>): Class<Config> {
     mediaTagReaders.push(tagReader);
-    return this;
+    return Config;
   }
 
   static removeTagReader(tagReader: Class<MediaTagReader>): Class<Config> {
@@ -211,7 +211,7 @@ class Config {
       mediaTagReaders.splice(tagReaderIx, 1);
     }
 
-    return this;
+    return Config;
   }
 
   static EXPERIMENTAL_avoidHeadRequests() {

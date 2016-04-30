@@ -495,6 +495,9 @@ frameReaderFunctions['APIC'] = function readPictureFrame(offset, length, data, f
       var format = data.getStringWithCharsetAt(offset + 1, length - (offset - start));
       offset += 1 + format.bytesReadCount;
       break;
+
+    default:
+      throw new Error("Couldn't read ID3v2 major version.");
   }
   var bite = data.getByteAt(offset, 1);
   var type = PICTURE_TYPE[bite];
@@ -827,9 +830,9 @@ var ID3v2TagReader = function (_MediaTagReader) {
       }
 
       return {
-        "id": frameId,
-        "size": frameSize,
-        "headerSize": frameHeaderSize,
+        "id": frameId || "",
+        "size": frameSize || 0,
+        "headerSize": frameHeaderSize || 0,
         "flags": flags
       };
     }
@@ -1581,7 +1584,6 @@ var MediaFileReader = function () {
           break;
       }
 
-      // $FlowIssue - flow doesn't understand swtich default.
       return string;
     }
   }, {
@@ -2034,12 +2036,12 @@ var XhrFileReader = function (_MediaFileReader) {
       var onXHRLoad = function () {
         // 200 - OK
         // 206 - Partial Content
+        // $FlowIssue - xhr will not be null here
         if (xhr.status === 200 || xhr.status === 206) {
           callbacks.onSuccess(xhr);
         } else if (callbacks.onError) {
           callbacks.onError({
             "type": "xhr",
-            // $FlowIssue - xhr will not be null here
             "info": "Unexpected HTTP status " + xhr.status + ".",
             "xhr": xhr
           });
@@ -2060,6 +2062,7 @@ var XhrFileReader = function (_MediaFileReader) {
         };
       } else {
         xhr.onreadystatechange = function () {
+          // $FlowIssue - xhr will not be null here
           if (xhr.readyState === 4) {
             onXHRLoad();
           }
@@ -2356,13 +2359,13 @@ var Config = function () {
     key: "addFileReader",
     value: function addFileReader(fileReader) {
       mediaFileReaders.push(fileReader);
-      return this;
+      return Config;
     }
   }, {
     key: "addTagReader",
     value: function addTagReader(tagReader) {
       mediaTagReaders.push(tagReader);
-      return this;
+      return Config;
     }
   }, {
     key: "removeTagReader",
@@ -2373,7 +2376,7 @@ var Config = function () {
         mediaTagReaders.splice(tagReaderIx, 1);
       }
 
-      return this;
+      return Config;
     }
   }, {
     key: "EXPERIMENTAL_avoidHeadRequests",

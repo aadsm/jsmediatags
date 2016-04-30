@@ -228,9 +228,9 @@ class ID3v2TagReader extends MediaTagReader {
     }
 
     return {
-      "id": frameId,
-      "size": frameSize,
-      "headerSize": frameHeaderSize,
+      "id": frameId || "",
+      "size": frameSize || 0,
+      "headerSize": frameHeaderSize || 0,
       "flags": flags
     };
   }

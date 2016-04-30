@@ -49,7 +49,7 @@ export type TagFrame = {
   id: string,
   size: number,
   description: string,
-  data: ?Object
+  data: any
 };
 
 export type TagFrameHeader = {

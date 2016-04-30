@@ -197,12 +197,12 @@ class XhrFileReader extends MediaFileReader {
     var onXHRLoad = function() {
       // 200 - OK
       // 206 - Partial Content
+      // $FlowIssue - xhr will not be null here
       if (xhr.status === 200 || xhr.status === 206) {
         callbacks.onSuccess(xhr);
       } else if (callbacks.onError) {
         callbacks.onError({
           "type": "xhr",
-          // $FlowIssue - xhr will not be null here
           "info": "Unexpected HTTP status " + xhr.status + ".",
           "xhr": xhr
         });
@@ -223,6 +223,7 @@ class XhrFileReader extends MediaFileReader {
       }
     } else {
       xhr.onreadystatechange = function() {
+        // $FlowIssue - xhr will not be null here
         if (xhr.readyState === 4) {
           onXHRLoad();
         }

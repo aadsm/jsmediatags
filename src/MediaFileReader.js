@@ -193,7 +193,6 @@ class MediaFileReader {
         break;
     }
 
-    // $FlowIssue - flow doesn't understand swtich default.
     return string;
   }
 

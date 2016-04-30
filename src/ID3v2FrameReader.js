@@ -50,6 +50,9 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
     var format = data.getStringWithCharsetAt(offset+1, length - (offset-start));
     offset += 1 + format.bytesReadCount;
     break;
+
+    default:
+    throw new Error("Couldn't read ID3v2 major version.");
   }
   var bite = data.getByteAt(offset, 1);
   var type = PICTURE_TYPE[bite];

@@ -53,7 +53,8 @@ class ChunkedFileData {
       };
 
       if (needsPrepend) {
-        var slicedData = firstChunk.data.slice(
+        var slicedData = this._sliceData(
+          firstChunk.data,
           0,
           offset - firstChunk.offset
         );
@@ -62,7 +63,8 @@ class ChunkedFileData {
 
       if (needsAppend) {
         // Use the lastChunk because the slice logic is easier to handle.
-        var slicedData = chunk.data.slice(
+        var slicedData = this._sliceData(
+          chunk.data,
           0,
           lastChunk.offset - chunk.offset
         );
@@ -86,6 +88,15 @@ class ChunkedFileData {
       return dataAandB;
     } else {
       return dataA.concat(dataB);
+    }
+  }
+
+  _sliceData(data: Array<number>, begin: number, end: number): Array<number> {
+    // Some TypeArray implementations do not support slice yet.
+    if (data.slice) {
+      return data.slice(begin, end);
+    } else {
+      return data.subarray(begin, end);
     }
   }
 

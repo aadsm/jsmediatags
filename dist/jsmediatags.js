@@ -204,13 +204,13 @@ var ChunkedFileData = function () {
         };
 
         if (needsPrepend) {
-          var slicedData = firstChunk.data.slice(0, offset - firstChunk.offset);
+          var slicedData = this._sliceData(firstChunk.data, 0, offset - firstChunk.offset);
           chunk.data = this._concatData(slicedData, data);
         }
 
         if (needsAppend) {
           // Use the lastChunk because the slice logic is easier to handle.
-          var slicedData = chunk.data.slice(0, lastChunk.offset - chunk.offset);
+          var slicedData = this._sliceData(chunk.data, 0, lastChunk.offset - chunk.offset);
           chunk.data = this._concatData(slicedData, lastChunk.data);
         }
 
@@ -228,6 +228,16 @@ var ChunkedFileData = function () {
         return dataAandB;
       } else {
         return dataA.concat(dataB);
+      }
+    }
+  }, {
+    key: '_sliceData',
+    value: function _sliceData(data, begin, end) {
+      // Some TypeArray implementations do not support slice yet.
+      if (data.slice) {
+        return data.slice(begin, end);
+      } else {
+        return data.subarray(begin, end);
       }
     }
 

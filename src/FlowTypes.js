@@ -9,6 +9,11 @@ export type CallbackType = {
   onError?: (error: Object) => void
 };
 
+export type StreamCallbackType = {
+  onUpdate: (data: any) => void,
+  onError?: (error: Object) => void
+};
+
 export type LoadCallbackType = {
   onSuccess: () => void,
   onError?: (error: Object) => void

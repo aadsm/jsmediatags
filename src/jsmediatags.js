@@ -15,7 +15,8 @@ const MP4TagReader = require("./MP4TagReader");
 
 import type {
   CallbackType,
-  LoadCallbackType
+  LoadCallbackType,
+  StreamCallbackType
 } from './FlowTypes';
 
 var mediaFileReaders: Array<Class<MediaFileReader>> = [];
@@ -230,6 +231,23 @@ class Config {
     XhrFileReader.setConfig({
       timeoutInSec: timeoutInSec
     });
+  }
+}
+
+class StreamReader {
+  _url: string;
+  _streamTagReader: any;
+
+  constructor(url: string) {
+    this._url = url;
+  }
+
+  setStreamTagReader(streamTagReader: any) {
+    this._streamTagReader = streamTagReader;
+  }
+
+  read(callbacks: StreamCallbackType) {
+
   }
 }
 

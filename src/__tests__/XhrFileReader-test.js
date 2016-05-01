@@ -41,11 +41,16 @@ describe("XhrFileReader", function() {
       "http://www.example.fakedomain/unknown-length.mp3": {
         contents: new Array(100).join("This is a simple file"),
         unknownLength: true
-      }
+      },
+      "http://www.example.fakedomain/timeout": {
+        contents: "This is a simple file",
+        timeout: 500
+      },
     });
     XhrFileReader.setConfig({
       avoidHeadRequests: false,
       disallowedXhrHeaders: [],
+      timeoutInSec: 30,
     });
     fileReader = new XhrFileReader("http://www.example.fakedomain/music.mp3");
   });
@@ -209,6 +214,23 @@ describe("XhrFileReader", function() {
       jest.runAllTimers();
     }).then(function(tags) {
       expect(fileReader.getSize()).toBe(21);
+    });
+  });
+
+  pit("should timeout if request takes too much time", function() {
+    fileReader = new XhrFileReader("http://www.example.fakedomain/timeout");
+    XhrFileReader.setConfig({
+      timeoutInSec: 0.2
+    });
+    return new Promise(function(resolve, reject) {
+      fileReader.init(throwOnSuccess(function(error) {
+        expect(error.type).toBe("xhr");
+        expect(error.xhr).toBeDefined();
+        resolve();
+      }));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(true).toBe(true);
     });
   });
 });

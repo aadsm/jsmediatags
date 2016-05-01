@@ -23,6 +23,7 @@ class XhrFileReader extends MediaFileReader {
   static _config: {
     avoidHeadRequests: boolean,
     disallowedXhrHeaders: Array<string>,
+    timeoutInSec: number
   };
   _url: string;
   // $FlowIssue - Flow gets confused with module.exports
@@ -230,6 +231,20 @@ class XhrFileReader extends MediaFileReader {
       };
     }
 
+    if (XhrFileReader._config.timeoutInSec) {
+      xhr.timeout = XhrFileReader._config.timeoutInSec * 1000;
+      xhr.ontimeout = function() {
+        if (callbacks.onError) {
+          callbacks.onError({
+            "type": "xhr",
+            // $FlowIssue - xhr.timeout will not be null
+            "info": "Timeout after " + (xhr.timeout/1000) + "s. Use jsmediatags.Config.setXhrTimeout to override.",
+            "xhr": xhr,
+          });
+        }
+      }
+    }
+
     xhr.open(method, this._url);
     xhr.overrideMimeType("text/plain; charset=x-user-defined");
     if (range) {
@@ -291,6 +306,7 @@ class XhrFileReader extends MediaFileReader {
 XhrFileReader._config = {
   avoidHeadRequests: false,
   disallowedXhrHeaders: [],
+  timeoutInSec: 30
 };
 
 module.exports = XhrFileReader;

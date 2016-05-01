@@ -2069,6 +2069,20 @@ var XhrFileReader = function (_MediaFileReader) {
         };
       }
 
+      if (XhrFileReader._config.timeoutInSec) {
+        xhr.timeout = XhrFileReader._config.timeoutInSec * 1000;
+        xhr.ontimeout = function () {
+          if (callbacks.onError) {
+            callbacks.onError({
+              "type": "xhr",
+              // $FlowIssue - xhr.timeout will not be null
+              "info": "Timeout after " + xhr.timeout / 1000 + "s. Use jsmediatags.Config.setXhrTimeout to override.",
+              "xhr": xhr
+            });
+          }
+        };
+      }
+
       xhr.open(method, this._url);
       xhr.overrideMimeType("text/plain; charset=x-user-defined");
       if (range) {
@@ -2154,7 +2168,8 @@ var XhrFileReader = function (_MediaFileReader) {
 
 XhrFileReader._config = {
   avoidHeadRequests: false,
-  disallowedXhrHeaders: []
+  disallowedXhrHeaders: [],
+  timeoutInSec: 30
 };
 
 module.exports = XhrFileReader;
@@ -2390,6 +2405,13 @@ var Config = function () {
     value: function setDisallowedXhrHeaders(disallowedXhrHeaders) {
       XhrFileReader.setConfig({
         disallowedXhrHeaders: disallowedXhrHeaders
+      });
+    }
+  }, {
+    key: "setXhrTimeoutInSec",
+    value: function setXhrTimeoutInSec(timeoutInSec) {
+      XhrFileReader.setConfig({
+        timeoutInSec: timeoutInSec
       });
     }
   }]);

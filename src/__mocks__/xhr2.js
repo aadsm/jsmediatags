@@ -70,6 +70,11 @@ function getUrlStatusCode(url) {
   }
 }
 
+function getTimeout(url) {
+  var urlData = _mockUrls[url];
+  return urlData ? urlData.timeout : 0;
+}
+
 function XMLHttpRequestMock() {
   var _url;
   var _range;
@@ -116,11 +121,25 @@ function XMLHttpRequestMock() {
     }
   );
   this.send = jest.genMockFunction().mockImplementation(function() {
-    process.nextTick(function() {
-      this.status = getUrlStatusCode(_url);
-      this.responseText = getUrlContents(_url, _range);
-      this.onload();
-    }.bind(this));
+    var requestTimeout = getTimeout(_url);
+
+    setTimeout(
+      function() {
+        this.status = getUrlStatusCode(_url);
+        this.responseText = getUrlContents(_url, _range);
+        this.onload();
+      }.bind(this),
+      requestTimeout
+    );
+
+    if (requestTimeout && this.timeout && requestTimeout > this.timeout && this.ontimeout) {
+      setTimeout(
+        function() {
+          this.ontimeout({});
+        }.bind(this),
+        this.timeout
+      );
+    }
   });
 }
 

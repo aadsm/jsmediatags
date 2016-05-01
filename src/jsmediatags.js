@@ -225,6 +225,12 @@ class Config {
       disallowedXhrHeaders: disallowedXhrHeaders
     });
   }
+
+  static setXhrTimeoutInSec(timeoutInSec: number) {
+    XhrFileReader.setConfig({
+      timeoutInSec: timeoutInSec
+    });
+  }
 }
 
 Config

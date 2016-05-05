@@ -47,7 +47,7 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
 
     case '3':
     case '4':
-    var format = data.getStringWithCharsetAt(offset+1, length - (offset-start));
+    var format = data.getStringWithCharsetAt(offset+1, length - 1);
     offset += 1 + format.bytesReadCount;
     break;
 
@@ -56,7 +56,7 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
   }
   var bite = data.getByteAt(offset, 1);
   var type = PICTURE_TYPE[bite];
-  var desc = data.getStringWithCharsetAt(offset+1, length - (offset-start), charset);
+  var desc = data.getStringWithCharsetAt(offset+1, length - (offset-start) - 1, charset);
 
   offset += 1 + desc.bytesReadCount;
 

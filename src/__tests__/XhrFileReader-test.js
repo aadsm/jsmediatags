@@ -204,6 +204,20 @@ describe("XhrFileReader", function() {
     });
   });
 
+  pit("should use additional headers", function() {
+    return new Promise(function(resolve, reject) {
+      XhrFileReader.setConfig({
+        additionalXhrHeaders: [["Authorization", "Token"]]
+      });
+      fileReader.loadRange([0, 4], throwOnError(resolve));
+      jest.runAllTimers();
+    }).then(function(tags) {
+      var calls = require('xhr2').XMLHttpRequest.setRequestHeader.mock.calls
+        .map(x => x[0].toLowerCase());
+      expect(calls).toContain("authorization");
+    });
+  });
+
   pit("should not rely on content-length when range is not supported", function() {
     return new Promise(function(resolve, reject) {
       XhrFileReader.setConfig({

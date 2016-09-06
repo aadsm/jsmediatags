@@ -207,7 +207,7 @@ describe("XhrFileReader", function() {
   pit("should use additional headers", function() {
     return new Promise(function(resolve, reject) {
       XhrFileReader.setConfig({
-        additionalXhrHeaders: [["Authorization", "Token"]]
+        additionalXhrHeaders: {"Authorization": "Token"}
       });
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();

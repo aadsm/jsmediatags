@@ -15,6 +15,7 @@ const MP4TagReader = require("./MP4TagReader");
 
 import type {
   CallbackType,
+  HttpHeaders,
   LoadCallbackType
 } from './FlowTypes';
 
@@ -220,7 +221,7 @@ class Config {
     });
   }
 
-  static setAdditionalXhrHeaders(additionalXhrHeaders: Array<[string, string]>) {
+  static setAdditionalXhrHeaders(additionalXhrHeaders: HttpHeaders) {
     XhrFileReader.setConfig({
       additionalXhrHeaders: additionalXhrHeaders
     });

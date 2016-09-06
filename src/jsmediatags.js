@@ -220,6 +220,12 @@ class Config {
     });
   }
 
+  static setAdditionalXhrHeaders(additionalXhrHeaders: Array<[string, string]>) {
+    XhrFileReader.setConfig({
+      additionalXhrHeaders: additionalXhrHeaders
+    });
+  }
+
   static setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>) {
     XhrFileReader.setConfig({
       disallowedXhrHeaders: disallowedXhrHeaders

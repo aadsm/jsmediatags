@@ -223,6 +223,7 @@ New file and tag readers can be implemented by extending the MediaFileReader and
 * `jsmediatags.Config`
   * `addFileReader(fileReader: typeof MediaFileReader)` - Add a new file reader to the automatic detection system.
   * `addTagReader(tagReader: typeof MediaTagReader)` - Add a new tag reader to the automatic detection system.
+  * `setAdditionalXhrHeaders(additionalXhrHeaders: Array<[string, string]>)` - Add additional headers to all http requests.
   * `setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>)` - Prevent the library from using specific http headers. This can be useful when dealing with CORS enabled servers you don't control.
   * `setXhrTimeoutInSec(timeoutInSec: number)` - Sets the timeout time for http requests. Set it to 0 for no timeout at all. It defaults to 30s. 
 

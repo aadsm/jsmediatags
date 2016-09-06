@@ -4,7 +4,6 @@
 module.exports = XMLHttpRequest;
 
 },{}],3:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -59,7 +58,6 @@ var ArrayFileReader = function (_MediaFileReader) {
 module.exports = ArrayFileReader;
 
 },{"./MediaFileReader":10}],4:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -352,7 +350,6 @@ var ChunkedFileData = function () {
 module.exports = ChunkedFileData;
 
 },{}],6:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -456,7 +453,6 @@ var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Gru
 module.exports = ID3v1TagReader;
 
 },{"./MediaFileReader":10,"./MediaTagReader":11}],7:[function(require,module,exports){
-
 'use strict';
 
 var MediaFileReader = require('./MediaFileReader');
@@ -614,7 +610,6 @@ var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file 
 module.exports = ID3v2FrameReader;
 
 },{"./MediaFileReader":10}],8:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1387,7 +1382,6 @@ var SHORTCUTS = {
 module.exports = MP4TagReader;
 
 },{"./MediaFileReader":10,"./MediaTagReader":11}],10:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1624,7 +1618,6 @@ var MediaFileReader = function () {
 module.exports = MediaFileReader;
 
 },{"./StringUtils":12}],11:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1738,7 +1731,6 @@ var MediaTagReader = function () {
 module.exports = MediaTagReader;
 
 },{"./MediaFileReader":10}],12:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1855,7 +1847,6 @@ var StringUtils = {
 module.exports = StringUtils;
 
 },{}],13:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2001,7 +1992,7 @@ var XhrFileReader = function (_MediaFileReader) {
     value: function loadRange(range, callbacks) {
       var self = this;
 
-      if (self._fileData.hasDataRange(range[0], range[1])) {
+      if (self._fileData.hasDataRange(range[0], Math.min(self._size, range[1]))) {
         setTimeout(callbacks.onSuccess, 1);
         return;
       }
@@ -2011,6 +2002,9 @@ var XhrFileReader = function (_MediaFileReader) {
       // establishing the connection so getting 10bytes or 1K doesn't really
       // make a difference.
       range = this._roundRangeToChunkMultiple(range);
+
+      // Upper range should not be greater than max file size
+      range[1] = Math.min(self._size, range[1]);
 
       this._makeXHRRequest("GET", range, {
         onSuccess: function (xhr) {
@@ -2175,7 +2169,6 @@ XhrFileReader._config = {
 module.exports = XhrFileReader;
 
 },{"./ChunkedFileData":5,"./MediaFileReader":10,"xhr2":2}],14:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

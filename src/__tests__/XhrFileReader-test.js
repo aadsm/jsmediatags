@@ -182,7 +182,7 @@ describe("XhrFileReader", function() {
 
   pit("should fetch in multples of 1K", function() {
     return new Promise(function(resolve, reject) {
-	  fileReader._size=2000;
+      fileReader._size=2000;
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();
     }).then(function(tags) {
@@ -192,7 +192,7 @@ describe("XhrFileReader", function() {
 
   pit("should not fetch more than max file size", function() {
     return new Promise(function(resolve, reject) {
-	  fileReader._size=10;
+      fileReader._size=10;
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();
     }).then(function(tags) {

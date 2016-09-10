@@ -202,13 +202,23 @@ class ID3v2TagContents {
     return this;
   }
 
+  /**
+   * noFlagsDataLength - The data length if all flags were set to 0,
+   *   for instance, the length before compression and unsynchronisation.
+   *   This field is only needed when data_length_indicator flag is set.
+   */
   addFrame(
     id: string,
     data: ByteArray,
-    flags?: TagFrameFlags
+    flags?: TagFrameFlags,
+    noFlagsDataLength?: number
   ): ID3v2TagContents {
     var size = 0;
     var frameFlags = [0, 0];
+    if (flags) {
+      flags.message = flags.message || {};
+      flags.format = flags.format || {};
+    }
 
     if (this._major === 2) {
       size = getInteger24(data.length);
@@ -223,7 +233,7 @@ class ID3v2TagContents {
         frameFlags[1] |= (flags.format.grouping_identify ? 1 : 0) << 5;
       }
     } else if (this._major === 4) {
-      size = getSynchsafeInteger32(data.length);
+      var dataLength = data.length;
       if (flags) {
         frameFlags[0] |= (flags.message.tag_alter_preservation ? 1 : 0) << 6;
         frameFlags[0] |= (flags.message.file_alter_preservation ? 1 : 0) << 5;
@@ -233,7 +243,11 @@ class ID3v2TagContents {
         frameFlags[1] |= (flags.format.encryption ? 1 : 0) << 2;
         frameFlags[1] |= (flags.format.unsynchronisation ? 1 : 0) << 1;
         frameFlags[1] |= flags.format.data_length_indicator ? 1 : 0;
+        if (flags.format.data_length_indicator) {
+          dataLength += 4;
+        }
       }
+      size = getSynchsafeInteger32(dataLength);
     } else {
       throw Error("Major version not supported");
     }
@@ -242,6 +256,9 @@ class ID3v2TagContents {
       bin(id),
       size,
       frameFlags,
+      flags && flags.format.data_length_indicator && noFlagsDataLength
+        ? getSynchsafeInteger32(noFlagsDataLength)
+        : [],
       data
     );
     this._frames[id] = frame;

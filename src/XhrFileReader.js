@@ -26,13 +26,11 @@ class XhrFileReader extends MediaFileReader {
     timeoutInSec: number
   };
   _url: string;
-  // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
 
   constructor(url: string) {
     super();
     this._url = url;
-    // $FlowIssue - Constructor cannot be called on exports
     this._fileData = new ChunkedFileData();
   }
 

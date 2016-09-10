@@ -15,13 +15,11 @@ import type {
 
 class NodeFileReader extends MediaFileReader {
   _path: string;
-  // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
 
   constructor(path: string) {
     super();
     this._path = path;
-    // $FlowIssue - Constructor cannot be called on exports
     this._fileData = new ChunkedFileData();
   }
 

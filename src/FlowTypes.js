@@ -26,9 +26,11 @@ export type ByteRange = {
   length: number
 };
 
+export type DataType = Array<number> | $TypedArray | string;
+
 export type ChunkType = {
   offset: number,
-  data: Array<number>
+  data: DataType
 };
 
 export type Byte = number;

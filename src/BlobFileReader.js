@@ -12,13 +12,11 @@ import type {
 
 class BlobFileReader extends MediaFileReader {
   _blob: Blob;
-  // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
 
   constructor(blob: Blob) {
     super();
     this._blob = blob;
-    // $FlowIssue - Constructor cannot be called on exports
     this._fileData = new ChunkedFileData();
   }
 

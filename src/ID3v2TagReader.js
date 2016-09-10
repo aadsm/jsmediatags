@@ -5,6 +5,7 @@
 
 var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
+var ArrayFileReader = require('./ArrayFileReader');
 var ID3v2FrameReader = require('./ID3v2FrameReader');
 
 import type {
@@ -82,12 +83,7 @@ class ID3v2TagReader extends MediaTagReader {
       "tags": {},
     };
 
-    if (unsynch) {
-      var frames = {};
-    } else {
-      var frames = this._readFrames(offset, size-10, data, id3, tags);
-    }
-
+    var frames = this._readFrames(offset, size-10, data, id3, tags);
     // create shortcuts for most common data.
     for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
       var frameData = this._getFrameData(frames, SHORTCUTS[name]);
@@ -101,6 +97,21 @@ class ID3v2TagReader extends MediaTagReader {
     }
 
     return id3;
+  }
+
+  _getUnsyncFileReader(
+    data: MediaFileReader,
+    offset: number,
+    size: number
+  ): MediaFileReader {
+    var frameData = data.getBytesAt(offset, size);
+    for (var i = 0; i < frameData.length - 1; i++) {
+      if (frameData[i] === 0xff && frameData[i+1] === 0x00) {
+        frameData.splice(i+1, 1);
+      }
+    }
+
+    return new ArrayFileReader(frameData);
   }
 
   /**
@@ -145,6 +156,7 @@ class ID3v2TagReader extends MediaTagReader {
       var flags = header.flags;
       var frameSize = header.size;
       var frameDataOffset = offset + header.headerSize;
+      var frameData = data;
 
       // advance data offset to the next frame data
       offset += header.headerSize + header.size;
@@ -154,21 +166,26 @@ class ID3v2TagReader extends MediaTagReader {
         continue;
       }
 
-      // TODO: support unsynchronisation
-      if (flags && flags.format.unsynchronisation) {
-        continue;
+      var unsyncData;
+      if (
+        id3header.flags.unsynchronisation ||
+        (flags && flags.format.unsynchronisation)
+      ) {
+        frameData = this._getUnsyncFileReader(frameData, frameDataOffset, frameSize);
+        frameDataOffset = 0;
+        frameSize = frameData.getSize();
       }
 
       // the first 4 bytes are the real data size
       // (after unsynchronisation && encryption)
       if (flags && flags.format.data_length_indicator) {
-        // var frameDataSize = readSynchsafeInteger32At(frameDataOffset, frameData);
+        // var frameDataSize = frameData.getSynchsafeInteger32At(frameDataOffset);
         frameDataOffset += 4;
         frameSize -= 4;
       }
 
       var readFrameFunc = ID3v2FrameReader.getFrameReaderFunction(frameId);
-      var parsedData = readFrameFunc ? readFrameFunc(frameDataOffset, frameSize, data, flags) : null;
+      var parsedData = readFrameFunc ? readFrameFunc(frameDataOffset, frameSize, frameData, flags) : null;
       var desc = this._getFrameDescription(frameId);
 
       var frame = {

@@ -12,7 +12,7 @@ The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
   * Buffers/Arrays
 * Tag Readers
   * ID3v1
-  * ID3v2 (unsynchronisation is not supported)
+  * ID3v2 (with unsynchronisation support!)
   * MP4
 
 ## How to use
@@ -224,7 +224,7 @@ New file and tag readers can be implemented by extending the MediaFileReader and
   * `addFileReader(fileReader: typeof MediaFileReader)` - Add a new file reader to the automatic detection system.
   * `addTagReader(tagReader: typeof MediaTagReader)` - Add a new tag reader to the automatic detection system.
   * `setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>)` - Prevent the library from using specific http headers. This can be useful when dealing with CORS enabled servers you don't control.
-  * `setXhrTimeoutInSec(timeoutInSec: number)` - Sets the timeout time for http requests. Set it to 0 for no timeout at all. It defaults to 30s. 
+  * `setXhrTimeoutInSec(timeoutInSec: number)` - Sets the timeout time for http requests. Set it to 0 for no timeout at all. It defaults to 30s.
 
 ## Development
 

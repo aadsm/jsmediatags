@@ -91,6 +91,10 @@ inputTypeFile.addEventListener("change", function(event) {
 
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
 
+### Articles
+ 
+* [Cordova : lire les metadatas des mp3s avec jsmediatags](http://blog.luce.pro/2016/02/28/Phonegap-lire-les-metadatas-des-mp3s-avec-jsmediatags/)
+
 ## Documentation
 
 ### The Output

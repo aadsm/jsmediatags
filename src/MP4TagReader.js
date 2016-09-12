@@ -208,6 +208,11 @@ class MP4TagReader extends MediaTagReader {
       var dataLength = atomSize - atomHeader;
       var atomData;
 
+      // Workaround for covers being parsed as 'uint8' type despite being an 'covr' atom
+      if (atomName === 'covr' && type === 'uint8') {
+        type = 'jpeg'
+      }
+
       switch (type) {
         case "text":
         atomData = data.getStringWithCharsetAt(dataStart, dataLength, "utf-8").toString();

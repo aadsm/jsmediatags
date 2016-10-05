@@ -12,7 +12,7 @@ The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
   * Buffers/Arrays
 * Tag Readers
   * ID3v1
-  * ID3v2 (unsynchronisation is not supported)
+  * ID3v2 (with unsynchronisation support!)
   * MP4
 
 ## How to use
@@ -90,6 +90,10 @@ inputTypeFile.addEventListener("change", function(event) {
 ```
 
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
+
+### Articles
+ 
+* [Cordova : lire les metadatas des mp3s avec jsmediatags](http://blog.luce.pro/2016/02/28/Phonegap-lire-les-metadatas-des-mp3s-avec-jsmediatags/)
 
 ## Documentation
 
@@ -225,7 +229,7 @@ New file and tag readers can be implemented by extending the MediaFileReader and
   * `addTagReader(tagReader: typeof MediaTagReader)` - Add a new tag reader to the automatic detection system.
   * `setAdditionalXhrHeaders(additionalXhrHeaders: {[key: string]: string})` - Add additional headers to all http requests.
   * `setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>)` - Prevent the library from using specific http headers. This can be useful when dealing with CORS enabled servers you don't control.
-  * `setXhrTimeoutInSec(timeoutInSec: number)` - Sets the timeout time for http requests. Set it to 0 for no timeout at all. It defaults to 30s. 
+  * `setXhrTimeoutInSec(timeoutInSec: number)` - Sets the timeout time for http requests. Set it to 0 for no timeout at all. It defaults to 30s.
 
 ## Development
 

@@ -241,22 +241,15 @@ class Config {
 }
 
 Config
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addFileReader(XhrFileReader)
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addFileReader(BlobFileReader)
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addFileReader(ArrayFileReader)
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addTagReader(ID3v2TagReader)
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addTagReader(ID3v1TagReader)
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
   .addTagReader(MP4TagReader);
 
 if (typeof process !== "undefined") {
   Config
-    // $FlowIssue - flow doesn't allow type to pass as their supertype
     .addFileReader(NodeFileReader);
 }
 

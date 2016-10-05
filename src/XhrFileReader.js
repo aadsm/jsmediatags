@@ -28,13 +28,11 @@ class XhrFileReader extends MediaFileReader {
     timeoutInSec: number
   };
   _url: string;
-  // $FlowIssue - Flow gets confused with module.exports
   _fileData: ChunkedFileData;
 
   constructor(url: string) {
     super();
     this._url = url;
-    // $FlowIssue - Constructor cannot be called on exports
     this._fileData = new ChunkedFileData();
   }
 
@@ -163,7 +161,7 @@ class XhrFileReader extends MediaFileReader {
   loadRange(range: [number, number], callbacks: LoadCallbackType): void {
     var self = this;
 
-    if (self._fileData.hasDataRange(range[0], range[1])) {
+    if (self._fileData.hasDataRange(range[0], Math.min(self._size, range[1]))) {
       setTimeout(callbacks.onSuccess, 1);
       return;
     }
@@ -173,6 +171,9 @@ class XhrFileReader extends MediaFileReader {
     // establishing the connection so getting 10bytes or 1K doesn't really
     // make a difference.
     range = this._roundRangeToChunkMultiple(range);
+
+    // Upper range should not be greater than max file size
+    range[1] = Math.min(self._size, range[1]);
 
     this._makeXHRRequest("GET", range, {
       onSuccess: function(xhr: XMLHttpRequest) {

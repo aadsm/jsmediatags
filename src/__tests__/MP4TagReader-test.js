@@ -165,5 +165,27 @@ describe("MP4TagReader", function() {
     }).then(function(tag) {
       expect(Object.keys(tag.tags)).toContain("title");
     });
+
+    pit("reads jpeg tag despite uint8 type", function() {
+      var mp4FileContents = createMP4FileContents([
+        MP4TagContents.createMetadataAtom("covr", "uint8", [0x01, 0x02, 0x03])
+      ]);
+      var mediaFileReader = new ArrayFileReader(mp4FileContents.toArray());
+      var tagReader = new MP4TagReader(mediaFileReader);
+
+      return new Promise(function(resolve, reject) {
+        tagReader.read({
+          onSuccess: resolve,
+          onFailure: reject
+        });
+        jest.runAllTimers();
+      }).then(function(tag) {
+        var tags = tag.tags;
+        expect("covr" in tags).toBeTruthy();
+        expect(tags.covr.data.format).toBe("image/jpeg");
+        expect(tags.covr.data.data).toEqual([0x01, 0x02, 0x03]);
+      });
+    });
   });
 });
+

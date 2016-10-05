@@ -14,7 +14,8 @@
 const NOT_FOUND = -1;
 
 import type {
-  ChunkType
+  ChunkType,
+  DataType
 } from './FlowTypes';
 
 class ChunkedFileData {
@@ -29,7 +30,7 @@ class ChunkedFileData {
   /**
    * Adds data to the file storage at a specific offset.
    */
-  addData(offset: number, data: Array<number>): void {
+  addData(offset: number, data: DataType): void {
     var offsetEnd = offset+data.length-1;
     var chunkRange = this._getChunkRange(offset, offsetEnd);
 
@@ -79,23 +80,28 @@ class ChunkedFileData {
     }
   }
 
-  _concatData(dataA: Array<number>, dataB: Array<number>): Array<number> {
+  _concatData(dataA: DataType, dataB: DataType): DataType {
     // TypedArrays don't support concat.
     if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView(dataA)) {
+      // $FlowIssue - flow thinks dataAandB is a string but it's not
       var dataAandB = new dataA.constructor(dataA.length + dataB.length);
+      // $FlowIssue - flow thinks dataAandB is a string but it's not
       dataAandB.set(dataA, 0);
+      // $FlowIssue - flow thinks dataAandB is a string but it's not
       dataAandB.set(dataB, dataA.length);
       return dataAandB;
     } else {
+      // $FlowIssue - flow thinks dataAandB is a TypedArray but it's not
       return dataA.concat(dataB);
     }
   }
 
-  _sliceData(data: Array<number>, begin: number, end: number): Array<number> {
+  _sliceData(data: DataType, begin: number, end: number): DataType {
     // Some TypeArray implementations do not support slice yet.
     if (data.slice) {
       return data.slice(begin, end);
     } else {
+      // $FlowIssue - flow thinks data is a string but it's not
       return data.subarray(begin, end);
     }
   }
@@ -184,7 +190,7 @@ class ChunkedFileData {
     return false;
   }
 
-  getByteAt(offset: number): number {
+  getByteAt(offset: number): any {
     var dataChunk;
 
     for (var i = 0; i < this._fileData.length; i++) {

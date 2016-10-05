@@ -80,12 +80,9 @@ var BlobFileReader = function (_MediaFileReader) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BlobFileReader).call(this));
 
     _this._blob = blob;
-    // $FlowIssue - Constructor cannot be called on exports
     _this._fileData = new ChunkedFileData();
     return _this;
   }
-  // $FlowIssue - Flow gets confused with module.exports
-
 
   _createClass(BlobFileReader, [{
     key: '_init',
@@ -220,11 +217,15 @@ var ChunkedFileData = function () {
     value: function _concatData(dataA, dataB) {
       // TypedArrays don't support concat.
       if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView(dataA)) {
+        // $FlowIssue - flow thinks dataAandB is a string but it's not
         var dataAandB = new dataA.constructor(dataA.length + dataB.length);
+        // $FlowIssue - flow thinks dataAandB is a string but it's not
         dataAandB.set(dataA, 0);
+        // $FlowIssue - flow thinks dataAandB is a string but it's not
         dataAandB.set(dataB, dataA.length);
         return dataAandB;
       } else {
+        // $FlowIssue - flow thinks dataAandB is a TypedArray but it's not
         return dataA.concat(dataB);
       }
     }
@@ -235,6 +236,7 @@ var ChunkedFileData = function () {
       if (data.slice) {
         return data.slice(begin, end);
       } else {
+        // $FlowIssue - flow thinks data is a string but it's not
         return data.subarray(begin, end);
       }
     }
@@ -622,6 +624,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var MediaTagReader = require('./MediaTagReader');
 var MediaFileReader = require('./MediaFileReader');
+var ArrayFileReader = require('./ArrayFileReader');
 var ID3v2FrameReader = require('./ID3v2FrameReader');
 
 var ID3_HEADER_SIZE = 10;
@@ -685,12 +688,7 @@ var ID3v2TagReader = function (_MediaTagReader) {
         "tags": {}
       };
 
-      if (unsynch) {
-        var frames = {};
-      } else {
-        var frames = this._readFrames(offset, size - 10, data, id3, tags);
-      }
-
+      var frames = this._readFrames(offset, size - 10, data, id3, tags);
       // create shortcuts for most common data.
       for (var name in SHORTCUTS) {
         if (SHORTCUTS.hasOwnProperty(name)) {
@@ -704,6 +702,18 @@ var ID3v2TagReader = function (_MediaTagReader) {
           id3.tags[frame] = frames[frame];
         }
       }return id3;
+    }
+  }, {
+    key: '_getUnsyncFileReader',
+    value: function _getUnsyncFileReader(data, offset, size) {
+      var frameData = data.getBytesAt(offset, size);
+      for (var i = 0; i < frameData.length - 1; i++) {
+        if (frameData[i] === 0xff && frameData[i + 1] === 0x00) {
+          frameData.splice(i + 1, 1);
+        }
+      }
+
+      return new ArrayFileReader(frameData);
     }
 
     /**
@@ -745,6 +755,7 @@ var ID3v2TagReader = function (_MediaTagReader) {
         var flags = header.flags;
         var frameSize = header.size;
         var frameDataOffset = offset + header.headerSize;
+        var frameData = data;
 
         // advance data offset to the next frame data
         offset += header.headerSize + header.size;
@@ -754,21 +765,23 @@ var ID3v2TagReader = function (_MediaTagReader) {
           continue;
         }
 
-        // TODO: support unsynchronisation
-        if (flags && flags.format.unsynchronisation) {
-          continue;
+        var unsyncData;
+        if (id3header.flags.unsynchronisation || flags && flags.format.unsynchronisation) {
+          frameData = this._getUnsyncFileReader(frameData, frameDataOffset, frameSize);
+          frameDataOffset = 0;
+          frameSize = frameData.getSize();
         }
 
         // the first 4 bytes are the real data size
         // (after unsynchronisation && encryption)
         if (flags && flags.format.data_length_indicator) {
-          // var frameDataSize = readSynchsafeInteger32At(frameDataOffset, frameData);
+          // var frameDataSize = frameData.getSynchsafeInteger32At(frameDataOffset);
           frameDataOffset += 4;
           frameSize -= 4;
         }
 
         var readFrameFunc = ID3v2FrameReader.getFrameReaderFunction(frameId);
-        var parsedData = readFrameFunc ? readFrameFunc(frameDataOffset, frameSize, data, flags) : null;
+        var parsedData = readFrameFunc ? readFrameFunc(frameDataOffset, frameSize, frameData, flags) : null;
         var desc = this._getFrameDescription(frameId);
 
         var frame = {
@@ -1063,7 +1076,7 @@ var SHORTCUTS = {
 
 module.exports = ID3v2TagReader;
 
-},{"./ID3v2FrameReader":7,"./MediaFileReader":10,"./MediaTagReader":11}],9:[function(require,module,exports){
+},{"./ArrayFileReader":3,"./ID3v2FrameReader":7,"./MediaFileReader":10,"./MediaTagReader":11}],9:[function(require,module,exports){
 /**
  * Support for iTunes-style m4a tags
  * See:
@@ -1256,6 +1269,11 @@ var MP4TagReader = function (_MediaTagReader) {
         var dataStart = offset + atomHeader;
         var dataLength = atomSize - atomHeader;
         var atomData;
+
+        // Workaround for covers being parsed as 'uint8' type despite being an 'covr' atom
+        if (atomName === 'covr' && type === 'uint8') {
+          type = 'jpeg';
+        }
 
         switch (type) {
           case "text":
@@ -1871,12 +1889,9 @@ var XhrFileReader = function (_MediaFileReader) {
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(XhrFileReader).call(this));
 
     _this._url = url;
-    // $FlowIssue - Constructor cannot be called on exports
     _this._fileData = new ChunkedFileData();
     return _this;
   }
-  // $FlowIssue - Flow gets confused with module.exports
-
 
   _createClass(XhrFileReader, [{
     key: '_init',
@@ -1992,7 +2007,7 @@ var XhrFileReader = function (_MediaFileReader) {
     value: function loadRange(range, callbacks) {
       var self = this;
 
-      if (self._fileData.hasDataRange(range[0], range[1])) {
+      if (self._fileData.hasDataRange(range[0], Math.min(self._size, range[1]))) {
         setTimeout(callbacks.onSuccess, 1);
         return;
       }
@@ -2002,6 +2017,9 @@ var XhrFileReader = function (_MediaFileReader) {
       // establishing the connection so getting 10bytes or 1K doesn't really
       // make a difference.
       range = this._roundRangeToChunkMultiple(range);
+
+      // Upper range should not be greater than max file size
+      range[1] = Math.min(self._size, range[1]);
 
       this._makeXHRRequest("GET", range, {
         onSuccess: function (xhr) {
@@ -2420,24 +2438,10 @@ var Config = function () {
   return Config;
 }();
 
-Config
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addFileReader(XhrFileReader)
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addFileReader(BlobFileReader)
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addFileReader(ArrayFileReader)
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addTagReader(ID3v2TagReader)
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addTagReader(ID3v1TagReader)
-// $FlowIssue - flow doesn't allow type to pass as their supertype
-.addTagReader(MP4TagReader);
+Config.addFileReader(XhrFileReader).addFileReader(BlobFileReader).addFileReader(ArrayFileReader).addTagReader(ID3v2TagReader).addTagReader(ID3v1TagReader).addTagReader(MP4TagReader);
 
 if (typeof process !== "undefined") {
-  Config
-  // $FlowIssue - flow doesn't allow type to pass as their supertype
-  .addFileReader(NodeFileReader);
+  Config.addFileReader(NodeFileReader);
 }
 
 module.exports = {

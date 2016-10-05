@@ -15,6 +15,7 @@ const MP4TagReader = require("./MP4TagReader");
 
 import type {
   CallbackType,
+  HttpHeaders,
   LoadCallbackType
 } from './FlowTypes';
 
@@ -217,6 +218,12 @@ class Config {
   static EXPERIMENTAL_avoidHeadRequests() {
     XhrFileReader.setConfig({
       avoidHeadRequests: true
+    });
+  }
+
+  static setAdditionalXhrHeaders(additionalXhrHeaders: HttpHeaders) {
+    XhrFileReader.setConfig({
+      additionalXhrHeaders: additionalXhrHeaders
     });
   }
 

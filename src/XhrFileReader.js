@@ -10,7 +10,8 @@ const CHUNK_SIZE = 1024;
 
 import type {
   LoadCallbackType,
-  CallbackType
+  CallbackType,
+  HttpHeaders
 } from './FlowTypes';
 
 type ContentRangeType = {
@@ -21,6 +22,7 @@ type ContentRangeType = {
 
 class XhrFileReader extends MediaFileReader {
   static _config: {
+    additionalXhrHeaders: HttpHeaders,
     avoidHeadRequests: boolean,
     disallowedXhrHeaders: Array<string>,
     timeoutInSec: number
@@ -251,6 +253,9 @@ class XhrFileReader extends MediaFileReader {
     if (range) {
       this._setRequestHeader(xhr, "Range", "bytes=" + range[0] + "-" + range[1]);
     }
+    for (var header in XhrFileReader._config.additionalXhrHeaders) {
+      this._setRequestHeader(xhr, header, XhrFileReader._config.additionalXhrHeaders[header]);
+    };
     this._setRequestHeader(xhr, "If-Modified-Since", "Sat, 01 Jan 1970 00:00:00 GMT");
     xhr.send(null);
   }
@@ -305,8 +310,9 @@ class XhrFileReader extends MediaFileReader {
 }
 
 XhrFileReader._config = {
+  additionalXhrHeaders: [],
   avoidHeadRequests: false,
-  disallowedXhrHeaders: [],
+  disallowedXhrHeaders: {},
   timeoutInSec: 30
 };
 

@@ -102,6 +102,8 @@ export type FrameType = {
   data: any
 };
 
+export type HttpHeaders = {[key: string]: string};
+
 type ShortcutType = any;
 
 type ShortcutNameType =

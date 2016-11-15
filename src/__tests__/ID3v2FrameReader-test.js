@@ -88,64 +88,55 @@ describe("ID3v2FrameReader", function() {
 
   describe("T* text tags", function() {
     describe("T000 - TZZZ, excluding TXXX", function() {
-      it("should read text with iso-8859-1 charset", function() {
-        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+      var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+      var expected = "ã";
 
+      it("asserts the function is defined", function() {
         expect(frameReader).toBeDefined();
+      });
 
-        var fileData = [].concat(
-          [0x00], // encoding
-          [0xe3]
-        );
+      it("should read text with iso-8859-1 charset", function() {
+        var fileData = [
+          0x00, // encoding
+          0xe3
+        ];
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
 
-        expect(data).toEqual("ã");
+        expect(data).toEqual(expected);
       });
 
       it("should read text with utf-16 charset", function() {
-        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
-
-        expect(frameReader).toBeDefined();
-
-        var fileData = [].concat(
-          [0x01], // encoding
-          [0xfe, 0xff, 0x00, 0xe3]
-        );
+        var fileData = [
+          0x01, // encoding
+          0xfe, 0xff, 0x00, 0xe3
+        ];
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
 
-        expect(data).toEqual("ã");
+        expect(data).toEqual(expected);
       });
 
       it("should read text with utf-16be charset", function() {
-        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
-
-        expect(frameReader).toBeDefined();
-
-        var fileData = [].concat(
-          [0x02], // encoding
-          [0xff, 0xfe, 0xe3, 0x00]
-        );
+        var fileData = [
+          0x02, // encoding
+          0xff, 0xfe, 0xe3, 0x00
+        ];
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
 
-        expect(data).toEqual("ã");
+        expect(data).toEqual(expected);
       });
 
       it("should read text with utf-8 charset", function() {
-        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
-
-        expect(frameReader).toBeDefined();
-
-        var fileData = [].concat(
-          [0x03], // encoding
-          [0xc3, 0xa3]
-        );
+        var fileData = [
+          0x03, // encoding
+          0xc3, 0xa3
+        ];
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
 
-        expect(data).toEqual("ã");
+        expect(data).toEqual(expected);
       });
     });
 

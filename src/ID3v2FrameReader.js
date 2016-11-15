@@ -127,6 +127,18 @@ frameReaderFunctions['T*'] = function readTextFrame(
   return data.getStringWithCharsetAt(offset+1, length-1, charset).toString();
 };
 
+frameReaderFunctions['TXXX'] = function readTextFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  majorVersion?: string
+): Object {
+  var charset = getTextEncoding(data.getByteAt(offset));
+
+  return getUserDefinedFields(offset, length, data, charset);
+};
+
 frameReaderFunctions['W*'] = function readUrlFrame(
   offset: number,
   length: number,
@@ -139,7 +151,7 @@ frameReaderFunctions['W*'] = function readUrlFrame(
   var charset = getTextEncoding(data.getByteAt(offset));
 
   if (charset !== undefined) {
-    return data.getStringWithCharsetAt(offset+1, length-1, charset).toString();
+    return getUserDefinedFields(offset, length, data, charset);
   } else {
     return data.getStringWithCharsetAt(offset, length, charset).toString();
   }
@@ -204,6 +216,23 @@ function getTextEncoding(bite): ?CharsetType {
   }
 
   return charset;
+}
+
+// Handles reading description/data from either http://id3.org/id3v2.3.0#User_defined_text_information_frame
+// and http://id3.org/id3v2.3.0#User_defined_URL_link_frame
+function getUserDefinedFields(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  charset: string
+): Object {
+  var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
+  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);
+
+  return {
+    user_description: userDesc.toString(),
+    data: userDefinedData.toString()
+  };
 }
 
 var PICTURE_TYPE = [

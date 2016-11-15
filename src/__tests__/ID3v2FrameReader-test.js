@@ -4,7 +4,7 @@ const ID3v2FrameReader = require('../ID3v2FrameReader');
 const ArrayFileReader = require('../ArrayFileReader');
 const bin = require('../ByteArrayUtils').bin;
 
-describe("ID3v2FrameReader ", function() {
+describe("ID3v2FrameReader", function() {
   it("should read APIC tag", function() {
     var frameReader = ID3v2FrameReader.getFrameReaderFunction("APIC");
 
@@ -87,80 +87,208 @@ describe("ID3v2FrameReader ", function() {
   });
 
   describe("T* text tags", function() {
-    it("should read text with iso-8859-1 charset", function() {
-      var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+    describe("T000 - TZZZ, excluding TXXX", function() {
+      it("should read text with iso-8859-1 charset", function() {
+        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
 
-      expect(frameReader).toBeDefined();
+        expect(frameReader).toBeDefined();
 
-      var fileData = [].concat(
-        [0x00], // encoding
-        [0xe3]
-      );
-      var fileReader = new ArrayFileReader(fileData);
-      var data = frameReader(0, fileData.length, fileReader);
+        var fileData = [].concat(
+          [0x00], // encoding
+          [0xe3]
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(data).toEqual("ã");
+        expect(data).toEqual("ã");
+      });
+
+      it("should read text with utf-16 charset", function() {
+        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+
+        expect(frameReader).toBeDefined();
+
+        var fileData = [].concat(
+          [0x01], // encoding
+          [0xfe, 0xff, 0x00, 0xe3]
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual("ã");
+      });
+
+      it("should read text with utf-16be charset", function() {
+        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+
+        expect(frameReader).toBeDefined();
+
+        var fileData = [].concat(
+          [0x02], // encoding
+          [0xff, 0xfe, 0xe3, 0x00]
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual("ã");
+      });
+
+      it("should read text with utf-8 charset", function() {
+        var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+
+        expect(frameReader).toBeDefined();
+
+        var fileData = [].concat(
+          [0x03], // encoding
+          [0xc3, 0xa3]
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual("ã");
+      });
     });
 
-    it("should read text with utf-16 charset", function() {
-      var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+    describe("TXXX", function() {
+      var frameReader = ID3v2FrameReader.getFrameReaderFunction("TXXX");
+      var expected = {
+        user_description: "ã",
+        data: "ã"
+      };
 
-      expect(frameReader).toBeDefined();
+      it("asserts the ID3v2FrameReader is defined", function() {
+        expect(frameReader).toBeDefined();
+      });
 
-      var fileData = [].concat(
-        [0x01], // encoding
-        [0xfe, 0xff, 0x00, 0xe3]
-      );
-      var fileReader = new ArrayFileReader(fileData);
-      var data = frameReader(0, fileData.length, fileReader);
+      it("reads the description and value with iso-8859-1 charset", function() {
+        var fileData = [
+          // encoding
+          0x00,
+          // "ã" for description field
+          0xe3,
+          // null terminating byte
+          0x00,
+          // "ã" for URL field
+          0xe3
+        ];
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(data).toEqual("ã");
-    });
+        expect(data).toEqual(expected);
+      });
 
-    it("should read text with utf-16be charset", function() {
-      var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+      it("reads the description and value with utf-16 charset", function() {
+        var fileData = [].concat(
+          [0x01], // encoding
+          [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(frameReader).toBeDefined();
+        expect(data).toEqual(expected);
+      });
 
-      var fileData = [].concat(
-        [0x02], // encoding
-        [0xff, 0xfe, 0xe3, 0x00]
-      );
-      var fileReader = new ArrayFileReader(fileData);
-      var data = frameReader(0, fileData.length, fileReader);
+      it("reads the description and value with utf-16be charset", function() {
+        var fileData = [].concat(
+          [0x02], // encoding
+          [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(data).toEqual("ã");
-    });
+        expect(data).toEqual(expected);
+      });
 
-    it("should read text with utf-8 charset", function() {
-      var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");
+      it("reads the description and value with utf-8 charset", function() {
+        var fileData = [].concat(
+          [0x03], // encoding
+          [0xc3, 0xa3, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(frameReader).toBeDefined();
-
-      var fileData = [].concat(
-        [0x03], // encoding
-        [0xc3, 0xa3]
-      );
-      var fileReader = new ArrayFileReader(fileData);
-      var data = frameReader(0, fileData.length, fileReader);
-
-      expect(data).toEqual("ã");
+        expect(data).toEqual(expected);
+      });
     });
   });
 
   describe("W* URL tags", function() {
-    it("should read urls with iso-8859-1 charset", function() {
-      var frameReader = ID3v2FrameReader.getFrameReaderFunction("W*");
+    var frameReader = ID3v2FrameReader.getFrameReaderFunction("W*");
+    var expected = {
+      user_description: "ã",
+      data: "ã"
+    };
 
+    it("asserts the ID3v2FrameReader is defined", function() {
       expect(frameReader).toBeDefined();
+    });
 
-      var fileData = [].concat(
-        [0xe3]
-      );
-      var fileReader = new ArrayFileReader(fileData);
-      var data = frameReader(0, fileData.length, fileReader);
+    describe("W000 - WZZZ, excluding WXXX", function() {
+      it("should read urls with iso-8859-1 charset", function() {
+        var fileData = [0xe3];
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
 
-      expect(data).toEqual("ã");
+        expect(data).toEqual("ã");
+      });
+    });
+
+    describe("WXXX", function() {
+      it("reads both description and url with iso-8859-1 charset", function() {
+        var fileData = [
+          // encoding
+          0x00,
+          // "ã" for description field
+          0xe3,
+          // null terminating byte
+          0x00,
+          // "ã" for URL field
+          0xe3
+        ];
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual(expected);
+      });
+
+      it("reads the description utf-16 charset, and url with iso-8859-1 charset", function() {
+        var fileData = [].concat(
+          [0x01], // encoding
+          [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual(expected);
+      });
+
+      it("reads the description with utf-16be charset, and url with iso-8859-1 charset", function() {
+        var fileData = [].concat(
+          [0x02], // encoding
+          [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual(expected);
+      });
+
+      it("reads the description with utf-8 charset, and url with iso-8859-1 charset", function() {
+        var fileData = [].concat(
+          [0x03], // encoding
+          [0xc3, 0xa3, 0x00],
+          0xe3
+        );
+        var fileReader = new ArrayFileReader(fileData);
+        var data = frameReader(0, fileData.length, fileReader);
+
+        expect(data).toEqual(expected);
+      });
     });
   });
 

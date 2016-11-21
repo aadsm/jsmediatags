@@ -15,7 +15,8 @@ const MP4TagReader = require("./MP4TagReader");
 
 import type {
   CallbackType,
-  LoadCallbackType
+  LoadCallbackType,
+  ByteRange
 } from './FlowTypes';
 
 var mediaFileReaders: Array<Class<MediaFileReader>> = [];
@@ -23,6 +24,16 @@ var mediaTagReaders: Array<Class<MediaTagReader>> = [];
 
 function read(location: Object, callbacks: CallbackType) {
   new Reader(location).read(callbacks);
+}
+
+function isRangeValid(range: ByteRange, fileSize: number) {
+  const invalidPositiveRange = range.offset >= 0
+    && range.offset + range.length >= fileSize
+
+  const invalidNegativeRange = range.offset < 0
+    && (-range.offset > fileSize || range.offset + range.length > 0)
+
+  return !(invalidPositiveRange || invalidNegativeRange)
 }
 
 class Reader {
@@ -99,6 +110,8 @@ class Reader {
     }
   }
 
+
+
   _findTagReader(fileReader: MediaFileReader, callbacks: CallbackType) {
     // We don't want to make multiple fetches per tag reader to get the tag
     // identifier. The strategy here is to combine all the tag identifier
@@ -116,6 +129,8 @@ class Reader {
 
     for (var i = 0; i < mediaTagReaders.length; i++) {
       var range = mediaTagReaders[i].getTagIdentifierByteRange();
+      if (!isRangeValid(range, fileSize)) continue;
+
       if (
         (range.offset >= 0 && range.offset < fileSize / 2) ||
         (range.offset < 0 && range.offset < -fileSize / 2)
@@ -138,6 +153,8 @@ class Reader {
 
         for (var i = 0; i < mediaTagReaders.length; i++) {
           var range = mediaTagReaders[i].getTagIdentifierByteRange();
+          if (!isRangeValid(range, fileSize)) continue;
+
           var tagIndentifier = fileReader.getBytesAt(
             range.offset >= 0 ? range.offset : range.offset + fileSize,
             range.length

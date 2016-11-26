@@ -550,13 +550,19 @@ frameReaderFunctions['T*'] = function readTextFrame(offset, length, data, flags,
   return data.getStringWithCharsetAt(offset + 1, length - 1, charset).toString();
 };
 
+frameReaderFunctions['TXXX'] = function readTextFrame(offset, length, data, flags, majorVersion) {
+  var charset = getTextEncoding(data.getByteAt(offset));
+
+  return getUserDefinedFields(offset, length, data, charset);
+};
+
 frameReaderFunctions['W*'] = function readUrlFrame(offset, length, data, flags, majorVersion) {
   // charset is only defined for user-defined URL link frames (http://id3.org/id3v2.3.0#User_defined_URL_link_frame)
   // for the other URL link frames it is always iso-8859-1
   var charset = getTextEncoding(data.getByteAt(offset));
 
   if (charset !== undefined) {
-    return data.getStringWithCharsetAt(offset + 1, length - 1, charset).toString();
+    return getUserDefinedFields(offset, length, data, charset);
   } else {
     return data.getStringWithCharsetAt(offset, length, charset).toString();
   }
@@ -609,6 +615,18 @@ function getTextEncoding(bite) {
   }
 
   return charset;
+}
+
+// Handles reading description/data from either http://id3.org/id3v2.3.0#User_defined_text_information_frame
+// and http://id3.org/id3v2.3.0#User_defined_URL_link_frame
+function getUserDefinedFields(offset, length, data, charset) {
+  var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
+  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);
+
+  return {
+    user_description: userDesc.toString(),
+    data: userDefinedData.toString()
+  };
 }
 
 var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file icon", "Cover (front)", "Cover (back)", "Leaflet page", "Media (e.g. label side of CD)", "Lead artist/lead performer/soloist", "Artist/performer", "Conductor", "Band/Orchestra", "Composer", "Lyricist/text writer", "Recording Location", "During recording", "During performance", "Movie/video screen capture", "A bright coloured fish", "Illustration", "Band/artist logotype", "Publisher/Studio logotype"];
@@ -1274,6 +1292,11 @@ var MP4TagReader = function (_MediaTagReader) {
         var dataStart = offset + atomHeader;
         var dataLength = atomSize - atomHeader;
         var atomData;
+
+        // Workaround for covers being parsed as 'uint8' type despite being an 'covr' atom
+        if (atomName === 'covr' && type === 'uint8') {
+          type = 'jpeg';
+        }
 
         switch (type) {
           case "text":
@@ -2212,6 +2235,14 @@ function read(location, callbacks) {
   new Reader(location).read(callbacks);
 }
 
+function isRangeValid(range, fileSize) {
+  var invalidPositiveRange = range.offset >= 0 && range.offset + range.length >= fileSize;
+
+  var invalidNegativeRange = range.offset < 0 && (-range.offset > fileSize || range.offset + range.length > 0);
+
+  return !(invalidPositiveRange || invalidNegativeRange);
+}
+
 var Reader = function () {
   function Reader(file) {
     _classCallCheck(this, Reader);
@@ -2307,6 +2338,10 @@ var Reader = function () {
 
       for (var i = 0; i < mediaTagReaders.length; i++) {
         var range = mediaTagReaders[i].getTagIdentifierByteRange();
+        if (!isRangeValid(range, fileSize)) {
+          continue;
+        }
+
         if (range.offset >= 0 && range.offset < fileSize / 2 || range.offset < 0 && range.offset < -fileSize / 2) {
           tagReadersAtFileStart.push(mediaTagReaders[i]);
         } else {
@@ -2326,6 +2361,10 @@ var Reader = function () {
 
           for (var i = 0; i < mediaTagReaders.length; i++) {
             var range = mediaTagReaders[i].getTagIdentifierByteRange();
+            if (!isRangeValid(range, fileSize)) {
+              continue;
+            }
+
             var tagIndentifier = fileReader.getBytesAt(range.offset >= 0 ? range.offset : range.offset + fileSize, range.length);
 
             if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {

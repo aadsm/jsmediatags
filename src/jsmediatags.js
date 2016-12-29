@@ -157,10 +157,20 @@ class Reader {
             continue;
           }
 
-          var tagIndentifier = fileReader.getBytesAt(
-            range.offset >= 0 ? range.offset : range.offset + fileSize,
-            range.length
-          );
+          try {
+            var tagIndentifier = fileReader.getBytesAt(
+              range.offset >= 0 ? range.offset : range.offset + fileSize,
+              range.length
+            );
+          } catch (ex) {
+            if (callbacks.onError) {
+              callbacks.onError({
+                "type": "fileReader",
+                "info": ex.message
+              });
+              return;
+            }
+          }
 
           if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {
             callbacks.onSuccess(mediaTagReaders[i]);

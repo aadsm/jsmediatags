@@ -51,7 +51,18 @@ class MediaTagReader {
       onSuccess: function() {
         self._loadData(self._mediaFileReader, {
           onSuccess: function() {
-            var tags = self._parseData(self._mediaFileReader, self._tags);
+            try {
+              var tags = self._parseData(self._mediaFileReader, self._tags);
+            } catch (ex) {
+              if (callbacks.onError) {
+                callbacks.onError({
+                  "type": "parseData",
+                  "info": ex.message
+                });
+                return;
+              }
+            }
+
             // TODO: destroy mediaFileReader
             callbacks.onSuccess(tags);
           },

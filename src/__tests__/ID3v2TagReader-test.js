@@ -65,7 +65,6 @@ describe("ID3v2TagReader", function() {
       });
       jest.runAllTimers();
     }).then(function(tags) {
-      console.log();
       // The first call is the initial load to figure out the tag ID.
       let callArguments = mediaFileReader.loadRange.mock.calls[1];
       expect(callArguments[0]).toEqual([0, mediaFileReader._array.length-1]);
@@ -238,6 +237,28 @@ describe("ID3v2TagReader", function() {
         expect(tags.tags.title).toBe("The title");
         expect(tags.tags.picture.data).toEqual([0x01, 0x02, 0xff, 0x03, 0x04, 0x05]);
       });
+    });
+  });
+
+  pit("should process frames with no content", function() {
+    var id3FileContents =
+      new ID3v2TagContents(4, 3)
+        .addFrame("WOAF") // empty frame contents
+        .addFrame("TIT2", [].concat(
+          [0x00], // encoding
+          bin("The title"), [0x00]
+        ));
+    mediaFileReader = new ArrayFileReader(id3FileContents.toArray());
+    tagReader = new ID3v2TagReader(mediaFileReader);
+
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect("TIT2" in tags.tags).toBeTruthy();
     });
   });
 });

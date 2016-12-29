@@ -219,6 +219,7 @@ class ID3v2TagContents {
       flags.message = flags.message || {};
       flags.format = flags.format || {};
     }
+    data = data || [];
 
     if (this._major === 2) {
       size = getInteger24(data.length);

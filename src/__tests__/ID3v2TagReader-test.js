@@ -129,7 +129,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("shold ignore empty tags", function() {
+  pit("should ignore empty tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,

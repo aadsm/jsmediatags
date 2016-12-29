@@ -83,7 +83,7 @@ class ID3v2TagReader extends MediaTagReader {
       "tags": {},
     };
 
-    var frames = this._readFrames(offset, size-10, data, id3, tags);
+    var frames = this._readFrames(offset, size + 10/*header size*/, data, id3, tags);
     // create shortcuts for most common data.
     for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
       var frameData = this._getFrameData(frames, SHORTCUTS[name]);
@@ -234,6 +234,13 @@ class ID3v2TagReader extends MediaTagReader {
       var frameSize = data.getSynchsafeInteger32At(offset+4);
       var frameHeaderSize = 10;
       break;
+    }
+
+    if (
+      frameId == String.fromCharCode(0,0,0) ||
+      frameId == String.fromCharCode(0,0,0,0)
+    ) {
+      frameId = "";
     }
 
     // if frameId is empty then it's the last frame

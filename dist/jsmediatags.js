@@ -711,7 +711,7 @@ var ID3v2TagReader = function (_MediaTagReader) {
         "tags": {}
       };
 
-      var frames = this._readFrames(offset, size - 10, data, id3, tags);
+      var frames = this._readFrames(offset, size + 10 /*header size*/, data, id3, tags);
       // create shortcuts for most common data.
       for (var name in SHORTCUTS) {
         if (SHORTCUTS.hasOwnProperty(name)) {
@@ -765,11 +765,6 @@ var ID3v2TagReader = function (_MediaTagReader) {
         var header = this._readFrameHeader(data, offset, id3header);
         var frameId = header.id;
 
-        // If the header size is 0 then we're probably hit the padding if it
-        // exists.
-        if (header.size === 0) {
-          break;
-        }
         // No frame ID sometimes means it's the last frame (GTFO).
         if (!frameId) {
           break;
@@ -850,6 +845,10 @@ var ID3v2TagReader = function (_MediaTagReader) {
           var frameSize = data.getSynchsafeInteger32At(offset + 4);
           var frameHeaderSize = 10;
           break;
+      }
+
+      if (frameId == String.fromCharCode(0, 0, 0) || frameId == String.fromCharCode(0, 0, 0, 0)) {
+        frameId = "";
       }
 
       // if frameId is empty then it's the last frame
@@ -1699,7 +1698,18 @@ var MediaTagReader = function () {
         onSuccess: function () {
           self._loadData(self._mediaFileReader, {
             onSuccess: function () {
-              var tags = self._parseData(self._mediaFileReader, self._tags);
+              try {
+                var tags = self._parseData(self._mediaFileReader, self._tags);
+              } catch (ex) {
+                if (callbacks.onError) {
+                  callbacks.onError({
+                    "type": "parseData",
+                    "info": ex.message
+                  });
+                  return;
+                }
+              }
+
               // TODO: destroy mediaFileReader
               callbacks.onSuccess(tags);
             },
@@ -2365,7 +2375,17 @@ var Reader = function () {
               continue;
             }
 
-            var tagIndentifier = fileReader.getBytesAt(range.offset >= 0 ? range.offset : range.offset + fileSize, range.length);
+            try {
+              var tagIndentifier = fileReader.getBytesAt(range.offset >= 0 ? range.offset : range.offset + fileSize, range.length);
+            } catch (ex) {
+              if (callbacks.onError) {
+                callbacks.onError({
+                  "type": "fileReader",
+                  "info": ex.message
+                });
+                return;
+              }
+            }
 
             if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {
               callbacks.onSuccess(mediaTagReaders[i]);

@@ -68,6 +68,34 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
   };
 };
 
+frameReaderFunctions['CHAP'] = function readChaptersFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  majorVersion?: string
+): any {
+  console.log('chap');
+  var charset = getTextEncoding(data.getByteAt(offset));
+
+  var id = data.getStringWithCharsetAt(offset+1, length-16, charset);
+  offset += 1 + id.bytesReadCount;
+
+  var start_time = data.getBytesAt(offset, offset+3);
+  var end_time = data.getBytesAt(offset+4, offset+7);
+  var start_offset = data.getBytesAt(offset+8, offset+11);
+  var end_offset = data.getBytesAt(offset+12, offset+15);
+
+  return {
+    // CHAP frame required elements
+    id: id,
+    start_time: '',
+    end_time: '',
+    start_offset: '',
+    end_offset: ''
+  };
+};
+
 frameReaderFunctions['COMM'] = function readCommentsFrame(
   offset: number,
   length: number,
@@ -91,6 +119,29 @@ frameReaderFunctions['COMM'] = function readCommentsFrame(
 };
 
 frameReaderFunctions['COM'] = frameReaderFunctions['COMM'];
+
+frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  majorVersion?: string
+): any {
+  // TODO: Implement content tables
+
+  return 1;
+
+  // return {
+  //   // CTOC frame required elements
+  //   element_id: id,
+  //   ctoc_flags: {
+  //     top_level: true,
+  //     ordered: true
+  //   },
+  //   entry_count: 0,
+  //   child_ids: []
+  // };
+};
 
 frameReaderFunctions['PIC'] = function(
   offset: number,

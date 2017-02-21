@@ -1306,6 +1306,20 @@ var MP4TagReader = function (_MediaTagReader) {
             atomData = data.getShortAt(dataStart, false);
             break;
 
+          case "int":
+          case "uint":
+            // Though the QuickTime spec doesn't state it, there are 64-bit values
+            // such as plID (Playlist/Collection ID). With its single 64-bit floating
+            // point number type, these are hard to parse and pass in JavaScript.
+            // The high word of plID seems to always be zero, so, as this is the
+            // only current 64-bit atom handled, it is parsed from its 32-bit
+            // low word as an unsigned long.
+            //
+            var intReader = type == 'int' ? dataLength == 1 ? data.getSByteAt : dataLength == 2 ? data.getSShortAt : dataLength == 4 ? data.getSLongAt : data.getLongAt : dataLength == 1 ? data.getByteAt : dataLength == 2 ? data.getShortAt : data.getLongAt;
+
+            atomData = intReader.call(data, dataStart + (dataLength == 8 ? 4 : 0), true);
+            break;
+
           case "jpeg":
           case "png":
             atomData = {
@@ -1350,12 +1364,18 @@ var MP4TagReader = function (_MediaTagReader) {
   return MP4TagReader;
 }(MediaTagReader);
 
+/*
+ * https://developer.apple.com/library/content/documentation/QuickTime/QTFF/Metadata/Metadata.html#//apple_ref/doc/uid/TP40000939-CH1-SW35
+*/
+
+
 var TYPES = {
   "0": "uint8",
   "1": "text",
   "13": "jpeg",
   "14": "png",
-  "21": "uint8"
+  "21": "int",
+  "22": "uint"
 };
 
 var ATOM_DESCRIPTIONS = {
@@ -1400,7 +1420,13 @@ var ATOM_DESCRIPTIONS = {
   "rtng": "Content Rating",
   "pgap": "Gapless Playback",
   "apID": "Purchase Account",
-  "sfID": "Country Code"
+  "sfID": "Country Code",
+  "atID": "Artist ID",
+  "cnID": "Catalog ID",
+  "plID": "Collection ID",
+  "geID": "Genre ID",
+  "xid ": "Vendor Information",
+  "flvr": "Codec Flavor"
 };
 
 var UNSUPPORTED_ATOMS = {

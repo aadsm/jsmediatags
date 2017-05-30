@@ -1284,6 +1284,11 @@ var MP4TagReader = function (_MediaTagReader) {
           "track": data.getByteAt(offset + METADATA_HEADER + 11),
           "total": data.getByteAt(offset + METADATA_HEADER + 13)
         };
+      } else if (atomName == "disk") {
+        atomData = {
+          "disk": data.getByteAt(offset + METADATA_HEADER + 11),
+          "total": data.getByteAt(offset + METADATA_HEADER + 13)
+        };
       } else {
         // 4: atom version (1 byte) + atom flags (3 bytes)
         // 4: NULL (usually locale indicator)

@@ -2,6 +2,9 @@
 
 The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
 
+## Donations
+A few people have asked me about donations (or even crowdfunding). I would prefer you to consider making a donation to the "Girls Who Code" NPO: https://www.classy.org/checkout/donation?eid=77372. I you do please send me a message so I can add you as a contributor.
+
 ## Current Support
 
 * File Readers

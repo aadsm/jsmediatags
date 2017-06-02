@@ -18,7 +18,7 @@ describe("ID3v2FrameReader", function() {
       [0x01, 0x02, 0x03, 0x04, 0x05] // image data
     );
     var fileReader = new ArrayFileReader(fileData);
-    var data = frameReader(0, fileData.length, fileReader);
+    var data = frameReader(0, fileData.length, fileReader, {}, {major: 3});
 
     expect(data).toEqual({
       format: "image/jpeg",
@@ -40,7 +40,7 @@ describe("ID3v2FrameReader", function() {
       bin("The entire comment that can include new lines\n.")
     );
     var fileReader = new ArrayFileReader(fileData);
-    var data = frameReader(0, fileData.length, fileReader);
+    var data = frameReader(0, fileData.length, fileReader, {}, {major: 3});
 
     expect(data).toEqual({
       language: "ENG",
@@ -62,7 +62,7 @@ describe("ID3v2FrameReader", function() {
       [0x01, 0x02, 0x03, 0x04, 0x05] // image data
     );
     var fileReader = new ArrayFileReader(fileData);
-    var data = frameReader(0, fileData.length, fileReader);
+    var data = frameReader(0, fileData.length, fileReader, {}, {major: 3});
 
     expect(data).toEqual({
       format: "JPG",

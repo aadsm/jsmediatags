@@ -402,6 +402,62 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
   };
 };
 
+// ID3v2 chapters according to http://id3.org/id3v2-chapters-1.0
+frameReaderFunctions['CHAP'] = function readChapterFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  id3header?: TagHeader
+): any {
+  var originalOffset = offset;
+  var result = {};
+  var id = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+  result.id = id.toString();
+  offset += id.bytesReadCount;
+  result.startTime = data.getLongAt(offset, true);
+  offset+=4;
+  result.endTime = data.getLongAt(offset, true);
+  offset+=4;
+  result.startOffset = data.getLongAt(offset, true);
+  offset+=4;
+  result.endOffset = data.getLongAt(offset, true);
+  offset+=4;
+
+  var remainingLength = length - (offset - originalOffset);
+  result.subFrames = this.readFrames(offset, offset + remainingLength, data, id3header);
+  return result;
+};
+
+// ID3v2 table of contents according to http://id3.org/id3v2-chapters-1.0
+frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  id3header?: TagHeader
+): any {
+  var originalOffset = offset;
+  var result = { childElementIds: [] };
+  var id = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+  result.id = id.toString();
+  offset += id.bytesReadCount;
+  result.topLevel = data.isBitSetAt(offset, 1);
+  result.ordered = data.isBitSetAt(offset, 0);
+  offset++;
+  result.entryCount = data.getByteAt(offset);
+  offset++;
+  for (var i = 0; i < result.entryCount; i++) {
+    var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+    result.childElementIds.push(childId.toString());
+    offset += childId.bytesReadCount;
+  }
+
+  var remainingLength = length - (offset - originalOffset);
+  result.subFrames = this.readFrames(offset, offset + remainingLength, data, id3header);
+  return result;
+}
+
 frameReaderFunctions['COMM'] = function readCommentsFrame(
   offset: number,
   length: number,

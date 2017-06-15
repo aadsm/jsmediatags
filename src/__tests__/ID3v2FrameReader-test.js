@@ -318,4 +318,56 @@ describe("ID3v2FrameReader", function() {
       lyrics: "Se eu soubesse tinha ido com a Sofia"
     });
   });
+
+  it("should read CTOC tag", function() {
+    var frameReader = ID3v2FrameReader.getFrameReaderFunction("CTOC").bind(ID3v2FrameReader);
+
+    expect(frameReader).toBeDefined();
+
+    var fileData = [].concat(
+      bin("ID1"), // ID
+      [0x00], // null terminated
+      [0b00000011], // toplevel/ordered bit
+      [0x02], // entry count
+      bin("ID2"), [0x00], // child 1
+      bin("ID3"), [0x00] // child 2
+    );
+    var fileReader = new ArrayFileReader(fileData, {major: 3});
+    var data = frameReader(0, fileData.length, fileReader);
+
+    expect(data).toEqual({
+      id: "ID1",
+      topLevel: true,
+      ordered: true,
+      entryCount: 2,
+      childElementIds: [ "ID2", "ID3" ],
+      subFrames: {} }
+    );
+  });
+
+  it("should read CHAP tag", function() {
+    var frameReader = ID3v2FrameReader.getFrameReaderFunction("CHAP").bind(ID3v2FrameReader);
+
+    expect(frameReader).toBeDefined();
+
+    var fileData = [].concat(
+      bin("ID1"), // ID
+      [0x00], // null terminated
+      [0x00, 0x00, 0x00, 0xff], // start time
+      [0x00, 0x00, 0x01, 0xff], // end time
+      [0x00, 0x00, 0x02, 0xff], // start offset
+      [0x00, 0x00, 0x03, 0xff], // end offset
+    );
+    var fileReader = new ArrayFileReader(fileData);
+    var data = frameReader(0, fileData.length, fileReader, {major: 3});
+
+    expect(data).toEqual({
+      id: 'ID1',
+      startTime: 255,
+      endTime: 511,
+      startOffset: 767,
+      endOffset: 1023,
+      subFrames: {}
+    });
+  });
 });

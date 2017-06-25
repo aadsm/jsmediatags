@@ -86,7 +86,18 @@ class ID3v2TagReader extends MediaTagReader {
       var expandedTags = this._expandShortcutTags(tags);
     }
 
-    var frames = ID3v2FrameReader.readFrames(offset, size + 10/*header size*/, data, id3, expandedTags);
+    var offsetEnd = size + 10/*header size*/;
+    // When this flag is set the entire tag needs to be un-unsynchronised
+    // before parsing each individual frame. Individual frame sizes might not
+    // take unsynchronisation into consideration when it's set on the tag
+    // header.
+    if (id3.flags.unsynchronisation) {
+      data = ID3v2FrameReader.getUnsyncFileReader(data, offset, size);
+      offset = 0;
+      offsetEnd = data.getSize();
+    }
+
+    var frames = ID3v2FrameReader.readFrames(offset, offsetEnd, data, id3, expandedTags);
     // create shortcuts for most common data.
     for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
       var frameData = this._getFrameData(frames, SHORTCUTS[name]);

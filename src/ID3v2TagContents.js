@@ -221,10 +221,23 @@ class ID3v2TagContents {
     }
     data = data || [];
 
+    var dataLength = data.length;
+    var isTagUnsynchronised = this._contents[FLAGS] & (1<<7);
+    if (isTagUnsynchronised) {
+      var unsynchronisedByteCount = 0;
+
+      for (var i = 0; i < data.length - 1; i++) {
+        if (data[i] === 0xff && data[i+1] === 0x00) {
+          unsynchronisedByteCount++;
+        }
+      }
+      dataLength -= unsynchronisedByteCount;
+    }
+
     if (this._major === 2) {
-      size = getInteger24(data.length);
+      size = getInteger24(dataLength);
     } else if (this._major === 3) {
-      size = getInteger32(data.length);
+      size = getInteger32(dataLength);
       if (flags) {
         frameFlags[0] |= (flags.message.tag_alter_preservation ? 1 : 0) << 7;
         frameFlags[0] |= (flags.message.file_alter_preservation ? 1 : 0) << 6;
@@ -234,7 +247,6 @@ class ID3v2TagContents {
         frameFlags[1] |= (flags.format.grouping_identify ? 1 : 0) << 5;
       }
     } else if (this._major === 4) {
-      var dataLength = data.length;
       if (flags) {
         frameFlags[0] |= (flags.message.tag_alter_preservation ? 1 : 0) << 6;
         frameFlags[0] |= (flags.message.file_alter_preservation ? 1 : 0) << 5;

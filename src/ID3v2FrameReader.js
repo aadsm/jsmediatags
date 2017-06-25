@@ -229,11 +229,8 @@ class ID3v2FrameReader {
       }
 
       var unsyncData;
-      if (
-        id3header.flags.unsynchronisation ||
-        (flags && flags.format.unsynchronisation)
-      ) {
-        frameData = this._getUnsyncFileReader(frameData, frameDataOffset, frameSize);
+      if (flags && flags.format.unsynchronisation) {
+        frameData = this.getUnsyncFileReader(frameData, frameDataOffset, frameSize);
         frameDataOffset = 0;
         frameSize = frameData.getSize();
       }
@@ -346,7 +343,7 @@ class ID3v2FrameReader {
     }
   }
 
-  static _getUnsyncFileReader(
+  static getUnsyncFileReader(
     data: MediaFileReader,
     offset: number,
     size: number

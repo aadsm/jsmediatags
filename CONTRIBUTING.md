@@ -1,7 +1,11 @@
 # Contributing to JS MediaTags
 
 ## New contributor
+All backgrounds are welcomed.
+
 If you're not that familiar with the code base or JavaScript, and still want to contribute, you're welcomed to ask for help. I'll work with you on the issues or pull requests towards a solution we're both happy with.
+
+You also do not need to be a great english writer / speaker (I'm certainly not) to participate in this project. We'll work together to overcome language obstacles.
 
 ## Code changes
 When creating a Pull Request make sure to:

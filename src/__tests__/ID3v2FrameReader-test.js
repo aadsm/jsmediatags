@@ -62,7 +62,7 @@ describe("ID3v2FrameReader", function() {
       [0x01, 0x02, 0x03, 0x04, 0x05] // image data
     );
     var fileReader = new ArrayFileReader(fileData);
-    var data = frameReader(0, fileData.length, fileReader, {}, {major: 3});
+    var data = frameReader(0, fileData.length, fileReader, {}, {major: 2});
 
     expect(data).toEqual({
       format: "JPG",
@@ -356,7 +356,7 @@ describe("ID3v2FrameReader", function() {
       [0x00, 0x00, 0x00, 0xff], // start time
       [0x00, 0x00, 0x01, 0xff], // end time
       [0x00, 0x00, 0x02, 0xff], // start offset
-      [0x00, 0x00, 0x03, 0xff], // end offset
+      [0x00, 0x00, 0x03, 0xff] // end offset
     );
     var fileReader = new ArrayFileReader(fileData);
     var data = frameReader(0, fileData.length, fileReader, {major: 3});

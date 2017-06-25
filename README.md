@@ -7,6 +7,8 @@ A few people have asked me about donations (or even crowdfunding). I would prefe
 
 ## [Contributors](https://github.com/aadsm/jsmediatags/blob/master/CONTRIBUTORS.md)
 
+## [Contributing](https://github.com/aadsm/jsmediatags/blob/master/CONTRIBUTING.md)
+
 ## Current Support
 
 * File Readers

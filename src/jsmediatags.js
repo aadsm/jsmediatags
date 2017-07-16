@@ -270,9 +270,8 @@ Config
   .addTagReader(ID3v1TagReader)
   .addTagReader(MP4TagReader);
 
-if (typeof process !== "undefined") {
-  Config
-    .addFileReader(NodeFileReader);
+if (typeof process !== "undefined" && !process.browser) {
+  Config.addFileReader(NodeFileReader);
 }
 
 module.exports = {

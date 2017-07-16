@@ -227,6 +227,17 @@ class ID3v2FrameReader {
       if (tags && tags.indexOf(frameId) === -1) {
         continue;
       }
+      // Workaround: MP3ext V3.3.17 places a non-compliant padding string at
+      // the end of the ID3v2 header. A string like "MP3ext V3.3.19(ansi)"
+      // is added multiple times at the end of the ID3 tag. More information
+      // about this issue can be found at
+      // https://github.com/aadsm/jsmediatags/issues/58#issuecomment-313865336
+      if (
+        frameId === 'MP3e' || frameId === '\x00MP3' ||
+        frameId === '\x00\x00MP' || frameId === ' MP3'
+      ) {
+        break;
+      }
 
       var unsyncData;
       if (flags && flags.format.unsynchronisation) {

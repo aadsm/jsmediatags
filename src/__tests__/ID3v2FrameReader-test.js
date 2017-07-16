@@ -370,4 +370,26 @@ describe("ID3v2FrameReader", function() {
       subFrames: {}
     });
   });
+
+  it("should ignore faulty MP3ext padding", function() {
+    var artistName = bin("Lead Artist");
+    var mp3extPadding = bin("MP3ext V3.3.19(ansi) MP3ext V3.3.19(ansi)");
+    var fileData = [].concat(
+      // Good tag
+      bin("TPE1"),
+      [0x00, 0x00, 0x00, 1 + artistName.length], // size
+      [0x00, 0x00], // flags
+      [0x00], // text encoding
+      artistName, // content
+      // MP3ext faulty padding
+      mp3extPadding
+    );
+    var fileReader = new ArrayFileReader(fileData);
+    var id3header = {major: 4};
+
+    var tags = ID3v2FrameReader.readFrames(
+      0, fileData.length, fileReader, id3header
+    );
+    expect(tags.MP3e).not.toBeDefined();
+  });
 });

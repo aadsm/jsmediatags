@@ -332,8 +332,8 @@ describe("ID3v2FrameReader", function() {
       bin("ID2"), [0x00], // child 1
       bin("ID3"), [0x00] // child 2
     );
-    var fileReader = new ArrayFileReader(fileData, {major: 3});
-    var data = frameReader(0, fileData.length, fileReader);
+    var fileReader = new ArrayFileReader(fileData);
+    var data = frameReader(0, fileData.length, fileReader, null, {major: 3});
 
     expect(data).toEqual({
       id: "ID1",
@@ -359,7 +359,7 @@ describe("ID3v2FrameReader", function() {
       [0x00, 0x00, 0x03, 0xff] // end offset
     );
     var fileReader = new ArrayFileReader(fileData);
-    var data = frameReader(0, fileData.length, fileReader, {major: 3});
+    var data = frameReader(0, fileData.length, fileReader, null, {major: 3});
 
     expect(data).toEqual({
       id: 'ID1',

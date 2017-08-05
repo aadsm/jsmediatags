@@ -207,6 +207,7 @@ class ID3v2FrameReader {
     var frames = {};
 
     while (offset < end) {
+    // console.log('header', id3header);
       var header = this._readFrameHeader(data, offset, id3header);
       var frameId = header.id;
 
@@ -220,6 +221,7 @@ class ID3v2FrameReader {
       var frameDataOffset = offset + header.headerSize;
       var frameData = data;
 
+      // console.log(offset, frameId, header.size + header.headerSize, flags && flags.format.unsynchronisation);
       // advance data offset to the next frame data
       offset += header.headerSize + header.size;
 

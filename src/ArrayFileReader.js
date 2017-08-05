@@ -38,6 +38,9 @@ class ArrayFileReader extends MediaFileReader {
   }
 
   getByteAt(offset: number): Byte {
+    if (offset >= this._array.length) {
+      throw new Error("Offset " + offset + " hasn't been loaded yet.");
+    }
     return this._array[offset];
   }
 }

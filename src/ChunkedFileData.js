@@ -82,7 +82,10 @@ class ChunkedFileData {
 
   _concatData(dataA: DataType, dataB: DataType): DataType {
     // TypedArrays don't support concat.
-    if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView(dataA)) {
+    if (
+      typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView &&
+      ArrayBuffer.isView(dataA)
+    ) {
       // $FlowIssue - flow thinks dataAandB is a string but it's not
       var dataAandB = new dataA.constructor(dataA.length + dataB.length);
       // $FlowIssue - flow thinks dataAandB is a string but it's not

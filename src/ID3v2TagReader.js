@@ -114,9 +114,15 @@ class ID3v2TagReader extends MediaTagReader {
   }
 
   _getFrameData(frames: TagFrames, ids: Array<string>): ?Object {
-    for (var i = 0, id; id = ids[i]; i++ ) {
+    var frame;
+    for (var i = 0, id; id = ids[i]; i++) {
       if (id in frames) {
-        return frames[id].data;
+        if (frames[id] instanceof Array) {
+          frame = frames[id][0];
+        } else {
+          frame = frames[id];
+        }
+        return frame.data;
       }
     }
   }

@@ -261,4 +261,29 @@ describe("ID3v2TagReader", function() {
       expect("TIT2" in tags.tags).toBeTruthy();
     });
   });
+
+  pit("should correctly assign shortcuts to when there are multiple instances of the same frame", function() {
+    var id3FileContents =
+      new ID3v2TagContents(4, 3)
+        .addFrame("TIT2", [].concat(
+          [0x00], // encoding
+          bin("The title"), [0x00]
+        ))
+        .addFrame("TIT2", [].concat(
+          [0x00], // text encoding
+          bin("Another title"), [0x00]
+        ));
+    mediaFileReader = new ArrayFileReader(id3FileContents.toArray());
+    tagReader = new ID3v2TagReader(mediaFileReader);
+
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function(tags) {
+      expect(tags.tags.title).toBe("The title");
+    });
+  });
 });

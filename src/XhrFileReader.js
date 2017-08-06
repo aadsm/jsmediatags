@@ -290,14 +290,21 @@ class XhrFileReader extends MediaFileReader {
     return character.charCodeAt(0) & 0xff;
   }
 
+  _isWebWorker(): boolean {
+    return (
+      typeof WorkerGlobalScope !== 'undefined' &&
+      self instanceof WorkerGlobalScope
+    );
+  }
+
   _createXHRObject(): XMLHttpRequest {
-    if (typeof window === "undefined") {
+    if (typeof window === "undefined" && !this._isWebWorker()) {
       // $FlowIssue - flow is not able to recognize this module.
       return new (require("xhr2").XMLHttpRequest)();
     }
 
-    if (window.XMLHttpRequest) {
-      return new window.XMLHttpRequest();
+    if (typeof XMLHttpRequest !== "undefined") {
+      return new XMLHttpRequest();
     }
 
     throw new Error("XMLHttpRequest is not supported");

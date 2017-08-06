@@ -205,9 +205,12 @@ class ID3v2FrameReader {
     tags: ?Array<string>
   ): TagFrames {
     var frames = {};
-
-    while (offset < end) {
+    var frameHeaderSize = this._getFrameHeaderSize(id3header);
     // console.log('header', id3header);
+    while (
+      // we should be able to read at least the frame header
+      offset < (end - frameHeaderSize)
+    ) {
       var header = this._readFrameHeader(data, offset, id3header);
       var frameId = header.id;
 
@@ -280,6 +283,18 @@ class ID3v2FrameReader {
     return frames;
   }
 
+  static _getFrameHeaderSize(id3header: TagHeader): number {
+    var major = id3header.major;
+
+    if (major == 2) {
+      return 6;
+    } else if (major == 3 || major == 4) {
+      return 10;
+    } else {
+      return 0;
+    }
+  }
+
   static _readFrameHeader(
     data: MediaFileReader,
     offset: number,
@@ -287,24 +302,22 @@ class ID3v2FrameReader {
   ): TagFrameHeader {
     var major = id3header.major;
     var flags = null;
+    var frameHeaderSize = this._getFrameHeaderSize(id3header);
 
     switch (major) {
       case 2:
       var frameId = data.getStringAt(offset, 3);
       var frameSize = data.getInteger24At(offset+3, true);
-      var frameHeaderSize = 6;
       break;
 
       case 3:
       var frameId = data.getStringAt(offset, 4);
       var frameSize = data.getLongAt(offset+4, true);
-      var frameHeaderSize = 10;
       break;
 
       case 4:
       var frameId = data.getStringAt(offset, 4);
       var frameSize = data.getSynchsafeInteger32At(offset+4);
-      var frameHeaderSize = 10;
       break;
     }
 

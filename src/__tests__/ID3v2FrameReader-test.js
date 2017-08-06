@@ -413,4 +413,28 @@ describe("ID3v2FrameReader", function() {
     );
     expect(tags.MP3e).not.toBeDefined();
   });
+
+  // Some tags were found to have padding but no extended header declaring the
+  // padding size (https://github.com/aadsm/jsmediatags/issues/69).
+  it("should ignore undeclared padding", function() {
+    var artistName = bin("Lead Artist");
+    var fileData = [].concat(
+      bin("TPE1"),
+      [0x00, 0x00, 0x00, 1 + artistName.length], // size
+      [0x00, 0x00], // flags
+      [0x00], // text encoding
+      artistName, // content
+      // undeclared padding
+      [0x00, 0x00]
+    );
+    var fileReader = new ArrayFileReader(fileData);
+    var id3header = {major: 4};
+
+    var tags = ID3v2FrameReader.readFrames(
+      0,
+      fileData.length,
+      fileReader,
+      id3header
+    );
+  });
 });

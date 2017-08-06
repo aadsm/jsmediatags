@@ -458,7 +458,7 @@ frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(
   result.entryCount = data.getByteAt(offset);
   offset++;
   for (var i = 0; i < result.entryCount; i++) {
-    var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+    var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length - (offset - originalOffset)));
     result.childElementIds.push(childId.toString());
     offset += childId.bytesReadCount;
   }

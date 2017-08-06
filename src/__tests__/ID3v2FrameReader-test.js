@@ -330,7 +330,15 @@ describe("ID3v2FrameReader", function() {
       [0b00000011], // toplevel/ordered bit
       [0x02], // entry count
       bin("ID2"), [0x00], // child 1
-      bin("ID3"), [0x00] // child 2
+      bin("ID3"), [0x00], // child 2
+      bin("TIT1"), // child 1
+        [0x00, 0x00, 0x00, 0x02], // size
+        [0x00, 0x00], // flags
+        [0x00, 0x00], // text encoding + null terminated string
+      bin("TIT2"), // child 2
+        [0x00, 0x00, 0x00, 0x02], // size
+        [0x00, 0x00], // flags
+        [0x00, 0x00] // text encoding + null terminated string
     );
     var fileReader = new ArrayFileReader(fileData);
     var data = frameReader(0, fileData.length, fileReader, null, {major: 3});
@@ -341,8 +349,21 @@ describe("ID3v2FrameReader", function() {
       ordered: true,
       entryCount: 2,
       childElementIds: [ "ID2", "ID3" ],
-      subFrames: {} }
-    );
+      subFrames: {
+        TIT1: {
+          data: '',
+          description: 'Content group description',
+          id: 'TIT1',
+          size: 2
+        },
+        TIT2: {
+          data: '',
+          description: 'Title/songname/content description',
+          id: 'TIT2',
+          size: 2
+        }
+      }
+    });
   });
 
   it("should read CHAP tag", function() {

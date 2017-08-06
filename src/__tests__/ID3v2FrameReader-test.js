@@ -437,4 +437,22 @@ describe("ID3v2FrameReader", function() {
       id3header
     );
   });
+
+  it("should read UFID tag", function() {
+    var frameReader = ID3v2FrameReader.getFrameReaderFunction("UFID");
+
+    expect(frameReader).toBeDefined();
+
+    var fileData = [].concat(
+      bin("http://www.id3.org/dummy/ufid.html"), [0x00], // owner identifier
+      [0x01, 0x02, 0x03] // identifier
+    );
+    var fileReader = new ArrayFileReader(fileData);
+    var data = frameReader(0, fileData.length, fileReader);
+
+    expect(data).toEqual({
+      ownerIdentifier: "http://www.id3.org/dummy/ufid.html",
+      identifier: [0x01, 0x02, 0x03]
+    });
+  });
 });

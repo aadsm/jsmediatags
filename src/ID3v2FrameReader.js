@@ -606,6 +606,26 @@ frameReaderFunctions['USLT'] = function readLyricsFrame(
 
 frameReaderFunctions['ULT'] = frameReaderFunctions['USLT'];
 
+frameReaderFunctions['UFID'] = function readLyricsFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  id3header?: TagHeader
+): any {
+  var ownerIdentifier =
+    StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+  offset += ownerIdentifier.bytesReadCount;
+  var identifier = data.getBytesAt(
+    offset, length - ownerIdentifier.bytesReadCount
+  );
+
+  return {
+    ownerIdentifier: ownerIdentifier.toString(),
+    identifier: identifier
+  };
+};
+
 function getTextEncoding(bite): ?CharsetType {
   var charset: ?CharsetType;
 

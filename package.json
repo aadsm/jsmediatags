@@ -36,7 +36,7 @@
   },
   "homepage": "https://github.com/aadsm/jsmediatags#readme",
   "dependencies": {
-    "xhr2": "~0.1.3"
+    "xhr2": "^0.1.4"
   },
   "devDependencies": {
     "babel-plugin-transform-flow-strip-types": "~6.7.0",
@@ -48,10 +48,10 @@
     "babel-core": "~6.7.7",
     "babel-cli": "~6.7.7",
     "jest-cli": "~12.0.2",
-    "browserify": "~13.0.0",
+    "browserify": "~14.4.0",
     "watchify": "~3.7.0",
     "babelify": "~7.3.0",
-    "google-closure-compiler": "20160315.2.0"
+    "google-closure-compiler": "20170626.0.0"
   },
   "scripts": {
     "test": "jest",

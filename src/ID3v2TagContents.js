@@ -39,7 +39,7 @@ class ID3v2TagContents {
   _major: number;
   _revision: number;
   _contents: ByteArray;
-  _frames: {[key: string]: ByteArray};
+  _frames: {[key: string]: Array<ByteArray>};
   _extendedHeader: {
     UPDATE: number,
     CRC: number,
@@ -274,7 +274,10 @@ class ID3v2TagContents {
         : [],
       data
     );
-    this._frames[id] = frame;
+    if (!this._frames[id]) {
+      this._frames[id] = [];
+    }
+    this._frames[id].push(frame);
     this._addData(this._nextFrameOffset, frame);
 
     this._updateSize();
@@ -343,7 +346,9 @@ class ID3v2TagContents {
 
     for (var frameId in this._frames) {
       if (this._frames.hasOwnProperty(frameId)) {
-        size += this._frames[frameId].length;
+        for (var i = 0, frame; frame = this._frames[frameId][i]; i++) {
+          size += frame.length;
+        }
       }
     }
 

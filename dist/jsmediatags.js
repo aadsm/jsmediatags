@@ -4,7 +4,6 @@
 module.exports = XMLHttpRequest;
 
 },{}],3:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -44,6 +43,9 @@ var ArrayFileReader = function (_MediaFileReader) {
   }, {
     key: 'getByteAt',
     value: function getByteAt(offset) {
+      if (offset >= this._array.length) {
+        throw new Error("Offset " + offset + " hasn't been loaded yet.");
+      }
       return this._array[offset];
     }
   }], [{
@@ -59,7 +61,6 @@ var ArrayFileReader = function (_MediaFileReader) {
 module.exports = ArrayFileReader;
 
 },{"./MediaFileReader":10}],4:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -218,7 +219,7 @@ var ChunkedFileData = function () {
     key: '_concatData',
     value: function _concatData(dataA, dataB) {
       // TypedArrays don't support concat.
-      if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView(dataA)) {
+      if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView && ArrayBuffer.isView(dataA)) {
         // $FlowIssue - flow thinks dataAandB is a string but it's not
         var dataAandB = new dataA.constructor(dataA.length + dataB.length);
         // $FlowIssue - flow thinks dataAandB is a string but it's not
@@ -354,7 +355,6 @@ var ChunkedFileData = function () {
 module.exports = ChunkedFileData;
 
 },{}],6:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -458,7 +458,6 @@ var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Gru
 module.exports = ID3v1TagReader;
 
 },{"./MediaFileReader":10,"./MediaTagReader":11}],7:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -665,8 +664,11 @@ var ID3v2FrameReader = function () {
     key: 'readFrames',
     value: function readFrames(offset, end, data, id3header, tags) {
       var frames = {};
-
-      while (offset < end) {
+      var frameHeaderSize = this._getFrameHeaderSize(id3header);
+      // console.log('header', id3header);
+      while (
+      // we should be able to read at least the frame header
+      offset < end - frameHeaderSize) {
         var header = this._readFrameHeader(data, offset, id3header);
         var frameId = header.id;
 
@@ -680,6 +682,7 @@ var ID3v2FrameReader = function () {
         var frameDataOffset = offset + header.headerSize;
         var frameData = data;
 
+        // console.log(offset, frameId, header.size + header.headerSize, flags && flags.format.unsynchronisation);
         // advance data offset to the next frame data
         offset += header.headerSize + header.size;
 
@@ -735,28 +738,39 @@ var ID3v2FrameReader = function () {
       return frames;
     }
   }, {
+    key: '_getFrameHeaderSize',
+    value: function _getFrameHeaderSize(id3header) {
+      var major = id3header.major;
+
+      if (major == 2) {
+        return 6;
+      } else if (major == 3 || major == 4) {
+        return 10;
+      } else {
+        return 0;
+      }
+    }
+  }, {
     key: '_readFrameHeader',
     value: function _readFrameHeader(data, offset, id3header) {
       var major = id3header.major;
       var flags = null;
+      var frameHeaderSize = this._getFrameHeaderSize(id3header);
 
       switch (major) {
         case 2:
           var frameId = data.getStringAt(offset, 3);
           var frameSize = data.getInteger24At(offset + 3, true);
-          var frameHeaderSize = 6;
           break;
 
         case 3:
           var frameId = data.getStringAt(offset, 4);
           var frameSize = data.getLongAt(offset + 4, true);
-          var frameHeaderSize = 10;
           break;
 
         case 4:
           var frameId = data.getStringAt(offset, 4);
           var frameSize = data.getSynchsafeInteger32At(offset + 4);
-          var frameHeaderSize = 10;
           break;
       }
 
@@ -893,7 +907,7 @@ frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(offset, length,
   result.entryCount = data.getByteAt(offset);
   offset++;
   for (var i = 0; i < result.entryCount; i++) {
-    var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+    var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length - (offset - originalOffset)));
     result.childElementIds.push(childId.toString());
     offset += childId.bytesReadCount;
   }
@@ -981,6 +995,17 @@ frameReaderFunctions['USLT'] = function readLyricsFrame(offset, length, data, fl
 
 frameReaderFunctions['ULT'] = frameReaderFunctions['USLT'];
 
+frameReaderFunctions['UFID'] = function readLyricsFrame(offset, length, data, flags, id3header) {
+  var ownerIdentifier = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
+  offset += ownerIdentifier.bytesReadCount;
+  var identifier = data.getBytesAt(offset, length - ownerIdentifier.bytesReadCount);
+
+  return {
+    ownerIdentifier: ownerIdentifier.toString(),
+    identifier: identifier
+  };
+};
+
 function getTextEncoding(bite) {
   var charset;
 
@@ -1022,7 +1047,6 @@ var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file 
 module.exports = ID3v2FrameReader;
 
 },{"./ArrayFileReader":3,"./MediaFileReader":10,"./StringUtils":12}],8:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1131,9 +1155,15 @@ var ID3v2TagReader = function (_MediaTagReader) {
   }, {
     key: '_getFrameData',
     value: function _getFrameData(frames, ids) {
+      var frame;
       for (var i = 0, id; id = ids[i]; i++) {
         if (id in frames) {
-          return frames[id].data;
+          if (frames[id] instanceof Array) {
+            frame = frames[id][0];
+          } else {
+            frame = frames[id];
+          }
+          return frame.data;
         }
       }
     }
@@ -1531,7 +1561,6 @@ var SHORTCUTS = {
 module.exports = MP4TagReader;
 
 },{"./MediaFileReader":10,"./MediaTagReader":11}],10:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1768,7 +1797,6 @@ var MediaFileReader = function () {
 module.exports = MediaFileReader;
 
 },{"./StringUtils":12}],11:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -1893,7 +1921,6 @@ var MediaTagReader = function () {
 module.exports = MediaTagReader;
 
 },{"./MediaFileReader":10}],12:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2010,7 +2037,6 @@ var StringUtils = {
 module.exports = StringUtils;
 
 },{}],13:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2286,15 +2312,20 @@ var XhrFileReader = function (_MediaFileReader) {
       return character.charCodeAt(0) & 0xff;
     }
   }, {
+    key: '_isWebWorker',
+    value: function _isWebWorker() {
+      return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
+    }
+  }, {
     key: '_createXHRObject',
     value: function _createXHRObject() {
-      if (typeof window === "undefined") {
+      if (typeof window === "undefined" && !this._isWebWorker()) {
         // $FlowIssue - flow is not able to recognize this module.
         return new (require("xhr2").XMLHttpRequest)();
       }
 
-      if (window.XMLHttpRequest) {
-        return new window.XMLHttpRequest();
+      if (typeof XMLHttpRequest !== "undefined") {
+        return new XMLHttpRequest();
       }
 
       throw new Error("XMLHttpRequest is not supported");
@@ -2330,7 +2361,6 @@ XhrFileReader._config = {
 module.exports = XhrFileReader;
 
 },{"./ChunkedFileData":5,"./MediaFileReader":10,"xhr2":2}],14:[function(require,module,exports){
-
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2602,7 +2632,7 @@ var Config = function () {
 
 Config.addFileReader(XhrFileReader).addFileReader(BlobFileReader).addFileReader(ArrayFileReader).addTagReader(ID3v2TagReader).addTagReader(ID3v1TagReader).addTagReader(MP4TagReader);
 
-if (typeof process !== "undefined") {
+if (typeof process !== "undefined" && !process.browser) {
   Config.addFileReader(NodeFileReader);
 }
 

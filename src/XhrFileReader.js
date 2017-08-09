@@ -195,6 +195,7 @@ class XhrFileReader extends MediaFileReader {
     callbacks: CallbackType
   ) {
     var xhr = this._createXHRObject();
+    xhr.open(method, this._url);
 
     var onXHRLoad = function() {
       // 200 - OK
@@ -246,7 +247,6 @@ class XhrFileReader extends MediaFileReader {
       }
     }
 
-    xhr.open(method, this._url);
     xhr.overrideMimeType("text/plain; charset=x-user-defined");
     if (range) {
       this._setRequestHeader(xhr, "Range", "bytes=" + range[0] + "-" + range[1]);

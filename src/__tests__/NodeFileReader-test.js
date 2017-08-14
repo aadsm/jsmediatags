@@ -21,7 +21,7 @@ describe("NodeFileReader", function() {
     expect(NodeFileReader.canReadFile(new Blob())).toBe(false);
   });
 
-  pit("should have the right size information", function() {
+  it("should have the right size information", function() {
     fileReader = new NodeFileReader("fakefile");
 
     return new Promise(function(resolve, reject) {
@@ -31,7 +31,7 @@ describe("NodeFileReader", function() {
     });
   });
 
-  pit("should read a byte", function() {
+  it("should read a byte", function() {
     fileReader = new NodeFileReader("fakefile");
 
     return new Promise(function(resolve, reject) {
@@ -41,7 +41,7 @@ describe("NodeFileReader", function() {
     });
   });
 
-  pit("should read a byte after loading the same range twice", function() {
+  it("should read a byte after loading the same range twice", function() {
     fileReader = new NodeFileReader("fakefile");
 
     return new Promise(function(resolve, reject) {
@@ -56,7 +56,7 @@ describe("NodeFileReader", function() {
     });
   });
 
-  pit("should not read a byte that hasn't been loaded yet", function() {
+  it("should not read a byte that hasn't been loaded yet", function() {
     fileReader = new NodeFileReader("fakefile");
 
     return new Promise(function(resolve, reject) {
@@ -68,7 +68,7 @@ describe("NodeFileReader", function() {
     });
   });
 
-  pit("should not read a file that does not exist", function() {
+  it("should not read a file that does not exist", function() {
     fileReader = new NodeFileReader("doesnt-exist");
 
     return new Promise(function(resolve, reject) {

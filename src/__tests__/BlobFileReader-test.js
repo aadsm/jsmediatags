@@ -27,7 +27,7 @@ describe("BlobFileReader", function() {
     expect(BlobFileReader.canReadFile(new Blob())).toBe(true);
   });
 
-  pit("should have the right size information", function() {
+  it("should have the right size information", function() {
     return new Promise(function(resolve, reject) {
       fileReader.init(throwOnError(resolve));
       jest.runAllTimers();
@@ -36,7 +36,7 @@ describe("BlobFileReader", function() {
     });
   });
 
-  pit("should read a byte", function() {
+  it("should read a byte", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();
@@ -45,7 +45,7 @@ describe("BlobFileReader", function() {
     });
   });
 
-  pit("should read a byte after loading the same range twice", function() {
+  it("should read a byte after loading the same range twice", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(function() {
         fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -55,7 +55,7 @@ describe("BlobFileReader", function() {
     });
   });
 
-  pit("should not read a byte that hasn't been loaded yet", function() {
+  it("should not read a byte that hasn't been loaded yet", function() {
     return new Promise(function(resolve, reject) {
       fileReader.init(throwOnError(resolve));
       jest.runAllTimers();

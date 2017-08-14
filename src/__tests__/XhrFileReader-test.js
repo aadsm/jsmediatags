@@ -28,6 +28,7 @@ describe("XhrFileReader", function() {
   var fileReader;
 
   beforeEach(function() {
+    jest.resetModules();
     require('xhr2').__setMockUrls({
       "http://www.example.fakedomain/music.mp3": "This is a simple file",
       "http://www.example.fakedomain/big-file.mp3": new Array(100).join("This is a simple file"),
@@ -69,7 +70,7 @@ describe("XhrFileReader", function() {
         });
       });
 
-      pit("should have the right size information", function() {
+      it("should have the right size information", function() {
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
           jest.runAllTimers();
@@ -78,7 +79,7 @@ describe("XhrFileReader", function() {
         });
       });
 
-      pit("should have the right size information for files bigger than the first range request", function() {
+      it("should have the right size information for files bigger than the first range request", function() {
         fileReader = new XhrFileReader("http://www.example.fakedomain/big-file.mp3");
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
@@ -88,7 +89,7 @@ describe("XhrFileReader", function() {
         });
       });
 
-      pit("should have the right size information when range not supported", function() {
+      it("should have the right size information when range not supported", function() {
         fileReader = new XhrFileReader("http://www.example.fakedomain/range-not-supported.mp3");
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
@@ -98,7 +99,7 @@ describe("XhrFileReader", function() {
         });
       });
 
-      pit("should have the right size information when content length is unknown", function() {
+      it("should have the right size information when content length is unknown", function() {
         fileReader = new XhrFileReader("http://www.example.fakedomain/unknown-length.mp3");
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
@@ -108,7 +109,7 @@ describe("XhrFileReader", function() {
         });
       });
 
-      pit("should have the right size information when range is supported", function() {
+      it("should have the right size information when range is supported", function() {
         fileReader = new XhrFileReader("http://www.example.fakedomain/range-supported.mp3");
         return new Promise(function(resolve, reject) {
           fileReader.init(throwOnError(resolve));
@@ -123,7 +124,7 @@ describe("XhrFileReader", function() {
   describeFileSizeTests(true /*GET*/);
   describeFileSizeTests(false /*HEAD*/);
 
-  pit("should not fetch the same data twice", function() {
+  it("should not fetch the same data twice", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(function() {
         fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -134,7 +135,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should read a byte", function() {
+  it("should read a byte", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();
@@ -143,7 +144,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should read a byte after loading the same range twice", function() {
+  it("should read a byte after loading the same range twice", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(function() {
         fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -154,7 +155,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should not read a byte that hasn't been loaded yet", function() {
+  it("should not read a byte that hasn't been loaded yet", function() {
     return new Promise(function(resolve, reject) {
       fileReader.init(throwOnError(resolve));
       jest.runAllTimers();
@@ -165,7 +166,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should not read a file that does not exist", function() {
+  it("should not read a file that does not exist", function() {
     fileReader = new XhrFileReader("http://www.example.fakedomain/fail.mp3");
 
     return new Promise(function(resolve, reject) {
@@ -180,7 +181,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should fetch in multples of 1K", function() {
+  it("should fetch in multples of 1K", function() {
     return new Promise(function(resolve, reject) {
       fileReader._size=2000;
       fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -190,7 +191,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should not fetch more than max file size", function() {
+  it("should not fetch more than max file size", function() {
     return new Promise(function(resolve, reject) {
       fileReader._size=10;
       fileReader.loadRange([0, 4], throwOnError(resolve));
@@ -200,7 +201,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should not use disallowed headers", function() {
+  it("should not use disallowed headers", function() {
     return new Promise(function(resolve, reject) {
       XhrFileReader.setConfig({
         disallowedXhrHeaders: ["If-Modified-Since"]
@@ -215,7 +216,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should not rely on content-length when range is not supported", function() {
+  it("should not rely on content-length when range is not supported", function() {
     return new Promise(function(resolve, reject) {
       XhrFileReader.setConfig({
         avoidHeadRequests: true
@@ -228,7 +229,7 @@ describe("XhrFileReader", function() {
     });
   });
 
-  pit("should timeout if request takes too much time", function() {
+  it("should timeout if request takes too much time", function() {
     fileReader = new XhrFileReader("http://www.example.fakedomain/timeout");
     XhrFileReader.setConfig({
       timeoutInSec: 0.2

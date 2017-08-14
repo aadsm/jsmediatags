@@ -28,7 +28,7 @@ describe("ArrayFileReader", function() {
     expect(ArrayFileReader.canReadFile(new Blob())).toBe(false);
   });
 
-  pit("should have the right size information", function() {
+  it("should have the right size information", function() {
     return new Promise(function(resolve, reject) {
       fileReader.init(throwOnError(resolve));
       jest.runAllTimers();
@@ -37,7 +37,7 @@ describe("ArrayFileReader", function() {
     });
   });
 
-  pit("should read a byte", function() {
+  it("should read a byte", function() {
     return new Promise(function(resolve, reject) {
       fileReader.loadRange([0, 4], throwOnError(resolve));
       jest.runAllTimers();

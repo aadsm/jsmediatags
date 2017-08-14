@@ -26,7 +26,7 @@ describe("ID3v2TagReader", function() {
     tagReader = new ID3v2TagReader(mediaFileReader);
   });
 
-  pit("reads header", function() {
+  it("reads header", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -51,7 +51,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("loads the entire tag", function() {
+  it("loads the entire tag", function() {
     mediaFileReader.loadRange = jest.genMockFunction().mockImplementation(
       function() {
         return ArrayFileReader.prototype.loadRange.apply(this, arguments);
@@ -71,7 +71,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("reads tags", function() {
+  it("reads tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -89,7 +89,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("reads tags as shortcuts", function() {
+  it("reads tags as shortcuts", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -101,7 +101,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("reads all tags when none is specified", function() {
+  it("reads all tags when none is specified", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -114,7 +114,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("reads the specificed tag", function() {
+  it("reads the specificed tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.setTagsToRead(["TCOM"])
         .read({
@@ -128,7 +128,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("should ignore empty tags", function() {
+  it("should ignore empty tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -141,7 +141,7 @@ describe("ID3v2TagReader", function() {
   });
 
   describe("unsynchronisation", function() {
-    pit("reads global unsynchronised content", function() {
+    it("reads global unsynchronised content", function() {
       var id3FileContents =
         new ID3v2TagContents(4, 3)
           .setFlags({
@@ -173,7 +173,7 @@ describe("ID3v2TagReader", function() {
       });
     });
 
-    pit("reads local unsynchronised content", function() {
+    it("reads local unsynchronised content", function() {
       var id3FileContents =
         new ID3v2TagContents(4, 3)
           .addFrame("TIT2", [].concat(
@@ -205,7 +205,7 @@ describe("ID3v2TagReader", function() {
       });
     });
 
-    pit("reads unsynchronised content with data length indicator", function() {
+    it("reads unsynchronised content with data length indicator", function() {
       var id3FileContents =
         new ID3v2TagContents(4, 3)
           .addFrame("TIT2", [].concat(
@@ -240,7 +240,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("should process frames with no content", function() {
+  it("should process frames with no content", function() {
     var id3FileContents =
       new ID3v2TagContents(4, 3)
         .addFrame("WOAF") // empty frame contents
@@ -262,7 +262,7 @@ describe("ID3v2TagReader", function() {
     });
   });
 
-  pit("should correctly assign shortcuts to when there are multiple instances of the same frame", function() {
+  it("should correctly assign shortcuts to when there are multiple instances of the same frame", function() {
     var id3FileContents =
       new ID3v2TagContents(4, 3)
         .addFrame("TIT2", [].concat(

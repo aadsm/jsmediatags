@@ -7,7 +7,7 @@ const bin = require('../ByteArrayUtils').bin;
 const pad = require('../ByteArrayUtils').pad;
 
 describe("ID3v1TagReader", function() {
-  pit("reads 1.0 tags", function() {
+  it("reads 1.0 tags", function() {
     var id3ArrayFile = [].concat(
       bin("TAG"),
       pad(bin("Song Title"), 30),
@@ -42,7 +42,7 @@ describe("ID3v1TagReader", function() {
     });
   });
 
-  pit("reads 1.1 tags", function() {
+  it("reads 1.1 tags", function() {
     var id3ArrayFile = [].concat(
       bin("TAG"),
       pad(bin("Song Title"), 30),

@@ -58,7 +58,7 @@ describe("MP4TagReader", function() {
     expect(canReadISOM).toBeTruthy();
   });
 
-  pit("reads the type and version", function() {
+  it("reads the type and version", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -71,7 +71,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads string tag", function() {
+  it("reads string tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -84,7 +84,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads uint8 tag", function() {
+  it("reads uint8 tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -97,7 +97,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads jpeg tag", function() {
+  it("reads jpeg tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -112,7 +112,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads multiple int tags", function() {
+  it("reads multiple int tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -128,7 +128,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads all tags", function() {
+  it("reads all tags", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -147,7 +147,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("creates shorcuts", function() {
+  it("creates shorcuts", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
@@ -161,7 +161,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads the specificed tag", function() {
+  it("reads the specificed tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.setTagsToRead(["©cmt"])
         .read({
@@ -175,7 +175,7 @@ describe("MP4TagReader", function() {
     });
   });
 
-  pit("reads the specificed shortcut tag", function() {
+  it("reads the specificed shortcut tag", function() {
     return new Promise(function(resolve, reject) {
       tagReader.setTagsToRead(["title"])
         .read({
@@ -187,7 +187,7 @@ describe("MP4TagReader", function() {
       expect(Object.keys(tag.tags)).toContain("title");
     });
 
-    pit("reads jpeg tag despite uint8 type", function() {
+    it("reads jpeg tag despite uint8 type", function() {
       var mp4FileContents = createMP4FileContents([
         MP4TagContents.createMetadataAtom("covr", "uint8", [0x01, 0x02, 0x03])
       ]);

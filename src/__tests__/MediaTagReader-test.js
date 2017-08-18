@@ -19,7 +19,7 @@ describe("MediaTagReader", function() {
     mediaTagReader = new MediaTagReader(mediaFileReader);
   });
 
-  pit("can read the data given by _parseData", function() {
+  it("can read the data given by _parseData", function() {
     var expectedTags = {};
     mediaTagReader._loadData =
       jest.genMockFunction().mockImplementation(function(_, callbacks) {
@@ -40,7 +40,7 @@ describe("MediaTagReader", function() {
     });
   });
 
-  pit("should _loadData when it needs to be read", function() {
+  it("should _loadData when it needs to be read", function() {
     mediaTagReader._loadData = jest.genMockFunction().mockImplementation(
       function(localMediaFileReader, callbacks) {
         expect(localMediaFileReader).toBe(mediaFileReader);

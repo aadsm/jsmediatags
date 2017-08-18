@@ -1,4 +1,5 @@
 jest
+  .enableAutomock()
   .dontMock("../jsmediatags.js")
   .dontMock("../ByteArrayUtils.js");
 
@@ -47,7 +48,7 @@ describe("jsmediatags", function() {
     ID3v2TagReader.prototype.setTagsToRead = jest.genMockFunction().mockReturnThis();
   });
 
-  pit("should read tags with the shortcut function", function() {
+  it("should read tags with the shortcut function", function() {
     NodeFileReader.canReadFile.mockReturnValue(true);
     ID3v2TagReader.canReadTagFormat.mockReturnValue(true);
     ID3v2TagReader.prototype.read = jest.genMockFunction()
@@ -103,7 +104,7 @@ describe("jsmediatags", function() {
   });
 
   describe("tag readers", function() {
-    pit("should use the given tag reader", function() {
+    it("should use the given tag reader", function() {
       var MockTagReader = jest.genMockFunction();
 
       return new Promise(function(resolve, reject) {
@@ -116,7 +117,7 @@ describe("jsmediatags", function() {
       });
     });
 
-    pit("should use the tag reader that is able to read the tags", function() {
+    it("should use the tag reader that is able to read the tags", function() {
       var MockTagReader = jest.genMockFunction();
       jsmediatags.Config.addTagReader(MockTagReader);
 
@@ -137,7 +138,7 @@ describe("jsmediatags", function() {
       });
     });
 
-    pit("should fail if no tag reader is found", function() {
+    it("should fail if no tag reader is found", function() {
       ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
       return new Promise(function(resolve, reject) {
         var reader = new jsmediatags.Reader();
@@ -146,7 +147,7 @@ describe("jsmediatags", function() {
       });
     });
 
-    pit("should load the super set range of all tag reader ranges", function() {
+    it("should load the super set range of all tag reader ranges", function() {
       var MockTagReader = jest.genMockFunction();
       jsmediatags.Config.addTagReader(MockTagReader);
 
@@ -170,7 +171,7 @@ describe("jsmediatags", function() {
       });
     });
 
-    pit("should not load the entire file if two tag loaders require start and end ranges for tag identifier", function() {
+    it("should not load the entire file if two tag loaders require start and end ranges for tag identifier", function() {
       var fileReader = new NodeFileReader();
       var MockTagReader = jest.genMockFunction();
       jsmediatags.Config.addTagReader(MockTagReader);

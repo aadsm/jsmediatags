@@ -37,7 +37,7 @@ class XhrFileReader extends MediaFileReader {
   static canReadFile(file: any): boolean {
     return (
       typeof file === 'string' &&
-      /^[a-z]+:\/\//i.test(file)
+      new RegExp("(http(s?):)|([/|.|\w|\s])*\.(?:mp3|mp4)").test(file)
     );
   }
 

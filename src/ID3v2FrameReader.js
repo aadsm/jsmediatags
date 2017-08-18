@@ -328,6 +328,11 @@ class ID3v2FrameReader {
       frameId = "";
     }
 
+    // Some 3-character tags are padded by a NUL-byte.
+    if (frameId.charAt(3) == String.fromCharCode(0)) {
+      frameId = frameId.substring(0, 3)
+    }
+
     // if frameId is empty then it's the last frame
     if (frameId) {
       // read frame message and format flags

@@ -42,7 +42,7 @@ export type FrameReaderSignature = (
   length: number,
   data: MediaFileReader,
   flags: ?Object,
-  majorVersion?: string
+  id3header?: TagHeader
 ) => any;
 
 export type TagFrames = {[key: string]: TagFrame};

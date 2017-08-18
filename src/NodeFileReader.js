@@ -56,7 +56,7 @@ class NodeFileReader extends MediaFileReader {
 
     var length = range[1] - range[0] + 1;
     var onSuccess = callbacks.onSuccess;
-    var onError = callbacks.onError || function(){};
+    var onError = callbacks.onError || function(object){};
 
     if (fileData.hasDataRange(range[0], range[1])) {
       process.nextTick(onSuccess);

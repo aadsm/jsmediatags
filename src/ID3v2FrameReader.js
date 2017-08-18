@@ -9,7 +9,11 @@ var ArrayFileReader = require('./ArrayFileReader');
 
 import type {
   CharsetType,
-  FrameReaderSignature
+  FrameReaderSignature,
+  TagHeader,
+  TagFrames,
+  TagFrameHeader,
+  TagFrameFlags
 } from './FlowTypes';
 
 const FRAME_DESCRIPTIONS = {
@@ -411,7 +415,7 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
     default:
     throw new Error("Couldn't read ID3v2 major version.");
   }
-  var bite = data.getByteAt(offset, 1);
+  var bite = data.getByteAt(offset);
   var type = PICTURE_TYPE[bite];
   var desc = data.getStringWithCharsetAt(offset+1, length - (offset-start) - 1, charset);
 
@@ -461,7 +465,7 @@ frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(
   id3header?: TagHeader
 ): any {
   var originalOffset = offset;
-  var result = { childElementIds: [] };
+  var result = { childElementIds: [], id: undefined, topLevel: undefined, ordered: undefined, entryCount: undefined, subFrames: undefined };
   var id = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
   result.id = id.toString();
   offset += id.bytesReadCount;
@@ -626,7 +630,7 @@ frameReaderFunctions['UFID'] = function readLyricsFrame(
   };
 };
 
-function getTextEncoding(bite): ?CharsetType {
+function getTextEncoding(bite): CharsetType {
   var charset: ?CharsetType;
 
   switch (bite)
@@ -646,6 +650,9 @@ function getTextEncoding(bite): ?CharsetType {
     case 0x03:
     charset = 'utf-8';
     break;
+
+    default:
+    charset = 'iso-8859-1';
   }
 
   return charset;
@@ -657,7 +664,7 @@ function getUserDefinedFields(
   offset: number,
   length: number,
   data: MediaFileReader,
-  charset: string
+  charset: CharsetType
 ): Object {
   var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
   var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);

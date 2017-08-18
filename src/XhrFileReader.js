@@ -143,7 +143,7 @@ class XhrFileReader extends MediaFileReader {
         /bytes (\d+)-(\d+)\/(?:(\d+)|\*)/i
       );
       if (!parsedContentRange) {
-        throw new Error("FIXME: Unknown Content-Range syntax: ", contentRange);
+        throw new Error("FIXME: Unknown Content-Range syntax: " + contentRange);
       }
 
       return {

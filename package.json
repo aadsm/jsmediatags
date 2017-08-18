@@ -51,7 +51,8 @@
     "browserify": "~14.4.0",
     "watchify": "~3.7.0",
     "babelify": "~7.3.0",
-    "google-closure-compiler": "20170626.0.0"
+    "google-closure-compiler": "20170626.0.0",
+    "flow-bin": "~0.53.1"
   },
   "scripts": {
     "test": "jest",

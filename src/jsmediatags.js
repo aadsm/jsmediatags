@@ -96,7 +96,7 @@ class Reader {
       }
     }
 
-    throw new Error("No suitable file reader found for ", this._file);
+    throw new Error("No suitable file reader found for " + this._file);
   }
 
   _getTagReader(fileReader: MediaFileReader, callbacks: CallbackType) {
@@ -168,8 +168,8 @@ class Reader {
                 "type": "fileReader",
                 "info": ex.message
               });
-              return;
             }
+            return;
           }
 
           if (mediaTagReaders[i].canReadTagFormat(tagIndentifier)) {

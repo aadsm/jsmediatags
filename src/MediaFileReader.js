@@ -18,7 +18,7 @@ class MediaFileReader {
   _isInitialized: boolean;
   _size: number;
 
-  constructor() {
+  constructor(path: any) {
     this._isInitialized = false;
     this._size = 0;
   }

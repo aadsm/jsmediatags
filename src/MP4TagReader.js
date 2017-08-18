@@ -244,7 +244,7 @@ class MP4TagReader extends MediaTagReader {
                           : ( dataLength == 1 ? data.getByteAt :
                               dataLength == 2 ? data.getShortAt :
                                                 data.getLongAt);
-        
+        // $FlowFixMe - getByteAt doesn't receive a second argument
         atomData = intReader.call(data, dataStart + (dataLength == 8 ? 4 : 0), true);
         break;
 

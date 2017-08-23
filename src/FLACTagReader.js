@@ -26,6 +26,7 @@ const FLAC_HEADER_SIZE = 4;
 const COMMENT_HEADERS = [4, 132];
 const PICTURE_HEADERS = [6, 134];
 
+// These are the possible image types as defined by the FLAC specification.
 const IMAGE_TYPES = [
   "Other",
   "32x32 pixels 'file icon' (PNG only)",
@@ -49,6 +50,12 @@ const IMAGE_TYPES = [
   "Band/artist logotype",
   "Publisher/Studio logotype"
 ];
+
+import type {
+  LoadCallbackType,
+  ByteRange,
+  TagType
+} from './FlowTypes';
 
 /**
  * Class representing a MediaTagReader that parses FLAC tags.
@@ -163,12 +170,6 @@ class FLACTagReader extends MediaTagReader {
         onSuccess: function() {
           self._commentOffset = offsetMetadata;
           self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
-          // mediaFileReader.loadRange([offset + 4 + blockSize, offset + 4 + 4 + blockSize], {
-          //   onSuccess: function() {
-          //     self._loadBlock(mediaFileReader, offset + 4 + blockSize, callbacks);
-          //   }
-          // });
-          // callbacks.onSuccess();
         }
       });
     } else if (PICTURE_HEADERS.indexOf(blockHeader) !== -1) {
@@ -177,20 +178,9 @@ class FLACTagReader extends MediaTagReader {
         onSuccess: function() {
           self._pictureOffset = offsetMetadata;
           self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
-          // mediaFileReader.loadRange([offset + 4 + blockSize, offset + 4 + 4 + blockSize], {
-          //   onSuccess: function() {
-          //     self._loadBlock(mediaFileReader, offset + 4 + blockSize, callbacks);
-          //   }
-          // });
-          // callbacks.onSuccess();
         }
       });
     } else {
-      // mediaFileReader.loadRange([offset + 4 + blockSize, offset + 4 + 4 + blockSize], {
-      //   onSuccess: function() {
-      //     self._loadBlock(mediaFileReader, offset + 4 + blockSize, callbacks);
-      //   }
-      // });
       self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
     }
   }
@@ -221,7 +211,10 @@ class FLACTagReader extends MediaTagReader {
     var self = this;
     if (blockHeader > 127) {
       if (!self._commentOffset) {
-        callbacks.onError();
+        callbacks.onError({
+          "type": "loadData",
+          "info": "Comment block could not be found."
+        });
       } else {
         callbacks.onSuccess();
       }
@@ -302,6 +295,12 @@ class FLACTagReader extends MediaTagReader {
       dataOffset += 4 + dataLength;
     }
 
+    /* If a picture offset was found and assigned, then the reader will start processing
+     * the picture block from that point.
+     *
+     * All the lengths for the picture data can be found online here:
+     * https://xiph.org/flac/format.html#metadata_block_picture
+     */
     if (this._pictureOffset) {
       var imageType = data.getLongAt(this._pictureOffset, true);
       var offsetMimeLength = this._pictureOffset + 4;
@@ -323,10 +322,9 @@ class FLACTagReader extends MediaTagReader {
         data: imageData
       }
     }
-
-
+    
     var tag = {
-      type: "VorbisComment",
+      type: "FLAC",
       version: "1",
       tags: {
         "title": title,

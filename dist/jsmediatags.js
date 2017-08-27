@@ -22,7 +22,7 @@ var ArrayFileReader = function (_MediaFileReader) {
   function ArrayFileReader(array) {
     _classCallCheck(this, ArrayFileReader);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ArrayFileReader).call(this));
+    var _this = _possibleConstructorReturn(this, (ArrayFileReader.__proto__ || Object.getPrototypeOf(ArrayFileReader)).call(this));
 
     _this._array = array;
     _this._size = array.length;
@@ -80,7 +80,7 @@ var BlobFileReader = function (_MediaFileReader) {
   function BlobFileReader(blob) {
     _classCallCheck(this, BlobFileReader);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(BlobFileReader).call(this));
+    var _this = _possibleConstructorReturn(this, (BlobFileReader.__proto__ || Object.getPrototypeOf(BlobFileReader)).call(this));
 
     _this._blob = blob;
     _this._fileData = new ChunkedFileData();
@@ -374,7 +374,7 @@ var ID3v1TagReader = function (_MediaTagReader) {
   function ID3v1TagReader() {
     _classCallCheck(this, ID3v1TagReader);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(ID3v1TagReader).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ID3v1TagReader.__proto__ || Object.getPrototypeOf(ID3v1TagReader)).apply(this, arguments));
   }
 
   _createClass(ID3v1TagReader, [{
@@ -1069,7 +1069,7 @@ var ID3v2TagReader = function (_MediaTagReader) {
   function ID3v2TagReader() {
     _classCallCheck(this, ID3v2TagReader);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(ID3v2TagReader).apply(this, arguments));
+    return _possibleConstructorReturn(this, (ID3v2TagReader.__proto__ || Object.getPrototypeOf(ID3v2TagReader)).apply(this, arguments));
   }
 
   _createClass(ID3v2TagReader, [{
@@ -1234,7 +1234,7 @@ var MP4TagReader = function (_MediaTagReader) {
   function MP4TagReader() {
     _classCallCheck(this, MP4TagReader);
 
-    return _possibleConstructorReturn(this, Object.getPrototypeOf(MP4TagReader).apply(this, arguments));
+    return _possibleConstructorReturn(this, (MP4TagReader.__proto__ || Object.getPrototypeOf(MP4TagReader)).apply(this, arguments));
   }
 
   _createClass(MP4TagReader, [{
@@ -2058,7 +2058,7 @@ var XhrFileReader = function (_MediaFileReader) {
   function XhrFileReader(url) {
     _classCallCheck(this, XhrFileReader);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(XhrFileReader).call(this));
+    var _this = _possibleConstructorReturn(this, (XhrFileReader.__proto__ || Object.getPrototypeOf(XhrFileReader)).call(this));
 
     _this._url = url;
     _this._fileData = new ChunkedFileData();

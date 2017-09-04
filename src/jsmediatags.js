@@ -12,6 +12,7 @@ const MediaTagReader = require("./MediaTagReader");
 const ID3v1TagReader = require("./ID3v1TagReader");
 const ID3v2TagReader = require("./ID3v2TagReader");
 const MP4TagReader = require("./MP4TagReader");
+const FLACTagReader = require("./FLACTagReader");
 
 import type {
   CallbackType,
@@ -268,7 +269,8 @@ Config
   .addFileReader(ArrayFileReader)
   .addTagReader(ID3v2TagReader)
   .addTagReader(ID3v1TagReader)
-  .addTagReader(MP4TagReader);
+  .addTagReader(MP4TagReader)
+  .addTagReader(FLACTagReader);
 
 if (typeof process !== "undefined" && !process.browser) {
   Config.addFileReader(NodeFileReader);

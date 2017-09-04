@@ -7,6 +7,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
 
 ## Features
 
+* **[Michael Nguyen](https://github.com/TehTotalPwnage)**
+  * Added FLAC support.
+
 * **[Mark R. James](https://github.com/mrj)**
   * Added support for atID, cnID, plID, geID, xid, and flvr iTunes/Quicktime tags.
 
@@ -18,6 +21,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
   * Added support for ID3 Chapters (CHAP/CTOC)
 
 ## Bugs
+
+* **[Gilles Piou](https://github.com/pioug)**
+  * Updated and tidied up jest and babel.
 
 * **[Guilherme Dellagustin](https://github.com/dellagustin)**
 * **[Jon Hester](https://github.com/jonhester)**

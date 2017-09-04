@@ -21,6 +21,7 @@ A few people have asked me about donations (or even crowdfunding). I would prefe
   * ID3v1
   * ID3v2 (with unsynchronisation support!)
   * MP4
+  * FLAC
 
 ## How to use
 
@@ -99,7 +100,7 @@ inputTypeFile.addEventListener("change", function(event) {
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
 
 ### Articles
- 
+
 * [Cordova : lire les metadatas des mp3s avec jsmediatags](http://blog.luce.pro/2016/02/28/Phonegap-lire-les-metadatas-des-mp3s-avec-jsmediatags/)
 
 ## Documentation
@@ -160,6 +161,21 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
       description: 'Encoding Tool',
       data: 'Lavf53.24.2'
     }
+  }
+}
+```
+
+#### FLAC
+```javascript
+{
+  type: "FLAC",
+  version: "1",
+  tags: {
+    title: "16/12/95",
+    artist: "Sam, The Kid",
+    album: "Pratica(mente)",
+    track: "12",
+    picture: ...
   }
 }
 ```

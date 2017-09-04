@@ -39,26 +39,26 @@
     "xhr2": "^0.1.4"
   },
   "devDependencies": {
-    "babel-plugin-transform-flow-strip-types": "~6.7.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "~6.7.4",
-    "babel-plugin-transform-es2015-classes": "~6.6.5",
-    "babel-plugin-transform-es2015-block-scoping": "~6.7.1",
-    "babel-plugin-transform-class-properties": "~6.6.0",
+    "babel-cli": "~6.26.0",
+    "babel-core": "~6.26.0",
     "babel-jest": "~20.0.3",
-    "babel-core": "~6.7.7",
-    "babel-cli": "~6.7.7",
-    "jest-cli": "~20.0.4",
-    "browserify": "~14.4.0",
-    "watchify": "~3.7.0",
+    "babel-plugin-transform-class-properties": "~6.24.1",
+    "babel-plugin-transform-es2015-block-scoping": "~6.26.0",
+    "babel-plugin-transform-es2015-classes": "~6.24.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "~6.26.0",
+    "babel-plugin-transform-flow-strip-types": "~6.22.0",
     "babelify": "~7.3.0",
-    "google-closure-compiler": "20170626.0.0"
+    "browserify": "~14.4.0",
+    "google-closure-compiler": "20170626.0.0",
+    "jest-cli": "~20.0.4",
+    "watchify": "~3.7.0"
   },
   "scripts": {
     "test": "jest",
     "build": "babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build2",
     "watch": "babel --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build2",
-    "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
-    "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t [ babelify --plugins [ transform-flow-strip-types transform-es2015-modules-commonjs transform-class-properties transform-es2015-classes transform-es2015-block-scoping ] ]",
+    "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
+    "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
     "dist": "npm run dist-dev && java -jar node_modules/google-closure-compiler/compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS --js dist/jsmediatags.js > dist/jsmediatags.min.js"
   },
   "jest": {

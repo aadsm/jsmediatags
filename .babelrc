@@ -1,6 +1,9 @@
 {
   "plugins": [
-    "transform-flow-strip-types",
-    "babel-plugin-transform-es2015-modules-commonjs"
+    "babel-plugin-transform-es2015-modules-commonjs",
+    "transform-class-properties",
+    "transform-es2015-block-scoping",
+    "transform-es2015-classes",
+    "transform-flow-strip-types"
   ]
 }

@@ -62,6 +62,7 @@ new jsmediatags.Reader("http://www.example.com/music-file.mp3")
 ### Browser
 
 Copy the [`dist/jsmediatags.min.js`](https://github.com/aadsm/jsmediatags/blob/master/dist/jsmediatags.min.js) file into your web application directory and include it with a script tag.
+This library is also available on cdnjs at https://cdnjs.com/libraries/jsmediatags.
 UMD will give you multiple usage options to use it:
 
 ```javascript

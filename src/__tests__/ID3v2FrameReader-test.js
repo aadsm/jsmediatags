@@ -208,10 +208,6 @@ describe("ID3v2FrameReader", function() {
 
   describe("W* URL tags", function() {
     var frameReader = ID3v2FrameReader.getFrameReaderFunction("W*");
-    var expected = {
-      user_description: "ã",
-      data: "ã"
-    };
 
     it("asserts the ID3v2FrameReader is defined", function() {
       expect(frameReader).toBeDefined();
@@ -228,6 +224,16 @@ describe("ID3v2FrameReader", function() {
     });
 
     describe("WXXX", function() {
+      var frameReader = ID3v2FrameReader.getFrameReaderFunction("WXXX");
+      var expected = {
+        user_description: "ã",
+        data: "ã"
+      };
+
+      it("asserts the ID3v2FrameReader is defined", function() {
+        expect(frameReader).toBeDefined();
+      });
+
       it("reads both description and url with iso-8859-1 charset", function() {
         var fileData = [
           // encoding

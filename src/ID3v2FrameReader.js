@@ -556,22 +556,31 @@ frameReaderFunctions['TXXX'] = function readTextFrame(
   return getUserDefinedFields(offset, length, data, charset);
 };
 
+frameReaderFunctions['WXXX'] = function readUrlFrame(
+  offset: number,
+  length: number,
+  data: MediaFileReader,
+  flags: ?Object,
+  id3header?: TagHeader
+): ?Object {
+  if (length === 0) {
+    return null;
+  }
+  var charset = getTextEncoding(data.getByteAt(offset));
+  return getUserDefinedFields(offset, length, data, charset);
+};
+
 frameReaderFunctions['W*'] = function readUrlFrame(
   offset: number,
   length: number,
   data: MediaFileReader,
   flags: ?Object,
   id3header?: TagHeader
-): any {
-  // charset is only defined for user-defined URL link frames (http://id3.org/id3v2.3.0#User_defined_URL_link_frame)
-  // for the other URL link frames it is always iso-8859-1
-  var charset = getTextEncoding(data.getByteAt(offset));
-
-  if (charset !== undefined) {
-    return getUserDefinedFields(offset, length, data, charset);
-  } else {
-    return data.getStringWithCharsetAt(offset, length, charset).toString();
+): ?string {
+  if (length === 0) {
+    return null;
   }
+  return data.getStringWithCharsetAt(offset, length, 'iso-8859-1').toString();
 };
 
 frameReaderFunctions['TCON'] = function readGenreFrame(

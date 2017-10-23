@@ -254,7 +254,7 @@ describe("ID3v2TagReader", function() {
     return new Promise(function(resolve, reject) {
       tagReader.read({
         onSuccess: resolve,
-        onFailure: reject
+        onError: reject
       });
       jest.runAllTimers();
     }).then(function(tags) {

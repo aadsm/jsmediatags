@@ -103,7 +103,7 @@ var BlobFileReader = function (_MediaFileReader) {
       var browserFileReader = new FileReader();
 
       browserFileReader.onloadend = function (event) {
-        var intArray = new Uint8Array(Number(browserFileReader.result));
+        var intArray = new Uint8Array(browserFileReader.result);
         self._fileData.addData(range[0], intArray);
         callbacks.onSuccess();
       };

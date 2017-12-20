@@ -3,6 +3,7 @@
  */
 'use strict';
 
+const ReactNativeFileReader = require("./ReactNativeFileReader");
 const MediaFileReader = require("./MediaFileReader");
 const NodeFileReader = require("./NodeFileReader");
 const XhrFileReader = require("./XhrFileReader");
@@ -272,7 +273,11 @@ Config
   .addTagReader(MP4TagReader)
   .addTagReader(FLACTagReader);
 
+
 if (typeof process !== "undefined" && !process.browser) {
+  if (ReactNativeFileReader) {
+    Config.addFileReader(ReactNativeFileReader);
+  }
   Config.addFileReader(NodeFileReader);
 }
 

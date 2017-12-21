@@ -39,6 +39,7 @@
     "xhr2": "^0.1.4"
   },
   "optionalPeerDependencies": {
+    "buffer": "^5.0.8",
     "react-native-fs": "^2.9.2"
   },
   "devDependencies": {

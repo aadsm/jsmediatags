@@ -4,6 +4,7 @@
 'use strict';
 
 const RNFS = require('react-native-fs');
+const { Buffer } = require('buffer');
 
 const ChunkedFileData = require('./ChunkedFileData');
 const MediaFileReader = require('./MediaFileReader');
@@ -56,8 +57,10 @@ class ReactNativeFileReader extends MediaFileReader {
     var onSuccess = callbacks.onSuccess;
     var onError = callbacks.onError || function(object){};
 
-    RNFS.read(this._path, length, range[0])
-      .then(data => {
+    RNFS.read(this._path, length, range[0], {encoding: 'base64'})
+      .then(readData => {
+        const buffer = new Buffer(readData, 'base64');
+        const data = Array.prototype.slice.call(buffer, 0, length);
         fileData.addData(range[0], data);
         onSuccess();
       })

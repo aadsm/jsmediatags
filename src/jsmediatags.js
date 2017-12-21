@@ -275,9 +275,7 @@ Config
 
 
 if (typeof process !== "undefined" && !process.browser) {
-  if (ReactNativeFileReader) {
-    Config.addFileReader(ReactNativeFileReader);
-  }
+  Config.addFileReader(ReactNativeFileReader);
   Config.addFileReader(NodeFileReader);
 }
 

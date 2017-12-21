@@ -39,10 +39,11 @@ class ReactNativeFileReader extends MediaFileReader {
 
     RNFS.stat(self._path)
       .then(statResult => {
-        self._size = statResult.size
+        self._size = statResult.size;
+        callbacks.onSuccess();
       })
       .catch(error => {
-        callbacks.onError({"type": "fs", "info": error})
+        callbacks.onError({"type": "fs", "info": error});
       })
   }
 

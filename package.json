@@ -36,7 +36,8 @@
   },
   "homepage": "https://github.com/aadsm/jsmediatags#readme",
   "react-native": {
-    "fs": false
+    "fs": false,
+    "./NodeFileReader": false
   },
   "dependencies": {
     "xhr2": "^0.1.4"

@@ -35,6 +35,9 @@
     "url": "https://github.com/aadsm/jsmediatags/issues"
   },
   "homepage": "https://github.com/aadsm/jsmediatags#readme",
+  "react-native": {
+    "fs": false
+  },
   "dependencies": {
     "xhr2": "^0.1.4"
   },

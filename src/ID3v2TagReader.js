@@ -60,10 +60,15 @@ class ID3v2TagReader extends MediaTagReader {
     offset += 10;
 
     if( xheader ) {
-      // TODO: support 2.4
-      var xheadersize = data.getLongAt(offset, true);
-      // The 'Extended header size', currently 6 or 10 bytes, excludes itself.
-      offset += xheadersize + 4;
+      // We skip the extended header and don't offer support for it right now.
+      if (major === 4) {
+        var xheadersize = data.getSynchsafeInteger32At(offset);
+        offset += xheadersize;
+      } else {
+        var xheadersize = data.getLongAt(offset, true);
+        // The 'Extended header size', currently 6 or 10 bytes, excludes itself.
+        offset += xheadersize + 4;
+      }
     }
 
     var id3 = {

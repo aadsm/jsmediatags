@@ -26,29 +26,75 @@ describe("ID3v2TagReader", function() {
     tagReader = new ID3v2TagReader(mediaFileReader);
   });
 
-  it("reads header", function() {
-    return new Promise(function(resolve, reject) {
-      tagReader.read({
-        onSuccess: resolve,
-        onFailure: reject
-      });
-      jest.runAllTimers();
-    }).then(function(tags) {
-      delete tags.tags;
-      expect(tags).toEqual({
-        type: "ID3",
-        version: "2.4.3",
-        flags: {
-          experimental_indicator: false,
-          extended_header: false,
-          unsynchronisation: false,
-          footer_present: false
-        },
-        major: 4,
-        revision: 3,
-        size: 55
+  describe("header", function() {
+    it("reads an header", function() {
+      return new Promise(function(resolve, reject) {
+        tagReader.read({
+          onSuccess: resolve,
+          onFailure: reject
+        });
+        jest.runAllTimers();
+      }).then(function(tags) {
+        delete tags.tags;
+        expect(tags).toEqual({
+          type: "ID3",
+          version: "2.4.3",
+          flags: {
+            experimental_indicator: false,
+            extended_header: false,
+            unsynchronisation: false,
+            footer_present: false
+          },
+          major: 4,
+          revision: 3,
+          size: 55
+        });
       });
     });
+    
+    it("reads an header with extended header", function() {
+      return new Promise(function(resolve, reject) {
+        var id3FileContents =
+          new ID3v2TagContents(4, 3)
+            .addFrame("TIT2", [].concat(
+              [0x00], // encoding
+              bin("The title"), [0x00]
+            ))
+            .addFrame("TCOM", [].concat(
+              [0x00], // encoding
+              bin("The Composer"), [0x00]
+            ))
+            .setTagIsUpdate();
+
+        mediaFileReader = new ArrayFileReader(id3FileContents.toArray());
+        tagReader = new ID3v2TagReader(mediaFileReader);
+
+        tagReader.read({
+          onSuccess: resolve,
+          onFailure: reject
+        });
+        jest.runAllTimers();
+      }).then(function(tags) {
+        expect("TIT2" in tags.tags).toBeTruthy();
+        expect("TCOM" in tags.tags).toBeTruthy();
+
+        delete tags.tags;
+        expect(tags).toEqual({
+          type: "ID3",
+          version: "2.4.3",
+          flags: {
+            experimental_indicator: false,
+            extended_header: true,
+            unsynchronisation: false,
+            footer_present: false
+          },
+          major: 4,
+          revision: 3,
+          size: 51
+        });
+      });
+    });
+
   });
 
   it("loads the entire tag", function() {

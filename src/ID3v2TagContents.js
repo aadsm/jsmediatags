@@ -76,19 +76,33 @@ class ID3v2TagContents {
   }
 
   setFlags(flags: TagHeaderFlags): ID3v2TagContents {
-    var binaryFlags = 0;
+    return this._updateFlags(flags, 0);
+  }
 
-    if (flags.unsynchronisation) {
-      binaryFlags |= 1<<7;
+  _updateFlags(flags: TagHeaderFlags, binaryFlags?: number): ID3v2TagContents {
+    if (typeof binaryFlags !== 'number') {
+      binaryFlags = this._contents[FLAGS] || 0;
     }
-    if (flags.extended_header) {
-      binaryFlags |= 1<<6;
+
+    function setOrUnsetBit(shouldSet, bitmap, bit) {
+      if (shouldSet) {
+        return bitmap |= 1<<bit;
+      } else {
+        return bitmap &= ~(1<<bit);
+      }
     }
-    if (flags.experimental_indicator) {
-      binaryFlags |= 1<<5;
+
+    if (flags.hasOwnProperty('unsynchronisation')) {
+      binaryFlags = setOrUnsetBit(!!flags.unsynchronisation, binaryFlags, 7);
     }
-    if (flags.footer_present) {
-      binaryFlags |= 1<<4;
+    if (flags.hasOwnProperty('extended_header')) {
+      binaryFlags = setOrUnsetBit(!!flags.extended_header, binaryFlags, 6);
+    }
+    if (flags.hasOwnProperty('experimental_indicator')) {
+      binaryFlags = setOrUnsetBit(!!flags.experimental_indicator, binaryFlags, 5);
+    }
+    if (flags.hasOwnProperty('footer_present')) {
+      binaryFlags = setOrUnsetBit(!!flags.footer_present, binaryFlags, 4);
     }
 
     this._contents[FLAGS] = binaryFlags;
@@ -122,9 +136,9 @@ class ID3v2TagContents {
 
     if (this._major === 4) {
       this._setBitAtOffset(EXTENDED_FLAGS_V4, 6);
-      this._addExtendedHeaderData('UPDATE', []);
     }
-
+    
+    this._updateSize();
     return this;
   }
 
@@ -199,6 +213,7 @@ class ID3v2TagContents {
       ]);
     }
 
+    this._updateSize();
     return this;
   }
 
@@ -311,6 +326,7 @@ class ID3v2TagContents {
 
   _initExtendedHeader() {
     this._hasExtendedHeader = true;
+    this._updateFlags({extended_header: true});
 
     if (this._major === 3) {
       this._addData(EXTENDED_HEADER, [

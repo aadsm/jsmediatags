@@ -17,6 +17,7 @@ A few people have asked me about donations (or even crowdfunding). I would prefe
   * Blob
   * File
   * Buffers/Arrays
+  * React Native
 * Tag Readers
   * ID3v1
   * ID3v2 (with unsynchronisation support!)
@@ -99,6 +100,54 @@ inputTypeFile.addEventListener("change", function(event) {
 ```
 
 You can find more about UMD usage options [here](http://www.forbeslindesay.co.uk/post/46324645400/standalone-browserify-builds).
+
+### React Native
+
+React Native support requires some additional dependencies:
+
+```bash
+npm install --save jsmediatags buffer react-native-fs
+```
+
+With these dependencies installed, usage with React Native should remain the
+same:
+
+```js
+const jsmediatags = require('jsmediatags');
+
+new jsmediatags.Reader('/path/to/song.mp3')
+  .read({
+    onSuccess: (tag) => {
+      console.log('Success!');
+      console.log(tag);
+    },
+    onError: (error) => {
+      console.log('Error');
+      console.log(error);
+    }
+});
+
+// Or wrap it with a promise
+new Promise((resolve, reject) => {
+  new jsmediatags.Reader('/path/to/song.mp3')
+    .read({
+      onSuccess: (tag) => {
+        console.log('Success!');
+        resolve(tag);
+      },
+      onError: (error) => {
+        console.log('Error');
+        reject(error);
+      }
+  });
+})
+  .then(tagInfo => {
+    // handle the onSuccess return
+  })
+  .catch(error => {
+    // handle errors
+  })
+```
 
 ### Articles
 

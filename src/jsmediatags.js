@@ -3,8 +3,9 @@
  */
 'use strict';
 
+const NodeFileReader = require('./NodeFileReader');
+const ReactNativeFileReader = require('./ReactNativeFileReader');
 const MediaFileReader = require("./MediaFileReader");
-const NodeFileReader = require("./NodeFileReader");
 const XhrFileReader = require("./XhrFileReader");
 const BlobFileReader = require("./BlobFileReader");
 const ArrayFileReader = require("./ArrayFileReader");
@@ -273,7 +274,11 @@ Config
   .addTagReader(FLACTagReader);
 
 if (typeof process !== "undefined" && !process.browser) {
-  Config.addFileReader(NodeFileReader);
+  if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
+    Config.addFileReader(ReactNativeFileReader);
+  } else {
+    Config.addFileReader(NodeFileReader);
+  }
 }
 
 module.exports = {

@@ -35,8 +35,16 @@
     "url": "https://github.com/aadsm/jsmediatags/issues"
   },
   "homepage": "https://github.com/aadsm/jsmediatags#readme",
+  "react-native": {
+    "fs": false,
+    "./NodeFileReader": false
+  },
   "dependencies": {
     "xhr2": "^0.1.4"
+  },
+  "optionalPeerDependencies": {
+    "buffer": "^5.0.8",
+    "react-native-fs": "^2.9.2"
   },
   "devDependencies": {
     "babel-cli": "~6.26.0",
@@ -47,19 +55,22 @@
     "babel-plugin-transform-es2015-classes": "~6.24.1",
     "babel-plugin-transform-es2015-modules-commonjs": "~6.26.0",
     "babel-plugin-transform-flow-strip-types": "~6.22.0",
+    "babel-preset-react-native": "^4.0.0",
     "babelify": "~7.3.0",
     "browserify": "~14.4.0",
+    "flow-bin": "~0.53.1",
     "google-closure-compiler": "20170626.0.0",
     "jest-cli": "~20.0.4",
-    "watchify": "~3.7.0",
-    "flow-bin": "~0.53.1"
+    "react": "^16.2.0",
+    "react-native": "^0.51.0",
+    "watchify": "~3.7.0"
   },
   "scripts": {
     "test": "jest",
     "build": "babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build2",
     "watch": "babel --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build2",
-    "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
-    "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
+    "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -i ./src/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
+    "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -i ./src/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
     "dist": "npm run dist-dev && java -jar node_modules/google-closure-compiler/compiler.jar --warning_level QUIET --compilation_level SIMPLE_OPTIMIZATIONS --js dist/jsmediatags.js > dist/jsmediatags.min.js"
   },
   "jest": {

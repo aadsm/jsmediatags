@@ -146,7 +146,7 @@ new Promise((resolve, reject) => {
   })
   .catch(error => {
     // handle errors
-  })
+  });
 ```
 
 ### Articles

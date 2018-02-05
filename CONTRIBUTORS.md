@@ -7,6 +7,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
 
 ## Features
 
+* **[David Roeca](https://github.com/davidroeca)**
+  * Added React Native support.
+
 * **[Michael Nguyen](https://github.com/TehTotalPwnage)**
   * Added FLAC support.
 

@@ -23,7 +23,9 @@ class XhrFileReader extends MediaFileReader {
   static _config: {
     avoidHeadRequests: boolean,
     disallowedXhrHeaders: Array<string>,
-    timeoutInSec: number
+    timeoutInSec: number,
+    xhrHeaders: Object,
+    xhrWithCredentials: boolean
   };
   _url: string;
   _fileData: ChunkedFileData;
@@ -247,6 +249,16 @@ class XhrFileReader extends MediaFileReader {
       }
     }
 
+    if (Object.keys(XhrFileReader._config.xhrHeaders).length) {
+      for (const key of Object.keys(XhrFileReader._config.xhrHeaders)) {
+        this._setRequestHeader(xhr, key, XhrFileReader._config.xhrHeaders[key]);
+      }
+    }
+
+    if (XhrFileReader._config.xhrWithCredentials) {
+      xhr.withCredentials = true;
+    }
+
     xhr.overrideMimeType("text/plain; charset=x-user-defined");
     if (range) {
       this._setRequestHeader(xhr, "Range", "bytes=" + range[0] + "-" + range[1]);
@@ -314,7 +326,9 @@ class XhrFileReader extends MediaFileReader {
 XhrFileReader._config = {
   avoidHeadRequests: false,
   disallowedXhrHeaders: [],
-  timeoutInSec: 30
+  timeoutInSec: 30,
+  xhrHeaders: {},
+  xhrWithCredentials: false
 };
 
 module.exports = XhrFileReader;

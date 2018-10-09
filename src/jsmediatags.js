@@ -262,6 +262,18 @@ class Config {
       timeoutInSec: timeoutInSec
     });
   }
+
+  static setXhrHeaders(xhrHeaders: Object) {
+    XhrFileReader.setConfig({
+      xhrHeaders: xhrHeaders
+    });
+  }
+
+  static setXhrWithCredentials(xhrWithCredentials: boolean) {
+    XhrFileReader.setConfig({
+      xhrWithCredentials: xhrWithCredentials
+    });
+  }
 }
 
 Config

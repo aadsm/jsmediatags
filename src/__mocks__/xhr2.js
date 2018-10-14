@@ -80,12 +80,12 @@ function XMLHttpRequestMock() {
   var _range;
 
   this.onload = function() {};
-  this.open = jest.genMockFunction().mockImplementation(function(method, url) {
+  this.open = jest.fn().mockImplementation(function(method, url) {
     _url = url;
     _range = null;
   });
-  this.overrideMimeType = jest.genMockFunction();
-  this.setRequestHeader = jest.genMockFunction().mockImplementation(
+  this.overrideMimeType = jest.fn();
+  this.setRequestHeader = jest.fn().mockImplementation(
     function(headerName, headerValue) {
       if (headerName.toLowerCase() === "range") {
         var matches = headerValue.match(/bytes=(\d+)-(\d+)/);
@@ -93,7 +93,7 @@ function XMLHttpRequestMock() {
       }
     }
   );
-  this.getResponseHeader = jest.genMockFunction().mockImplementation(
+  this.getResponseHeader = jest.fn().mockImplementation(
     function(headerName) {
       if (headerName.toLowerCase() === "content-length") {
         return getUrlContentLength(_url, _range);
@@ -108,7 +108,7 @@ function XMLHttpRequestMock() {
       return "bytes " + _range[0] + "-" + endByte + "/" + (getUrlFileLength(_url) || "*");
     }
   }
-  this.getAllResponseHeaders = jest.genMockFunction().mockImplementation(
+  this.getAllResponseHeaders = jest.fn().mockImplementation(
     function() {
       var headers = [];
 
@@ -120,7 +120,7 @@ function XMLHttpRequestMock() {
       return headers.join("\r\n");
     }
   );
-  this.send = jest.genMockFunction().mockImplementation(function() {
+  this.send = jest.fn().mockImplementation(function() {
     var requestTimeout = getTimeout(_url);
 
     setTimeout(

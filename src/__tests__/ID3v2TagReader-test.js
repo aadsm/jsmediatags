@@ -98,7 +98,7 @@ describe("ID3v2TagReader", function() {
   });
 
   it("loads the entire tag", function() {
-    mediaFileReader.loadRange = jest.genMockFunction().mockImplementation(
+    mediaFileReader.loadRange = jest.fn().mockImplementation(
       function() {
         return ArrayFileReader.prototype.loadRange.apply(this, arguments);
       }

@@ -221,7 +221,7 @@ describe("XhrFileReader", function() {
       XhrFileReader.setConfig({
         avoidHeadRequests: true
       });
-      require('xhr2').XMLHttpRequest.getAllResponseHeaders = jest.genMockFunction().mockReturnValue("");
+      require('xhr2').XMLHttpRequest.getAllResponseHeaders = jest.fn().mockReturnValue("");
       fileReader.init(throwOnError(resolve));
       jest.runAllTimers();
     }).then(function(tags) {

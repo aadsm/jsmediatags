@@ -11,7 +11,7 @@ describe("MediaFileReader", function() {
   beforeEach(function() {
     mediaFileReader = new MediaFileReader();
     mediaFileReader.getByteAt =
-      jest.genMockFunction().mockImplementation(function(offset) {
+      jest.fn().mockImplementation(function(offset) {
         return mediaFileBytes[offset];
       });
   });

@@ -30,14 +30,14 @@ describe("jsmediatags", function() {
     jsmediatags.Config.removeTagReader(MP4TagReader);
     jsmediatags.Config.removeTagReader(FLACTagReader);
     // Reset auto mock to its original state.
-    NodeFileReader.canReadFile = jest.genMockFunction();
-    NodeFileReader.prototype.init = jest.genMockFunction()
+    NodeFileReader.canReadFile = jest.fn();
+    NodeFileReader.prototype.init = jest.fn()
       .mockImplementation(function(callbacks) {
         setTimeout(function() {
           callbacks.onSuccess();
         }, 1);
       });
-    NodeFileReader.prototype.loadRange = jest.genMockFunction()
+    NodeFileReader.prototype.loadRange = jest.fn()
       .mockImplementation(function(range, callbacks) {
         setTimeout(function() {
           callbacks.onSuccess();
@@ -47,13 +47,13 @@ describe("jsmediatags", function() {
     ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
       {offset: 0, length: 0}
     );
-    ID3v2TagReader.prototype.setTagsToRead = jest.genMockFunction().mockReturnThis();
+    ID3v2TagReader.prototype.setTagsToRead = jest.fn().mockReturnThis();
   });
 
   it("should read tags with the shortcut function", function() {
     NodeFileReader.canReadFile.mockReturnValue(true);
     ID3v2TagReader.canReadTagFormat.mockReturnValue(true);
-    ID3v2TagReader.prototype.read = jest.genMockFunction()
+    ID3v2TagReader.prototype.read = jest.fn()
       .mockImplementation(function(callbacks) {
         callbacks.onSuccess(mockTags);
       });
@@ -69,7 +69,7 @@ describe("jsmediatags", function() {
   describe("file readers", function() {
     it("should use the given file reader", function() {
       var reader = new jsmediatags.Reader();
-      var MockFileReader = jest.genMockFunction();
+      var MockFileReader = jest.fn();
 
       reader.setFileReader(MockFileReader);
       var fileReader = reader._getFileReader();
@@ -107,7 +107,7 @@ describe("jsmediatags", function() {
 
   describe("tag readers", function() {
     it("should use the given tag reader", function() {
-      var MockTagReader = jest.genMockFunction();
+      var MockTagReader = jest.fn();
 
       return new Promise(function(resolve, reject) {
         var reader = new jsmediatags.Reader();
@@ -120,13 +120,13 @@ describe("jsmediatags", function() {
     });
 
     it("should use the tag reader that is able to read the tags", function() {
-      var MockTagReader = jest.genMockFunction();
+      var MockTagReader = jest.fn();
       jsmediatags.Config.addTagReader(MockTagReader);
 
       ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
-      MockTagReader.getTagIdentifierByteRange = jest.genMockFunction()
+      MockTagReader.getTagIdentifierByteRange = jest.fn()
         .mockReturnValue([]);
-      MockTagReader.canReadTagFormat = jest.genMockFunction()
+      MockTagReader.canReadTagFormat = jest.fn()
         .mockReturnValue(true);
 
       return new Promise(function(resolve, reject) {
@@ -150,16 +150,16 @@ describe("jsmediatags", function() {
     });
 
     it("should load the super set range of all tag reader ranges", function() {
-      var MockTagReader = jest.genMockFunction();
+      var MockTagReader = jest.fn();
       jsmediatags.Config.addTagReader(MockTagReader);
 
       ID3v2TagReader.canReadTagFormat.mockReturnValue(false);
       ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
         {offset: 2, length: 3}
       );
-      MockTagReader.getTagIdentifierByteRange = jest.genMockFunction()
+      MockTagReader.getTagIdentifierByteRange = jest.fn()
         .mockReturnValue({offset: 5, length: 2});
-      MockTagReader.canReadTagFormat = jest.genMockFunction()
+      MockTagReader.canReadTagFormat = jest.fn()
         .mockReturnValue(true);
 
       return new Promise(function(resolve, reject) {
@@ -175,7 +175,7 @@ describe("jsmediatags", function() {
 
     it("should not load the entire file if two tag loaders require start and end ranges for tag identifier", function() {
       var fileReader = new NodeFileReader();
-      var MockTagReader = jest.genMockFunction();
+      var MockTagReader = jest.fn();
       jsmediatags.Config.addTagReader(MockTagReader);
 
       fileReader.getSize.mockReturnValue(1024);
@@ -184,9 +184,9 @@ describe("jsmediatags", function() {
       ID3v2TagReader.getTagIdentifierByteRange.mockReturnValue(
         {offset: 0, length: 3}
       );
-      MockTagReader.getTagIdentifierByteRange = jest.genMockFunction()
+      MockTagReader.getTagIdentifierByteRange = jest.fn()
         .mockReturnValue({offset: -3, length: 3});
-      MockTagReader.canReadTagFormat = jest.genMockFunction()
+      MockTagReader.canReadTagFormat = jest.fn()
         .mockReturnValue(true);
 
       return new Promise(function(resolve, reject) {

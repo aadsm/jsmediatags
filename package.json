@@ -60,7 +60,7 @@
     "browserify": "~14.4.0",
     "flow-bin": "~0.53.1",
     "google-closure-compiler": "20170626.0.0",
-    "jest-cli": "~20.0.4",
+    "jest-cli": "~23.6.0",
     "react": "^16.2.0",
     "react-native": "^0.51.0",
     "watchify": "~3.7.0"

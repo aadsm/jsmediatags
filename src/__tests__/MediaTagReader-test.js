@@ -11,7 +11,7 @@ describe("MediaTagReader", function() {
   beforeEach(function() {
     mediaFileReader = new MediaFileReader();
     mediaFileReader.init =
-      jest.genMockFunction().mockImplementation(function(callbacks) {
+      jest.fn().mockImplementation(function(callbacks) {
         setTimeout(function() {
           callbacks.onSuccess();
         }, 1);
@@ -22,13 +22,13 @@ describe("MediaTagReader", function() {
   it("can read the data given by _parseData", function() {
     var expectedTags = {};
     mediaTagReader._loadData =
-      jest.genMockFunction().mockImplementation(function(_, callbacks) {
+      jest.fn().mockImplementation(function(_, callbacks) {
         setTimeout(function() {
           callbacks.onSuccess();
         }, 1);
       });
     mediaTagReader._parseData =
-      jest.genMockFunction().mockImplementation(function() {
+      jest.fn().mockImplementation(function() {
         return expectedTags;
       });
 
@@ -41,7 +41,7 @@ describe("MediaTagReader", function() {
   });
 
   it("should _loadData when it needs to be read", function() {
-    mediaTagReader._loadData = jest.genMockFunction().mockImplementation(
+    mediaTagReader._loadData = jest.fn().mockImplementation(
       function(localMediaFileReader, callbacks) {
         expect(localMediaFileReader).toBe(mediaFileReader);
         setTimeout(function() {
@@ -49,7 +49,7 @@ describe("MediaTagReader", function() {
         }, 1);
       }
     );
-    mediaTagReader._parseData = jest.genMockFunction();
+    mediaTagReader._parseData = jest.fn();
 
     return new Promise(function(resolve, reject) {
       mediaTagReader.read({onSuccess: resolve, onError: reject});

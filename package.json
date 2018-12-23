@@ -1,5 +1,5 @@
 {
-  "name": "jsmediatags",
+  "name": "jsmediatags-web",
   "version": "3.9.0",
   "description": "Media Tags Reader (ID3, MP4)",
   "author": {
@@ -35,17 +35,6 @@
     "url": "https://github.com/aadsm/jsmediatags/issues"
   },
   "homepage": "https://github.com/aadsm/jsmediatags#readme",
-  "react-native": {
-    "fs": false,
-    "./NodeFileReader": false
-  },
-  "dependencies": {
-    "xhr2": "^0.1.4"
-  },
-  "optionalPeerDependencies": {
-    "buffer": "^5.0.8",
-    "react-native-fs": "^2.9.2"
-  },
   "devDependencies": {
     "babel-cli": "~6.26.0",
     "babel-core": "~6.26.0",
@@ -62,12 +51,11 @@
     "google-closure-compiler": "20170626.0.0",
     "jest-cli": "~23.6.0",
     "react": "^16.2.0",
-    "react-native": "^0.51.0",
     "watchify": "~3.7.0"
   },
   "scripts": {
     "test": "jest",
-    "build": "babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build2",
+    "build": "rm -rf build2 && babel src --ignore __tests__,__mocks,FlowTypes.js --out-dir build2",
     "watch": "babel --ignore __tests__,__mocks,FlowTypes.js --watch src --out-dir build2",
     "dist-dev": "mkdir -p dist && browserify src/jsmediatags.js --detect-globals false -i ./src/NodeFileReader.js -i ./src/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
     "dist-watch": "mkdir -p dist && watchify src/jsmediatags.js -v --detect-globals false -i ./src/NodeFileReader.js -i ./src/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags -t babelify",
@@ -80,7 +68,7 @@
       ".js$": "babel-jest"
     }
   },
-  "engines": {
-    "node": ">=4.0.0"
-  }
+  "files": [
+    "build2"
+  ]
 }

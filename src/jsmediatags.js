@@ -4,7 +4,6 @@
 'use strict';
 
 const MediaFileReader = require("./MediaFileReader");
-const XhrFileReader = require("./XhrFileReader");
 const BlobFileReader = require("./BlobFileReader");
 const ArrayFileReader = require("./ArrayFileReader");
 const MediaTagReader = require("./MediaTagReader");
@@ -242,44 +241,15 @@ class Config {
 
     return Config;
   }
-
-  static EXPERIMENTAL_avoidHeadRequests() {
-    XhrFileReader.setConfig({
-      avoidHeadRequests: true
-    });
-  }
-
-  static setDisallowedXhrHeaders(disallowedXhrHeaders: Array<string>) {
-    XhrFileReader.setConfig({
-      disallowedXhrHeaders: disallowedXhrHeaders
-    });
-  }
-
-  static setXhrTimeoutInSec(timeoutInSec: number) {
-    XhrFileReader.setConfig({
-      timeoutInSec: timeoutInSec
-    });
-  }
 }
 
 Config
-  .addFileReader(XhrFileReader)
   .addFileReader(BlobFileReader)
   .addFileReader(ArrayFileReader)
   .addTagReader(ID3v2TagReader)
   .addTagReader(ID3v1TagReader)
   .addTagReader(MP4TagReader)
   .addTagReader(FLACTagReader);
-
-if (typeof process !== "undefined" && !process.browser) {
-  if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
-    const ReactNativeFileReader = require('./ReactNativeFileReader');
-    Config.addFileReader(ReactNativeFileReader);
-  } else {
-    const NodeFileReader = require('./NodeFileReader');
-    Config.addFileReader(NodeFileReader);
-  }
-}
 
 module.exports = {
   "read": read,

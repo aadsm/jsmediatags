@@ -26,7 +26,6 @@ class ArrayBufferFileReader extends MediaFileReader {
 
     _init(callbacks: LoadCallbackType): void {
         this._size = this._buffer.byteLength;
-        console.log(this._size);
         setTimeout(callbacks.onSuccess, 1);
     }
 

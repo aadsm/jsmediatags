@@ -22,6 +22,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
 
 * **[Nils Schnabel](https://github.com/nils)**
   * Added support for ID3 Chapters (CHAP/CTOC)
+  
+* **[LiuTongTong](https://github.com/TongDaDa)**
+  * Added ArrayBuffer file reader.
 
 ## Bugs
 

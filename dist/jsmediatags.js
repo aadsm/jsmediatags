@@ -145,7 +145,7 @@ module.exports = BlobFileReader;
  * This class does not load the data, it just manages it. It provides operations
  * to add and read data from the file.
  *
- * 
+ *
  */
 'use strict';
 
@@ -1567,7 +1567,7 @@ module.exports = ID3v2TagReader;
  *   http://atomicparsley.sourceforge.net/mpeg-4files.html
  *   http://developer.apple.com/mac/library/documentation/QuickTime/QTFF/Metadata/Metadata.html
  * Authored by Joshua Kifer <joshua.kifer gmail.com>
- * 
+ *
  */
 'use strict';
 
@@ -2202,7 +2202,11 @@ var MediaTagReader = function () {
               }
 
               // TODO: destroy mediaFileReader
-              callbacks.onSuccess(tags);
+
+              // We also return the file path so we can
+              // ... include it the tracks meta.
+              // ... i.e meta.source
+              callbacks.onSuccess(tags, self._mediaFileReader._path);
             },
             onError: callbacks.onError
           });

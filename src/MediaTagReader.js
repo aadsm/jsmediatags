@@ -64,7 +64,11 @@ class MediaTagReader {
             }
 
             // TODO: destroy mediaFileReader
-            callbacks.onSuccess(tags);
+
+            // We also return the file path so we can
+            // ... include it the tracks meta.
+            // ... i.e meta.source
+            callbacks.onSuccess(tags, self._mediaFileReader._path);
           },
           onError: callbacks.onError
         });

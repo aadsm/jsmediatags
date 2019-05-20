@@ -289,6 +289,17 @@ However, you can specify exactly which file reader or tag reader to use using th
 
 New file and tag readers can be implemented by extending the MediaFileReader and MediaTagReader classes. Check the `Development` section down bellow for more information.
 
+### Picture data
+
+The `picture` tag contains an array buffer of all the bytes of the album artwork image as well as the content type of the image. The data can be converted and displayed as an image using:
+
+```javascript
+const { data, type } = result.tags.picture;
+const byteArray = new Uint8Array(data);
+const blob = new Blob([byteArray], { type });
+const albumArtUrl = URL.createObjectURL(blob);
+```
+
 ### Reference
 
 * `jsmediatags.Reader`

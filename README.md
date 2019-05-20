@@ -266,6 +266,19 @@ These are the supported shortcuts.
 * `picture`
 * `lyrics`
 
+### Picture data
+
+The `picture` tag contains an array buffer of all the bytes of the album artwork image as well as the content type of the image. The data can be converted and displayed as an image using:
+
+```javascript
+const { data, format } = result.tags.picture;
+let base64String = "";
+for (const i = 0; i < data.length; i++) {
+  base64String += String.fromCharCode(data[i]);
+}
+img.src = `data:${format};base64,${base64String}`;
+```
+
 ### HTTP Access Control (CORS)
 
 When using HTTP [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) requests you need to make sure that the server is configured to receive `If-Modified-Since` and `Range` headers with the request.

@@ -1,7 +1,7 @@
 {
   "name": "jsmediatags",
   "description": "Media Tags Reader (ID3, MP4)",
-  "main": "dist/jsmediatags.js",
+  "main": "dist/jsmediatags.min.js",
   "authors": [
     "António Afonso"
   ],
@@ -21,6 +21,6 @@
   "homepage": "https://github.com/aadsm/jsmediatags",
   "ignore": [
     "*",
-    "!dist/jsmediatags.js"
+    "!dist/jsmediatags.min.js"
   ]
 }

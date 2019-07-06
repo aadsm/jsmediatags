@@ -6,23 +6,43 @@ module.exports = XMLHttpRequest;
 },{}],3:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var MediaFileReader = require('./MediaFileReader');
 
-var ArrayFileReader = function (_MediaFileReader) {
+var ArrayFileReader =
+/*#__PURE__*/
+function (_MediaFileReader) {
   _inherits(ArrayFileReader, _MediaFileReader);
 
   function ArrayFileReader(array) {
+    var _this;
+
     _classCallCheck(this, ArrayFileReader);
 
-    var _this = _possibleConstructorReturn(this, (ArrayFileReader.__proto__ || Object.getPrototypeOf(ArrayFileReader)).call(this));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ArrayFileReader).call(this));
+
+    _defineProperty(_assertThisInitialized(_this), "_array", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_size", void 0);
 
     _this._array = array;
     _this._size = array.length;
@@ -31,25 +51,26 @@ var ArrayFileReader = function (_MediaFileReader) {
   }
 
   _createClass(ArrayFileReader, [{
-    key: 'init',
+    key: "init",
     value: function init(callbacks) {
       setTimeout(callbacks.onSuccess, 0);
     }
   }, {
-    key: 'loadRange',
+    key: "loadRange",
     value: function loadRange(range, callbacks) {
       setTimeout(callbacks.onSuccess, 0);
     }
   }, {
-    key: 'getByteAt',
+    key: "getByteAt",
     value: function getByteAt(offset) {
       if (offset >= this._array.length) {
         throw new Error("Offset " + offset + " hasn't been loaded yet.");
       }
+
       return this._array[offset];
     }
   }], [{
-    key: 'canReadFile',
+    key: "canReadFile",
     value: function canReadFile(file) {
       return Array.isArray(file) || typeof Buffer === 'function' && Buffer.isBuffer(file);
     }
@@ -63,24 +84,45 @@ module.exports = ArrayFileReader;
 },{"./MediaFileReader":11}],4:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var ChunkedFileData = require('./ChunkedFileData');
+
 var MediaFileReader = require('./MediaFileReader');
 
-var BlobFileReader = function (_MediaFileReader) {
+var BlobFileReader =
+/*#__PURE__*/
+function (_MediaFileReader) {
   _inherits(BlobFileReader, _MediaFileReader);
 
   function BlobFileReader(blob) {
+    var _this;
+
     _classCallCheck(this, BlobFileReader);
 
-    var _this = _possibleConstructorReturn(this, (BlobFileReader.__proto__ || Object.getPrototypeOf(BlobFileReader)).call(this));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(BlobFileReader).call(this));
+
+    _defineProperty(_assertThisInitialized(_this), "_blob", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_fileData", void 0);
 
     _this._blob = blob;
     _this._fileData = new ChunkedFileData();
@@ -88,43 +130,48 @@ var BlobFileReader = function (_MediaFileReader) {
   }
 
   _createClass(BlobFileReader, [{
-    key: '_init',
+    key: "_init",
     value: function _init(callbacks) {
       this._size = this._blob.size;
       setTimeout(callbacks.onSuccess, 1);
     }
   }, {
-    key: 'loadRange',
+    key: "loadRange",
     value: function loadRange(range, callbacks) {
-      var self = this;
-      // $FlowIssue - flow isn't aware of mozSlice or webkitSlice
+      var self = this; // $FlowIssue - flow isn't aware of mozSlice or webkitSlice
+
       var blobSlice = this._blob.slice || this._blob.mozSlice || this._blob.webkitSlice;
       var blob = blobSlice.call(this._blob, range[0], range[1] + 1);
       var browserFileReader = new FileReader();
 
       browserFileReader.onloadend = function (event) {
         var intArray = new Uint8Array(browserFileReader.result);
+
         self._fileData.addData(range[0], intArray);
+
         callbacks.onSuccess();
       };
+
       browserFileReader.onerror = browserFileReader.onabort = function (event) {
         if (callbacks.onError) {
-          callbacks.onError({ "type": "blob", "info": browserFileReader.error });
+          callbacks.onError({
+            "type": "blob",
+            "info": browserFileReader.error
+          });
         }
       };
 
       browserFileReader.readAsArrayBuffer(blob);
     }
   }, {
-    key: 'getByteAt',
+    key: "getByteAt",
     value: function getByteAt(offset) {
       return this._fileData.getByteAt(offset);
     }
   }], [{
-    key: 'canReadFile',
+    key: "canReadFile",
     value: function canReadFile(file) {
-      return typeof Blob !== "undefined" && file instanceof Blob ||
-      // File extends Blob but it seems that File instanceof Blob doesn't
+      return typeof Blob !== "undefined" && file instanceof Blob || // File extends Blob but it seems that File instanceof Blob doesn't
       // quite work as expected in Cordova/PhoneGap.
       typeof File !== "undefined" && file instanceof File;
     }
@@ -149,18 +196,23 @@ module.exports = BlobFileReader;
  */
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var NOT_FOUND = -1;
 
-var ChunkedFileData = function () {
+var ChunkedFileData =
+/*#__PURE__*/
+function () {
   _createClass(ChunkedFileData, null, [{
-    key: 'NOT_FOUND',
-
+    key: "NOT_FOUND",
     // $FlowIssue - get/set properties not yet supported
-    get: function () {
+    get: function get() {
       return NOT_FOUND;
     }
   }]);
@@ -168,18 +220,20 @@ var ChunkedFileData = function () {
   function ChunkedFileData() {
     _classCallCheck(this, ChunkedFileData);
 
+    _defineProperty(this, "_fileData", void 0);
+
     this._fileData = [];
   }
-
   /**
    * Adds data to the file storage at a specific offset.
    */
 
 
   _createClass(ChunkedFileData, [{
-    key: 'addData',
+    key: "addData",
     value: function addData(offset, data) {
       var offsetEnd = offset + data.length - 1;
+
       var chunkRange = this._getChunkRange(offset, offsetEnd);
 
       if (chunkRange.startIx === NOT_FOUND) {
@@ -195,7 +249,6 @@ var ChunkedFileData = function () {
         var lastChunk = this._fileData[chunkRange.endIx];
         var needsPrepend = offset > firstChunk.offset;
         var needsAppend = offsetEnd < lastChunk.offset + lastChunk.data.length - 1;
-
         var chunk = {
           offset: Math.min(offset, firstChunk.offset),
           data: data
@@ -203,12 +256,14 @@ var ChunkedFileData = function () {
 
         if (needsPrepend) {
           var slicedData = this._sliceData(firstChunk.data, 0, offset - firstChunk.offset);
+
           chunk.data = this._concatData(slicedData, data);
         }
 
         if (needsAppend) {
           // Use the lastChunk because the slice logic is easier to handle.
           var slicedData = this._sliceData(chunk.data, 0, lastChunk.offset - chunk.offset);
+
           chunk.data = this._concatData(slicedData, lastChunk.data);
         }
 
@@ -216,15 +271,15 @@ var ChunkedFileData = function () {
       }
     }
   }, {
-    key: '_concatData',
+    key: "_concatData",
     value: function _concatData(dataA, dataB) {
       // TypedArrays don't support concat.
       if (typeof ArrayBuffer !== "undefined" && ArrayBuffer.isView && ArrayBuffer.isView(dataA)) {
         // $FlowIssue - flow thinks dataAandB is a string but it's not
-        var dataAandB = new dataA.constructor(dataA.length + dataB.length);
-        // $FlowIssue - flow thinks dataAandB is a string but it's not
-        dataAandB.set(dataA, 0);
-        // $FlowIssue - flow thinks dataAandB is a string but it's not
+        var dataAandB = new dataA.constructor(dataA.length + dataB.length); // $FlowIssue - flow thinks dataAandB is a string but it's not
+
+        dataAandB.set(dataA, 0); // $FlowIssue - flow thinks dataAandB is a string but it's not
+
         dataAandB.set(dataB, dataA.length);
         return dataAandB;
       } else {
@@ -233,7 +288,7 @@ var ChunkedFileData = function () {
       }
     }
   }, {
-    key: '_sliceData',
+    key: "_sliceData",
     value: function _sliceData(data, begin, end) {
       // Some TypeArray implementations do not support slice yet.
       if (data.slice) {
@@ -243,7 +298,6 @@ var ChunkedFileData = function () {
         return data.subarray(begin, end);
       }
     }
-
     /**
      * Finds the chunk range that overlaps the [offsetStart-1,offsetEnd+1] range.
      * When a chunk is adjacent to the offset we still consider it part of the
@@ -254,13 +308,12 @@ var ChunkedFileData = function () {
      */
 
   }, {
-    key: '_getChunkRange',
+    key: "_getChunkRange",
     value: function _getChunkRange(offsetStart, offsetEnd) {
       var startChunkIx = NOT_FOUND;
       var endChunkIx = NOT_FOUND;
-      var insertIx = 0;
+      var insertIx = 0; // Could use binary search but not expecting that many blocks to exist.
 
-      // Could use binary search but not expecting that many blocks to exist.
       for (var i = 0; i < this._fileData.length; i++, insertIx = i) {
         var chunkOffsetStart = this._fileData[i].offset;
         var chunkOffsetEnd = chunkOffsetStart + this._fileData[i].data.length;
@@ -268,26 +321,27 @@ var ChunkedFileData = function () {
         if (offsetEnd < chunkOffsetStart - 1) {
           // This offset range doesn't overlap with any chunks.
           break;
-        }
-        // If it is adjacent we still consider it part of the range because
+        } // If it is adjacent we still consider it part of the range because
         // we're going end up with a single block with all contiguous data.
+
+
         if (offsetStart <= chunkOffsetEnd + 1 && offsetEnd >= chunkOffsetStart - 1) {
           startChunkIx = i;
           break;
         }
-      }
-
-      // No starting chunk was found, meaning that the offset is either before
+      } // No starting chunk was found, meaning that the offset is either before
       // or after the current stored chunks.
+
+
       if (startChunkIx === NOT_FOUND) {
         return {
           startIx: NOT_FOUND,
           endIx: NOT_FOUND,
           insertIx: insertIx
         };
-      }
+      } // Find the ending chunk.
 
-      // Find the ending chunk.
+
       for (var i = startChunkIx; i < this._fileData.length; i++) {
         var chunkOffsetStart = this._fileData[i].offset;
         var chunkOffsetEnd = chunkOffsetStart + this._fileData[i].data.length;
@@ -296,6 +350,7 @@ var ChunkedFileData = function () {
           // Candidate for the end chunk, it doesn't mean it is yet.
           endChunkIx = i;
         }
+
         if (offsetEnd <= chunkOffsetEnd + 1) {
           break;
         }
@@ -311,10 +366,11 @@ var ChunkedFileData = function () {
       };
     }
   }, {
-    key: 'hasDataRange',
+    key: "hasDataRange",
     value: function hasDataRange(offsetStart, offsetEnd) {
       for (var i = 0; i < this._fileData.length; i++) {
         var chunk = this._fileData[i];
+
         if (offsetEnd < chunk.offset) {
           return false;
         }
@@ -327,7 +383,7 @@ var ChunkedFileData = function () {
       return false;
     }
   }, {
-    key: 'getByteAt',
+    key: "getByteAt",
     value: function getByteAt(offset) {
       var dataChunk;
 
@@ -357,21 +413,33 @@ module.exports = ChunkedFileData;
 },{}],6:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var MediaTagReader = require('./MediaTagReader');
-
 /* The first 4 bytes of a FLAC file describes the header for the file. If these
  * bytes respectively read "fLaC", we can determine it is a FLAC file.
  */
-var FLAC_HEADER_SIZE = 4;
 
+
+var FLAC_HEADER_SIZE = 4;
 /* FLAC metadata is stored in blocks containing data ranging from STREAMINFO to
  * VORBIS_COMMENT, which is what we want to work with.
  *
@@ -390,27 +458,42 @@ var FLAC_HEADER_SIZE = 4;
  * All values for METADATA_BLOCK_HEADER can be found here.
  * https://xiph.org/flac/format.html#metadata_block_header
  */
-var COMMENT_HEADERS = [4, 132];
-var PICTURE_HEADERS = [6, 134];
 
-// These are the possible image types as defined by the FLAC specification.
+var COMMENT_HEADERS = [4, 132];
+var PICTURE_HEADERS = [6, 134]; // These are the possible image types as defined by the FLAC specification.
+
 var IMAGE_TYPES = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file icon", "Cover (front)", "Cover (back)", "Leaflet page", "Media (e.g. label side of CD)", "Lead artist/lead performer/soloist", "Artist/performer", "Conductor", "Band/Orchestra", "Composer", "Lyricist/text writer", "Recording Location", "During recording", "During performance", "Movie/video screen capture", "A bright coloured fish", "Illustration", "Band/artist logotype", "Publisher/Studio logotype"];
 
 /**
  * Class representing a MediaTagReader that parses FLAC tags.
  */
-var FLACTagReader = function (_MediaTagReader) {
+var FLACTagReader =
+/*#__PURE__*/
+function (_MediaTagReader) {
   _inherits(FLACTagReader, _MediaTagReader);
 
   function FLACTagReader() {
+    var _getPrototypeOf2;
+
+    var _this;
+
     _classCallCheck(this, FLACTagReader);
 
-    return _possibleConstructorReturn(this, (FLACTagReader.__proto__ || Object.getPrototypeOf(FLACTagReader)).apply(this, arguments));
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(FLACTagReader)).call.apply(_getPrototypeOf2, [this].concat(args)));
+
+    _defineProperty(_assertThisInitialized(_this), "_commentOffset", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_pictureOffset", void 0);
+
+    return _this;
   }
 
   _createClass(FLACTagReader, [{
     key: "_loadData",
-
 
     /**
      * Function called to load the data from the file.
@@ -426,12 +509,11 @@ var FLACTagReader = function (_MediaTagReader) {
     value: function _loadData(mediaFileReader, callbacks) {
       var self = this;
       mediaFileReader.loadRange([4, 7], {
-        onSuccess: function () {
+        onSuccess: function onSuccess() {
           self._loadBlock(mediaFileReader, 4, callbacks);
         }
       });
     }
-
     /**
      * Special internal function used to parse the different FLAC blocks.
      *
@@ -460,11 +542,13 @@ var FLACTagReader = function (_MediaTagReader) {
       /* As mentioned above, this first byte is loaded to see what metadata type
        * this block represents.
        */
+
       var blockHeader = mediaFileReader.getByteAt(offset);
       /* The last three bytes (integer 24) contain a value representing the length
        * of the following metadata block. The 1 is added in order to shift the offset
        * by one to get the last three bytes in the block header.
        */
+
       var blockSize = mediaFileReader.getInteger24At(offset + 1, true);
       /* This conditional checks if blockHeader (the byte retrieved representing the
        * type of the header) is one the headers we are looking for.
@@ -477,6 +561,7 @@ var FLACTagReader = function (_MediaTagReader) {
        * the exception of adding another 4 bytes to move it to the end of the new metadata
        * header.
        */
+
       if (COMMENT_HEADERS.indexOf(blockHeader) !== -1) {
         /* 4 is added to offset to move it to the head of the actual metadata.
          * The range starting from offsetMatadata (the beginning of the block)
@@ -484,16 +569,18 @@ var FLACTagReader = function (_MediaTagReader) {
          */
         var offsetMetadata = offset + 4;
         mediaFileReader.loadRange([offsetMetadata, offsetMetadata + blockSize], {
-          onSuccess: function () {
+          onSuccess: function onSuccess() {
             self._commentOffset = offsetMetadata;
+
             self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
           }
         });
       } else if (PICTURE_HEADERS.indexOf(blockHeader) !== -1) {
         var offsetMetadata = offset + 4;
         mediaFileReader.loadRange([offsetMetadata, offsetMetadata + blockSize], {
-          onSuccess: function () {
+          onSuccess: function onSuccess() {
             self._pictureOffset = offsetMetadata;
+
             self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
           }
         });
@@ -501,7 +588,6 @@ var FLACTagReader = function (_MediaTagReader) {
         self._nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks);
       }
     }
-
     /**
      * Internal function used to load the next range and respective block.
      *
@@ -523,6 +609,7 @@ var FLACTagReader = function (_MediaTagReader) {
     key: "_nextBlock",
     value: function _nextBlock(mediaFileReader, offset, blockHeader, blockSize, callbacks) {
       var self = this;
+
       if (blockHeader > 127) {
         if (!self._commentOffset) {
           callbacks.onError({
@@ -534,13 +621,12 @@ var FLACTagReader = function (_MediaTagReader) {
         }
       } else {
         mediaFileReader.loadRange([offset + 4 + blockSize, offset + 4 + 4 + blockSize], {
-          onSuccess: function () {
+          onSuccess: function onSuccess() {
             self._loadBlock(mediaFileReader, offset + 4 + blockSize, callbacks);
           }
         });
       }
     }
-
     /**
      * Parses the data and returns the tags.
      *
@@ -572,6 +658,7 @@ var FLACTagReader = function (_MediaTagReader) {
        * and is therefore commented out.
        */
       // var vendor = data.getStringWithCharsetAt(offsetVendor, vendorLength, "utf-8").toString();
+
       var offsetList = vendorLength + offsetVendor;
       /* To get the metadata from the block, we first get the long that contains the
        * number of actual comment values that are existent within the block.
@@ -584,40 +671,50 @@ var FLACTagReader = function (_MediaTagReader) {
        * Additions of 4 here are used to move the offset past the first 4 bytes which only contain
        * the length of the comment.
        */
+
       var numComments = data.getLongAt(offsetList, false);
       var dataOffset = offsetList + 4;
       var title, artist, album, track, genre, picture;
+
       for (var i = 0; i < numComments; i++) {
         var _dataLength = data.getLongAt(dataOffset, false);
+
         var s = data.getStringWithCharsetAt(dataOffset + 4, _dataLength, "utf-8").toString();
         var d = s.indexOf("=");
         var split = [s.slice(0, d), s.slice(d + 1)];
+
         switch (split[0]) {
           case "TITLE":
             title = split[1];
             break;
+
           case "ARTIST":
             artist = split[1];
             break;
+
           case "ALBUM":
             album = split[1];
             break;
+
           case "TRACKNUMBER":
             track = split[1];
             break;
+
           case "GENRE":
             genre = split[1];
             break;
         }
+
         dataOffset += 4 + _dataLength;
       }
-
       /* If a picture offset was found and assigned, then the reader will start processing
        * the picture block from that point.
        *
        * All the lengths for the picture data can be found online here:
        * https://xiph.org/flac/format.html#metadata_block_picture
        */
+
+
       if (this._pictureOffset) {
         var imageType = data.getLongAt(this._pictureOffset, true);
         var offsetMimeLength = this._pictureOffset + 4;
@@ -657,7 +754,6 @@ var FLACTagReader = function (_MediaTagReader) {
   }], [{
     key: "getTagIdentifierByteRange",
 
-
     /**
      * Gets the byte range for the tag identifier.
      *
@@ -673,7 +769,6 @@ var FLACTagReader = function (_MediaTagReader) {
         length: FLAC_HEADER_SIZE
       };
     }
-
     /**
      * Determines whether or not this reader can read a certain tag format.
      *
@@ -700,44 +795,56 @@ module.exports = FLACTagReader;
 },{"./MediaTagReader":12}],7:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var MediaTagReader = require('./MediaTagReader');
+
 var MediaFileReader = require('./MediaFileReader');
 
-var ID3v1TagReader = function (_MediaTagReader) {
+var ID3v1TagReader =
+/*#__PURE__*/
+function (_MediaTagReader) {
   _inherits(ID3v1TagReader, _MediaTagReader);
 
   function ID3v1TagReader() {
     _classCallCheck(this, ID3v1TagReader);
 
-    return _possibleConstructorReturn(this, (ID3v1TagReader.__proto__ || Object.getPrototypeOf(ID3v1TagReader)).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(ID3v1TagReader).apply(this, arguments));
   }
 
   _createClass(ID3v1TagReader, [{
-    key: '_loadData',
+    key: "_loadData",
     value: function _loadData(mediaFileReader, callbacks) {
       var fileSize = mediaFileReader.getSize();
       mediaFileReader.loadRange([fileSize - 128, fileSize - 1], callbacks);
     }
   }, {
-    key: '_parseData',
+    key: "_parseData",
     value: function _parseData(data, tags) {
       var offset = data.getSize() - 128;
-
       var title = data.getStringWithCharsetAt(offset + 3, 30).toString();
       var artist = data.getStringWithCharsetAt(offset + 33, 30).toString();
       var album = data.getStringWithCharsetAt(offset + 63, 30).toString();
       var year = data.getStringWithCharsetAt(offset + 93, 4).toString();
-
       var trackFlag = data.getByteAt(offset + 97 + 28);
       var track = data.getByteAt(offset + 97 + 29);
+
       if (trackFlag == 0 && track != 0) {
         var version = "1.1";
         var comment = data.getStringWithCharsetAt(offset + 97, 28).toString();
@@ -748,6 +855,7 @@ var ID3v1TagReader = function (_MediaTagReader) {
       }
 
       var genreIdx = data.getByteAt(offset + 97 + 30);
+
       if (genreIdx < 255) {
         var genre = GENRES[genreIdx];
       } else {
@@ -775,7 +883,7 @@ var ID3v1TagReader = function (_MediaTagReader) {
       return tag;
     }
   }], [{
-    key: 'getTagIdentifierByteRange',
+    key: "getTagIdentifierByteRange",
     value: function getTagIdentifierByteRange() {
       // The identifier is TAG and is at offset: -128. However, to avoid a
       // fetch for the tag identifier and another for the data, we load the
@@ -786,7 +894,7 @@ var ID3v1TagReader = function (_MediaTagReader) {
       };
     }
   }, {
-    key: 'canReadTagFormat',
+    key: "canReadTagFormat",
     value: function canReadTagFormat(tagIdentifier) {
       var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
       return id === "TAG";
@@ -797,18 +905,21 @@ var ID3v1TagReader = function (_MediaTagReader) {
 }(MediaTagReader);
 
 var GENRES = ["Blues", "Classic Rock", "Country", "Dance", "Disco", "Funk", "Grunge", "Hip-Hop", "Jazz", "Metal", "New Age", "Oldies", "Other", "Pop", "R&B", "Rap", "Reggae", "Rock", "Techno", "Industrial", "Alternative", "Ska", "Death Metal", "Pranks", "Soundtrack", "Euro-Techno", "Ambient", "Trip-Hop", "Vocal", "Jazz+Funk", "Fusion", "Trance", "Classical", "Instrumental", "Acid", "House", "Game", "Sound Clip", "Gospel", "Noise", "AlternRock", "Bass", "Soul", "Punk", "Space", "Meditative", "Instrumental Pop", "Instrumental Rock", "Ethnic", "Gothic", "Darkwave", "Techno-Industrial", "Electronic", "Pop-Folk", "Eurodance", "Dream", "Southern Rock", "Comedy", "Cult", "Gangsta", "Top 40", "Christian Rap", "Pop/Funk", "Jungle", "Native American", "Cabaret", "New Wave", "Psychadelic", "Rave", "Showtunes", "Trailer", "Lo-Fi", "Tribal", "Acid Punk", "Acid Jazz", "Polka", "Retro", "Musical", "Rock & Roll", "Hard Rock", "Folk", "Folk-Rock", "National Folk", "Swing", "Fast Fusion", "Bebob", "Latin", "Revival", "Celtic", "Bluegrass", "Avantgarde", "Gothic Rock", "Progressive Rock", "Psychedelic Rock", "Symphonic Rock", "Slow Rock", "Big Band", "Chorus", "Easy Listening", "Acoustic", "Humour", "Speech", "Chanson", "Opera", "Chamber Music", "Sonata", "Symphony", "Booty Bass", "Primus", "Porn Groove", "Satire", "Slow Jam", "Club", "Tango", "Samba", "Folklore", "Ballad", "Power Ballad", "Rhythmic Soul", "Freestyle", "Duet", "Punk Rock", "Drum Solo", "Acapella", "Euro-House", "Dance Hall"];
-
 module.exports = ID3v1TagReader;
 
 },{"./MediaFileReader":11,"./MediaTagReader":12}],8:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 var MediaFileReader = require('./MediaFileReader');
+
 var StringUtils = require('./StringUtils');
+
 var ArrayFileReader = require('./ArrayFileReader');
 
 var FRAME_DESCRIPTIONS = {
@@ -970,13 +1081,15 @@ var FRAME_DESCRIPTIONS = {
   "WXXX": "User defined URL link frame"
 };
 
-var ID3v2FrameReader = function () {
+var ID3v2FrameReader =
+/*#__PURE__*/
+function () {
   function ID3v2FrameReader() {
     _classCallCheck(this, ID3v2FrameReader);
   }
 
   _createClass(ID3v2FrameReader, null, [{
-    key: 'getFrameReaderFunction',
+    key: "getFrameReaderFunction",
     value: function getFrameReaderFunction(frameId) {
       if (frameId in frameReaderFunctions) {
         return frameReaderFunctions[frameId];
@@ -1004,18 +1117,19 @@ var ID3v2FrameReader = function () {
      */
 
   }, {
-    key: 'readFrames',
+    key: "readFrames",
     value: function readFrames(offset, end, data, id3header, tags) {
       var frames = {};
-      var frameHeaderSize = this._getFrameHeaderSize(id3header);
-      // console.log('header', id3header);
-      while (
-      // we should be able to read at least the frame header
+
+      var frameHeaderSize = this._getFrameHeaderSize(id3header); // console.log('header', id3header);
+
+
+      while ( // we should be able to read at least the frame header
       offset < end - frameHeaderSize) {
         var header = this._readFrameHeader(data, offset, id3header);
-        var frameId = header.id;
 
-        // No frame ID sometimes means it's the last frame (GTFO).
+        var frameId = header.id; // No frame ID sometimes means it's the last frame (GTFO).
+
         if (!frameId) {
           break;
         }
@@ -1023,34 +1137,34 @@ var ID3v2FrameReader = function () {
         var flags = header.flags;
         var frameSize = header.size;
         var frameDataOffset = offset + header.headerSize;
-        var frameData = data;
-
-        // console.log(offset, frameId, header.size + header.headerSize, flags && flags.format.unsynchronisation);
+        var frameData = data; // console.log(offset, frameId, header.size + header.headerSize, flags && flags.format.unsynchronisation);
         // advance data offset to the next frame data
-        offset += header.headerSize + header.size;
 
-        // skip unwanted tags
+        offset += header.headerSize + header.size; // skip unwanted tags
+
         if (tags && tags.indexOf(frameId) === -1) {
           continue;
-        }
-        // Workaround: MP3ext V3.3.17 places a non-compliant padding string at
+        } // Workaround: MP3ext V3.3.17 places a non-compliant padding string at
         // the end of the ID3v2 header. A string like "MP3ext V3.3.19(ansi)"
         // is added multiple times at the end of the ID3 tag. More information
         // about this issue can be found at
         // https://github.com/aadsm/jsmediatags/issues/58#issuecomment-313865336
+
+
         if (frameId === 'MP3e' || frameId === '\x00MP3' || frameId === '\x00\x00MP' || frameId === ' MP3') {
           break;
         }
 
         var unsyncData;
+
         if (flags && flags.format.unsynchronisation) {
           frameData = this.getUnsyncFileReader(frameData, frameDataOffset, frameSize);
           frameDataOffset = 0;
           frameSize = frameData.getSize();
-        }
-
-        // the first 4 bytes are the real data size
+        } // the first 4 bytes are the real data size
         // (after unsynchronisation && encryption)
+
+
         if (flags && flags.format.data_length_indicator) {
           // var frameDataSize = frameData.getSynchsafeInteger32At(frameDataOffset);
           frameDataOffset += 4;
@@ -1059,6 +1173,7 @@ var ID3v2FrameReader = function () {
 
         var readFrameFunc = ID3v2FrameReader.getFrameReaderFunction(frameId);
         var parsedData = readFrameFunc ? readFrameFunc.apply(this, [frameDataOffset, frameSize, frameData, flags, id3header]) : null;
+
         var desc = this._getFrameDescription(frameId);
 
         var frame = {
@@ -1072,6 +1187,7 @@ var ID3v2FrameReader = function () {
           if (frames[frameId].id) {
             frames[frameId] = [frames[frameId]];
           }
+
           frames[frameId].push(frame);
         } else {
           frames[frameId] = frame;
@@ -1081,7 +1197,7 @@ var ID3v2FrameReader = function () {
       return frames;
     }
   }, {
-    key: '_getFrameHeaderSize',
+    key: "_getFrameHeaderSize",
     value: function _getFrameHeaderSize(id3header) {
       var major = id3header.major;
 
@@ -1094,10 +1210,11 @@ var ID3v2FrameReader = function () {
       }
     }
   }, {
-    key: '_readFrameHeader',
+    key: "_readFrameHeader",
     value: function _readFrameHeader(data, offset, id3header) {
       var major = id3header.major;
       var flags = null;
+
       var frameHeaderSize = this._getFrameHeaderSize(id3header);
 
       switch (major) {
@@ -1119,9 +1236,9 @@ var ID3v2FrameReader = function () {
 
       if (frameId == String.fromCharCode(0, 0, 0) || frameId == String.fromCharCode(0, 0, 0, 0)) {
         frameId = "";
-      }
+      } // if frameId is empty then it's the last frame
 
-      // if frameId is empty then it's the last frame
+
       if (frameId) {
         // read frame message and format flags
         if (major > 2) {
@@ -1137,7 +1254,7 @@ var ID3v2FrameReader = function () {
       };
     }
   }, {
-    key: '_readFrameFlags',
+    key: "_readFrameFlags",
     value: function _readFrameFlags(data, offset) {
       return {
         message: {
@@ -1155,7 +1272,7 @@ var ID3v2FrameReader = function () {
       };
     }
   }, {
-    key: '_getFrameDescription',
+    key: "_getFrameDescription",
     value: function _getFrameDescription(frameId) {
       if (frameId in FRAME_DESCRIPTIONS) {
         return FRAME_DESCRIPTIONS[frameId];
@@ -1164,9 +1281,10 @@ var ID3v2FrameReader = function () {
       }
     }
   }, {
-    key: 'getUnsyncFileReader',
+    key: "getUnsyncFileReader",
     value: function getUnsyncFileReader(data, offset, size) {
       var frameData = data.getBytesAt(offset, size);
+
       for (var i = 0; i < frameData.length - 1; i++) {
         if (frameData[i] === 0xff && frameData[i + 1] === 0x00) {
           frameData.splice(i + 1, 1);
@@ -1181,12 +1299,12 @@ var ID3v2FrameReader = function () {
 }();
 
 ;
-
 var frameReaderFunctions = {};
 
 frameReaderFunctions['APIC'] = function readPictureFrame(offset, length, data, flags, id3header) {
   var start = offset;
   var charset = getTextEncoding(data.getByteAt(offset));
+
   switch (id3header && id3header.major) {
     case 2:
       var format = data.getStringAt(offset + 1, 3);
@@ -1202,21 +1320,20 @@ frameReaderFunctions['APIC'] = function readPictureFrame(offset, length, data, f
     default:
       throw new Error("Couldn't read ID3v2 major version.");
   }
+
   var bite = data.getByteAt(offset);
   var type = PICTURE_TYPE[bite];
   var desc = data.getStringWithCharsetAt(offset + 1, length - (offset - start) - 1, charset);
-
   offset += 1 + desc.bytesReadCount;
-
   return {
     "format": format.toString(),
     "type": type,
     "description": desc.toString(),
     "data": data.getBytesAt(offset, start + length - offset)
   };
-};
+}; // ID3v2 chapters according to http://id3.org/id3v2-chapters-1.0
 
-// ID3v2 chapters according to http://id3.org/id3v2-chapters-1.0
+
 frameReaderFunctions['CHAP'] = function readChapterFrame(offset, length, data, flags, id3header) {
   var originalOffset = offset;
   var result = {};
@@ -1231,16 +1348,22 @@ frameReaderFunctions['CHAP'] = function readChapterFrame(offset, length, data, f
   offset += 4;
   result.endOffset = data.getLongAt(offset, true);
   offset += 4;
-
   var remainingLength = length - (offset - originalOffset);
   result.subFrames = this.readFrames(offset, offset + remainingLength, data, id3header);
   return result;
-};
+}; // ID3v2 table of contents according to http://id3.org/id3v2-chapters-1.0
 
-// ID3v2 table of contents according to http://id3.org/id3v2-chapters-1.0
+
 frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(offset, length, data, flags, id3header) {
   var originalOffset = offset;
-  var result = { childElementIds: [], id: undefined, topLevel: undefined, ordered: undefined, entryCount: undefined, subFrames: undefined };
+  var result = {
+    childElementIds: [],
+    id: undefined,
+    topLevel: undefined,
+    ordered: undefined,
+    entryCount: undefined,
+    subFrames: undefined
+  };
   var id = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
   result.id = id.toString();
   offset += id.bytesReadCount;
@@ -1249,6 +1372,7 @@ frameReaderFunctions['CTOC'] = function readTableOfContentsFrame(offset, length,
   offset++;
   result.entryCount = data.getByteAt(offset);
   offset++;
+
   for (var i = 0; i < result.entryCount; i++) {
     var childId = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length - (offset - originalOffset)));
     result.childElementIds.push(childId.toString());
@@ -1265,10 +1389,8 @@ frameReaderFunctions['COMM'] = function readCommentsFrame(offset, length, data, 
   var charset = getTextEncoding(data.getByteAt(offset));
   var language = data.getStringAt(offset + 1, 3);
   var shortdesc = data.getStringWithCharsetAt(offset + 4, length - 4, charset);
-
   offset += 4 + shortdesc.bytesReadCount;
   var text = data.getStringWithCharsetAt(offset, start + length - offset, charset);
-
   return {
     language: language,
     short_description: shortdesc.toString(),
@@ -1291,13 +1413,11 @@ frameReaderFunctions['CNT'] = frameReaderFunctions['PCNT'];
 
 frameReaderFunctions['T*'] = function readTextFrame(offset, length, data, flags, id3header) {
   var charset = getTextEncoding(data.getByteAt(offset));
-
   return data.getStringWithCharsetAt(offset + 1, length - 1, charset).toString();
 };
 
 frameReaderFunctions['TXXX'] = function readTextFrame(offset, length, data, flags, id3header) {
   var charset = getTextEncoding(data.getByteAt(offset));
-
   return getUserDefinedFields(offset, length, data, charset);
 };
 
@@ -1305,6 +1425,7 @@ frameReaderFunctions['WXXX'] = function readUrlFrame(offset, length, data, flags
   if (length === 0) {
     return null;
   }
+
   var charset = getTextEncoding(data.getByteAt(offset));
   return getUserDefinedFields(offset, length, data, charset);
 };
@@ -1313,6 +1434,7 @@ frameReaderFunctions['W*'] = function readUrlFrame(offset, length, data, flags, 
   if (length === 0) {
     return null;
   }
+
   return data.getStringWithCharsetAt(offset, length, 'iso-8859-1').toString();
 };
 
@@ -1328,10 +1450,8 @@ frameReaderFunctions['USLT'] = function readLyricsFrame(offset, length, data, fl
   var charset = getTextEncoding(data.getByteAt(offset));
   var language = data.getStringAt(offset + 1, 3);
   var descriptor = data.getStringWithCharsetAt(offset + 4, length - 4, charset);
-
   offset += 4 + descriptor.bytesReadCount;
   var lyrics = data.getStringWithCharsetAt(offset, start + length - offset, charset);
-
   return {
     language: language,
     descriptor: descriptor.toString(),
@@ -1345,7 +1465,6 @@ frameReaderFunctions['UFID'] = function readLyricsFrame(offset, length, data, fl
   var ownerIdentifier = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length));
   offset += ownerIdentifier.bytesReadCount;
   var identifier = data.getBytesAt(offset, length - ownerIdentifier.bytesReadCount);
-
   return {
     ownerIdentifier: ownerIdentifier.toString(),
     identifier: identifier
@@ -1377,14 +1496,13 @@ function getTextEncoding(bite) {
   }
 
   return charset;
-}
-
-// Handles reading description/data from either http://id3.org/id3v2.3.0#User_defined_text_information_frame
+} // Handles reading description/data from either http://id3.org/id3v2.3.0#User_defined_text_information_frame
 // and http://id3.org/id3v2.3.0#User_defined_URL_link_frame
+
+
 function getUserDefinedFields(offset, length, data, charset) {
   var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
   var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);
-
   return {
     user_description: userDesc.toString(),
     data: userDefinedData.toString()
@@ -1392,55 +1510,73 @@ function getUserDefinedFields(offset, length, data, charset) {
 }
 
 var PICTURE_TYPE = ["Other", "32x32 pixels 'file icon' (PNG only)", "Other file icon", "Cover (front)", "Cover (back)", "Leaflet page", "Media (e.g. label side of CD)", "Lead artist/lead performer/soloist", "Artist/performer", "Conductor", "Band/Orchestra", "Composer", "Lyricist/text writer", "Recording Location", "During recording", "During performance", "Movie/video screen capture", "A bright coloured fish", "Illustration", "Band/artist logotype", "Publisher/Studio logotype"];
-
 module.exports = ID3v2FrameReader;
 
 },{"./ArrayFileReader":3,"./MediaFileReader":11,"./StringUtils":13}],9:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var MediaTagReader = require('./MediaTagReader');
+
 var MediaFileReader = require('./MediaFileReader');
+
 var ID3v2FrameReader = require('./ID3v2FrameReader');
 
 var ID3_HEADER_SIZE = 10;
 
-var ID3v2TagReader = function (_MediaTagReader) {
+var ID3v2TagReader =
+/*#__PURE__*/
+function (_MediaTagReader) {
   _inherits(ID3v2TagReader, _MediaTagReader);
 
   function ID3v2TagReader() {
     _classCallCheck(this, ID3v2TagReader);
 
-    return _possibleConstructorReturn(this, (ID3v2TagReader.__proto__ || Object.getPrototypeOf(ID3v2TagReader)).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(ID3v2TagReader).apply(this, arguments));
   }
 
   _createClass(ID3v2TagReader, [{
-    key: '_loadData',
+    key: "_loadData",
     value: function _loadData(mediaFileReader, callbacks) {
       mediaFileReader.loadRange([6, 9], {
-        onSuccess: function () {
-          mediaFileReader.loadRange(
-          // The tag size does not include the header size.
+        onSuccess: function onSuccess() {
+          mediaFileReader.loadRange( // The tag size does not include the header size.
           [0, ID3_HEADER_SIZE + mediaFileReader.getSynchsafeInteger32At(6) - 1], callbacks);
         },
         onError: callbacks.onError
       });
     }
   }, {
-    key: '_parseData',
+    key: "_parseData",
     value: function _parseData(data, tags) {
       var offset = 0;
       var major = data.getByteAt(offset + 3);
+
       if (major > 4) {
-        return { "type": "ID3", "version": ">2.4", "tags": {} };
+        return {
+          "type": "ID3",
+          "version": ">2.4",
+          "tags": {}
+        };
       }
+
       var revision = data.getByteAt(offset + 4);
       var unsynch = data.isBitSetAt(offset + 5, 7);
       var xheader = data.isBitSetAt(offset + 5, 6);
@@ -1454,8 +1590,8 @@ var ID3v2TagReader = function (_MediaTagReader) {
           var xheadersize = data.getSynchsafeInteger32At(offset);
           offset += xheadersize;
         } else {
-          var xheadersize = data.getLongAt(offset, true);
-          // The 'Extended header size', currently 6 or 10 bytes, excludes itself.
+          var xheadersize = data.getLongAt(offset, true); // The 'Extended header size', currently 6 or 10 bytes, excludes itself.
+
           offset += xheadersize + 4;
         }
       }
@@ -1480,36 +1616,44 @@ var ID3v2TagReader = function (_MediaTagReader) {
         var expandedTags = this._expandShortcutTags(tags);
       }
 
-      var offsetEnd = size + 10 /*header size*/;
-      // When this flag is set the entire tag needs to be un-unsynchronised
+      var offsetEnd = size + 10
+      /*header size*/
+      ; // When this flag is set the entire tag needs to be un-unsynchronised
       // before parsing each individual frame. Individual frame sizes might not
       // take unsynchronisation into consideration when it's set on the tag
       // header.
+
       if (id3.flags.unsynchronisation) {
         data = ID3v2FrameReader.getUnsyncFileReader(data, offset, size);
         offset = 0;
         offsetEnd = data.getSize();
       }
 
-      var frames = ID3v2FrameReader.readFrames(offset, offsetEnd, data, id3, expandedTags);
-      // create shortcuts for most common data.
+      var frames = ID3v2FrameReader.readFrames(offset, offsetEnd, data, id3, expandedTags); // create shortcuts for most common data.
+
       for (var name in SHORTCUTS) {
         if (SHORTCUTS.hasOwnProperty(name)) {
           var frameData = this._getFrameData(frames, SHORTCUTS[name]);
+
           if (frameData) {
             id3.tags[name] = frameData;
           }
         }
-      }for (var frame in frames) {
+      }
+
+      for (var frame in frames) {
         if (frames.hasOwnProperty(frame)) {
           id3.tags[frame] = frames[frame];
         }
-      }return id3;
+      }
+
+      return id3;
     }
   }, {
-    key: '_getFrameData',
+    key: "_getFrameData",
     value: function _getFrameData(frames, ids) {
       var frame;
+
       for (var i = 0, id; id = ids[i]; i++) {
         if (id in frames) {
           if (frames[id] instanceof Array) {
@@ -1517,17 +1661,18 @@ var ID3v2TagReader = function (_MediaTagReader) {
           } else {
             frame = frames[id];
           }
+
           return frame.data;
         }
       }
     }
   }, {
-    key: 'getShortcuts',
+    key: "getShortcuts",
     value: function getShortcuts() {
       return SHORTCUTS;
     }
   }], [{
-    key: 'getTagIdentifierByteRange',
+    key: "getTagIdentifierByteRange",
     value: function getTagIdentifierByteRange() {
       // ID3 header
       return {
@@ -1536,7 +1681,7 @@ var ID3v2TagReader = function (_MediaTagReader) {
       };
     }
   }, {
-    key: 'canReadTagFormat',
+    key: "canReadTagFormat",
     value: function canReadTagFormat(tagIdentifier) {
       var id = String.fromCharCode.apply(String, tagIdentifier.slice(0, 3));
       return id === 'ID3';
@@ -1557,7 +1702,6 @@ var SHORTCUTS = {
   "picture": ["APIC", "PIC"],
   "lyrics": ["USLT", "ULT"]
 };
-
 module.exports = ID3v2TagReader;
 
 },{"./ID3v2FrameReader":8,"./MediaFileReader":11,"./MediaTagReader":12}],10:[function(require,module,exports){
@@ -1571,28 +1715,41 @@ module.exports = ID3v2TagReader;
  */
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 var MediaTagReader = require('./MediaTagReader');
+
 var MediaFileReader = require('./MediaFileReader');
 
-var MP4TagReader = function (_MediaTagReader) {
+var MP4TagReader =
+/*#__PURE__*/
+function (_MediaTagReader) {
   _inherits(MP4TagReader, _MediaTagReader);
 
   function MP4TagReader() {
     _classCallCheck(this, MP4TagReader);
 
-    return _possibleConstructorReturn(this, (MP4TagReader.__proto__ || Object.getPrototypeOf(MP4TagReader)).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(MP4TagReader).apply(this, arguments));
   }
 
   _createClass(MP4TagReader, [{
-    key: '_loadData',
+    key: "_loadData",
     value: function _loadData(mediaFileReader, callbacks) {
       // MP4 metadata isn't located in a specific location of the file. Roughly
       // speaking, it's composed of blocks chained together like a linked list.
@@ -1605,47 +1762,50 @@ var MP4TagReader = function (_MediaTagReader) {
       // to traverse the entire linked list of atoms and only load the ones
       // associated with metadata.
       // The metadata atoms can be find under the "moov.udta.meta.ilst" hierarchy.
+      var self = this; // Load the header of the first atom
 
-      var self = this;
-      // Load the header of the first atom
       mediaFileReader.loadRange([0, 16], {
-        onSuccess: function () {
+        onSuccess: function onSuccess() {
           self._loadAtom(mediaFileReader, 0, "", callbacks);
         },
         onError: callbacks.onError
       });
     }
   }, {
-    key: '_loadAtom',
+    key: "_loadAtom",
     value: function _loadAtom(mediaFileReader, offset, parentAtomFullName, callbacks) {
       if (offset >= mediaFileReader.getSize()) {
         callbacks.onSuccess();
         return;
       }
 
-      var self = this;
-      // 8 is the size of the atomSize and atomName fields.
+      var self = this; // 8 is the size of the atomSize and atomName fields.
       // When reading the current block we always read 8 more bytes in order
       // to also read the header of the next block.
+
       var atomSize = mediaFileReader.getLongAt(offset, true);
+
       if (atomSize == 0 || isNaN(atomSize)) {
         callbacks.onSuccess();
         return;
       }
-      var atomName = mediaFileReader.getStringAt(offset + 4, 4);
-      // console.log(parentAtomFullName, atomName, atomSize);
+
+      var atomName = mediaFileReader.getStringAt(offset + 4, 4); // console.log(parentAtomFullName, atomName, atomSize);
       // Container atoms (no actual data)
+
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {
           // The "meta" atom breaks convention and is a container with data.
           offset += 4; // next_item_id (uint32)
         }
+
         var atomFullName = (parentAtomFullName ? parentAtomFullName + "." : "") + atomName;
+
         if (atomFullName === "moov.udta.meta.ilst") {
           mediaFileReader.loadRange([offset, offset + atomSize], callbacks);
         } else {
           mediaFileReader.loadRange([offset + 8, offset + 8 + 8], {
-            onSuccess: function () {
+            onSuccess: function onSuccess() {
               self._loadAtom(mediaFileReader, offset + 8, atomFullName, callbacks);
             },
             onError: callbacks.onError
@@ -1653,7 +1813,7 @@ var MP4TagReader = function (_MediaTagReader) {
         }
       } else {
         mediaFileReader.loadRange([offset + atomSize, offset + atomSize + 8], {
-          onSuccess: function () {
+          onSuccess: function onSuccess() {
             self._loadAtom(mediaFileReader, offset + atomSize, parentAtomFullName, callbacks);
           },
           onError: callbacks.onError
@@ -1661,27 +1821,28 @@ var MP4TagReader = function (_MediaTagReader) {
       }
     }
   }, {
-    key: '_isContainerAtom',
+    key: "_isContainerAtom",
     value: function _isContainerAtom(atomName) {
       return ["moov", "udta", "meta", "ilst"].indexOf(atomName) >= 0;
     }
   }, {
-    key: '_canReadAtom',
+    key: "_canReadAtom",
     value: function _canReadAtom(atomName) {
       return atomName !== "----";
     }
   }, {
-    key: '_parseData',
+    key: "_parseData",
     value: function _parseData(data, tagsToRead) {
       var tags = {};
-
       tagsToRead = this._expandShortcutTags(tagsToRead);
-      this._readAtom(tags, data, 0, data.getSize(), tagsToRead);
 
-      // create shortcuts for most common data.
+      this._readAtom(tags, data, 0, data.getSize(), tagsToRead); // create shortcuts for most common data.
+
+
       for (var name in SHORTCUTS) {
         if (SHORTCUTS.hasOwnProperty(name)) {
           var tag = tags[SHORTCUTS[name]];
+
           if (tag) {
             if (name === "track") {
               tags[name] = tag.data.track;
@@ -1690,7 +1851,9 @@ var MP4TagReader = function (_MediaTagReader) {
             }
           }
         }
-      }return {
+      }
+
+      return {
         "type": "MP4",
         "ftyp": data.getStringAt(8, 4),
         "version": data.getLongAt(12, true),
@@ -1698,29 +1861,33 @@ var MP4TagReader = function (_MediaTagReader) {
       };
     }
   }, {
-    key: '_readAtom',
+    key: "_readAtom",
     value: function _readAtom(tags, data, offset, length, tagsToRead, parentAtomFullName, indent) {
       indent = indent === undefined ? "" : indent + "  ";
-
       var seek = offset;
+
       while (seek < offset + length) {
         var atomSize = data.getLongAt(seek, true);
+
         if (atomSize == 0) {
           return;
         }
-        var atomName = data.getStringAt(seek + 4, 4);
 
-        // console.log(seek, parentAtomFullName, atomName, atomSize);
+        var atomName = data.getStringAt(seek + 4, 4); // console.log(seek, parentAtomFullName, atomName, atomSize);
+
         if (this._isContainerAtom(atomName)) {
           if (atomName == "meta") {
             seek += 4; // next_item_id (uint32)
           }
-          var atomFullName = (parentAtomFullName ? parentAtomFullName + "." : "") + atomName;
-          this._readAtom(tags, data, seek + 8, atomSize - 8, tagsToRead, atomFullName, indent);
-          return;
-        }
 
-        // Value atoms
+          var atomFullName = (parentAtomFullName ? parentAtomFullName + "." : "") + atomName;
+
+          this._readAtom(tags, data, seek + 8, atomSize - 8, tagsToRead, atomFullName, indent);
+
+          return;
+        } // Value atoms
+
+
         if ((!tagsToRead || tagsToRead.indexOf(atomName) >= 0) && parentAtomFullName === "moov.udta.meta.ilst" && this._canReadAtom(atomName)) {
           tags[atomName] = this._readMetadataAtom(data, seek);
         }
@@ -1729,14 +1896,12 @@ var MP4TagReader = function (_MediaTagReader) {
       }
     }
   }, {
-    key: '_readMetadataAtom',
+    key: "_readMetadataAtom",
     value: function _readMetadataAtom(data, offset) {
       // 16: name + size + "data" + size (4 bytes each)
       var METADATA_HEADER = 16;
-
       var atomSize = data.getLongAt(offset, true);
       var atomName = data.getStringAt(offset + 4, 4);
-
       var klass = data.getInteger24At(offset + METADATA_HEADER + 1, true);
       var type = TYPES[klass];
       var atomData;
@@ -1757,9 +1922,8 @@ var MP4TagReader = function (_MediaTagReader) {
         var atomHeader = METADATA_HEADER + 4 + 4;
         var dataStart = offset + atomHeader;
         var dataLength = atomSize - atomHeader;
-        var atomData;
+        var atomData; // Workaround for covers being parsed as 'uint8' type despite being an 'covr' atom
 
-        // Workaround for covers being parsed as 'uint8' type despite being an 'covr' atom
         if (atomName === 'covr' && type === 'uint8') {
           type = 'jpeg';
         }
@@ -1782,8 +1946,8 @@ var MP4TagReader = function (_MediaTagReader) {
             // only current 64-bit atom handled, it is parsed from its 32-bit
             // low word as an unsigned long.
             //
-            var intReader = type == 'int' ? dataLength == 1 ? data.getSByteAt : dataLength == 2 ? data.getSShortAt : dataLength == 4 ? data.getSLongAt : data.getLongAt : dataLength == 1 ? data.getByteAt : dataLength == 2 ? data.getShortAt : data.getLongAt;
-            // $FlowFixMe - getByteAt doesn't receive a second argument
+            var intReader = type == 'int' ? dataLength == 1 ? data.getSByteAt : dataLength == 2 ? data.getSShortAt : dataLength == 4 ? data.getSLongAt : data.getLongAt : dataLength == 1 ? data.getByteAt : dataLength == 2 ? data.getShortAt : data.getLongAt; // $FlowFixMe - getByteAt doesn't receive a second argument
+
             atomData = intReader.call(data, dataStart + (dataLength == 8 ? 4 : 0), true);
             break;
 
@@ -1805,12 +1969,12 @@ var MP4TagReader = function (_MediaTagReader) {
       };
     }
   }, {
-    key: 'getShortcuts',
+    key: "getShortcuts",
     value: function getShortcuts() {
       return SHORTCUTS;
     }
   }], [{
-    key: 'getTagIdentifierByteRange',
+    key: "getTagIdentifierByteRange",
     value: function getTagIdentifierByteRange() {
       // The tag identifier is located in [4, 8] but since we'll need to reader
       // the header of the first block anyway, we load it instead to avoid
@@ -1821,7 +1985,7 @@ var MP4TagReader = function (_MediaTagReader) {
       };
     }
   }, {
-    key: 'canReadTagFormat',
+    key: "canReadTagFormat",
     value: function canReadTagFormat(tagIdentifier) {
       var id = String.fromCharCode.apply(String, tagIdentifier.slice(4, 8));
       return id === "ftyp";
@@ -1830,7 +1994,6 @@ var MP4TagReader = function (_MediaTagReader) {
 
   return MP4TagReader;
 }(MediaTagReader);
-
 /*
  * https://developer.apple.com/library/content/documentation/QuickTime/QTFF/Metadata/Metadata.html#//apple_ref/doc/uid/TP40000939-CH1-SW35
 */
@@ -1844,7 +2007,6 @@ var TYPES = {
   "21": "int",
   "22": "uint"
 };
-
 var ATOM_DESCRIPTIONS = {
   "©alb": "Album",
   "©ART": "Artist",
@@ -1895,11 +2057,9 @@ var ATOM_DESCRIPTIONS = {
   "xid ": "Vendor Information",
   "flvr": "Codec Flavor"
 };
-
 var UNSUPPORTED_ATOMS = {
   "----": 1
 };
-
 var SHORTCUTS = {
   "title": "©nam",
   "artist": "©ART",
@@ -1911,34 +2071,41 @@ var SHORTCUTS = {
   "picture": "covr",
   "lyrics": "©lyr"
 };
-
 module.exports = MP4TagReader;
 
 },{"./MediaFileReader":11,"./MediaTagReader":12}],11:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var StringUtils = require('./StringUtils');
 
-var MediaFileReader = function () {
+var MediaFileReader =
+/*#__PURE__*/
+function () {
   function MediaFileReader(path) {
     _classCallCheck(this, MediaFileReader);
+
+    _defineProperty(this, "_isInitialized", void 0);
+
+    _defineProperty(this, "_size", void 0);
 
     this._isInitialized = false;
     this._size = 0;
   }
-
   /**
    * Decides if this media file reader is able to read the given file.
    */
 
 
   _createClass(MediaFileReader, [{
-    key: 'init',
-
+    key: "init",
 
     /**
      * This function needs to be called before any other function.
@@ -1951,7 +2118,7 @@ var MediaFileReader = function () {
         setTimeout(callbacks.onSuccess, 1);
       } else {
         return this._init({
-          onSuccess: function () {
+          onSuccess: function onSuccess() {
             self._isInitialized = true;
             callbacks.onSuccess();
           },
@@ -1960,28 +2127,26 @@ var MediaFileReader = function () {
       }
     }
   }, {
-    key: '_init',
+    key: "_init",
     value: function _init(callbacks) {
       throw new Error("Must implement init function");
     }
-
     /**
      * @param range The start and end indexes of the range to load.
      *        Ex: [0, 7] load bytes 0 to 7 inclusive.
      */
 
   }, {
-    key: 'loadRange',
+    key: "loadRange",
     value: function loadRange(range, callbacks) {
       throw new Error("Must implement loadRange function");
     }
-
     /**
      * @return The size of the file in bytes.
      */
 
   }, {
-    key: 'getSize',
+    key: "getSize",
     value: function getSize() {
       if (!this._isInitialized) {
         throw new Error("init() must be called first.");
@@ -1990,29 +2155,32 @@ var MediaFileReader = function () {
       return this._size;
     }
   }, {
-    key: 'getByteAt',
+    key: "getByteAt",
     value: function getByteAt(offset) {
       throw new Error("Must implement getByteAt function");
     }
   }, {
-    key: 'getBytesAt',
+    key: "getBytesAt",
     value: function getBytesAt(offset, length) {
       var bytes = new Array(length);
+
       for (var i = 0; i < length; i++) {
         bytes[i] = this.getByteAt(offset + i);
       }
+
       return bytes;
     }
   }, {
-    key: 'isBitSetAt',
+    key: "isBitSetAt",
     value: function isBitSetAt(offset, bit) {
       var iByte = this.getByteAt(offset);
       return (iByte & 1 << bit) != 0;
     }
   }, {
-    key: 'getSByteAt',
+    key: "getSByteAt",
     value: function getSByteAt(offset) {
       var iByte = this.getByteAt(offset);
+
       if (iByte > 127) {
         return iByte - 256;
       } else {
@@ -2020,18 +2188,21 @@ var MediaFileReader = function () {
       }
     }
   }, {
-    key: 'getShortAt',
+    key: "getShortAt",
     value: function getShortAt(offset, isBigEndian) {
       var iShort = isBigEndian ? (this.getByteAt(offset) << 8) + this.getByteAt(offset + 1) : (this.getByteAt(offset + 1) << 8) + this.getByteAt(offset);
+
       if (iShort < 0) {
         iShort += 65536;
       }
+
       return iShort;
     }
   }, {
-    key: 'getSShortAt',
+    key: "getSShortAt",
     value: function getSShortAt(offset, isBigEndian) {
       var iUShort = this.getShortAt(offset, isBigEndian);
+
       if (iUShort > 32767) {
         return iUShort - 65536;
       } else {
@@ -2039,13 +2210,12 @@ var MediaFileReader = function () {
       }
     }
   }, {
-    key: 'getLongAt',
+    key: "getLongAt",
     value: function getLongAt(offset, isBigEndian) {
       var iByte1 = this.getByteAt(offset),
           iByte2 = this.getByteAt(offset + 1),
           iByte3 = this.getByteAt(offset + 2),
           iByte4 = this.getByteAt(offset + 3);
-
       var iLong = isBigEndian ? (((iByte1 << 8) + iByte2 << 8) + iByte3 << 8) + iByte4 : (((iByte4 << 8) + iByte3 << 8) + iByte2 << 8) + iByte1;
 
       if (iLong < 0) {
@@ -2055,7 +2225,7 @@ var MediaFileReader = function () {
       return iLong;
     }
   }, {
-    key: 'getSLongAt',
+    key: "getSLongAt",
     value: function getSLongAt(offset, isBigEndian) {
       var iULong = this.getLongAt(offset, isBigEndian);
 
@@ -2066,12 +2236,11 @@ var MediaFileReader = function () {
       }
     }
   }, {
-    key: 'getInteger24At',
+    key: "getInteger24At",
     value: function getInteger24At(offset, isBigEndian) {
       var iByte1 = this.getByteAt(offset),
           iByte2 = this.getByteAt(offset + 1),
           iByte3 = this.getByteAt(offset + 2);
-
       var iInteger = isBigEndian ? ((iByte1 << 8) + iByte2 << 8) + iByte3 : ((iByte3 << 8) + iByte2 << 8) + iByte1;
 
       if (iInteger < 0) {
@@ -2081,16 +2250,18 @@ var MediaFileReader = function () {
       return iInteger;
     }
   }, {
-    key: 'getStringAt',
+    key: "getStringAt",
     value: function getStringAt(offset, length) {
       var string = [];
+
       for (var i = offset, j = 0; i < offset + length; i++, j++) {
         string[j] = String.fromCharCode(this.getByteAt(i));
       }
+
       return string.join("");
     }
   }, {
-    key: 'getStringWithCharsetAt',
+    key: "getStringWithCharsetAt",
     value: function getStringWithCharsetAt(offset, length, charset) {
       var bytes = this.getBytesAt(offset, length);
       var string;
@@ -2114,11 +2285,10 @@ var MediaFileReader = function () {
       return string;
     }
   }, {
-    key: 'getCharAt',
+    key: "getCharAt",
     value: function getCharAt(offset) {
       return String.fromCharCode(this.getByteAt(offset));
     }
-
     /**
      * The ID3v2 tag/frame size is encoded with four bytes where the most
      * significant bit (bit 7) is set to zero in every byte, making a total of 28
@@ -2127,19 +2297,18 @@ var MediaFileReader = function () {
      */
 
   }, {
-    key: 'getSynchsafeInteger32At',
+    key: "getSynchsafeInteger32At",
     value: function getSynchsafeInteger32At(offset) {
       var size1 = this.getByteAt(offset);
       var size2 = this.getByteAt(offset + 1);
       var size3 = this.getByteAt(offset + 2);
-      var size4 = this.getByteAt(offset + 3);
-      // 0x7f = 0b01111111
-      var size = size4 & 0x7f | (size3 & 0x7f) << 7 | (size2 & 0x7f) << 14 | (size1 & 0x7f) << 21;
+      var size4 = this.getByteAt(offset + 3); // 0x7f = 0b01111111
 
+      var size = size4 & 0x7f | (size3 & 0x7f) << 7 | (size2 & 0x7f) << 14 | (size1 & 0x7f) << 21;
       return size;
     }
   }], [{
-    key: 'canReadFile',
+    key: "canReadFile",
     value: function canReadFile(file) {
       throw new Error("Must implement canReadFile function");
     }
@@ -2153,20 +2322,29 @@ module.exports = MediaFileReader;
 },{"./StringUtils":13}],12:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var MediaFileReader = require('./MediaFileReader');
 
-var MediaTagReader = function () {
+var MediaTagReader =
+/*#__PURE__*/
+function () {
   function MediaTagReader(mediaFileReader) {
     _classCallCheck(this, MediaTagReader);
+
+    _defineProperty(this, "_mediaFileReader", void 0);
+
+    _defineProperty(this, "_tags", void 0);
 
     this._mediaFileReader = mediaFileReader;
     this._tags = null;
   }
-
   /**
    * Returns the byte range that needs to be loaded and fed to
    * _canReadTagFormat in order to identify if the file contains tag
@@ -2175,20 +2353,20 @@ var MediaTagReader = function () {
 
 
   _createClass(MediaTagReader, [{
-    key: 'setTagsToRead',
+    key: "setTagsToRead",
     value: function setTagsToRead(tags) {
       this._tags = tags;
       return this;
     }
   }, {
-    key: 'read',
+    key: "read",
     value: function read(callbacks) {
       var self = this;
 
       this._mediaFileReader.init({
-        onSuccess: function () {
+        onSuccess: function onSuccess() {
           self._loadData(self._mediaFileReader, {
-            onSuccess: function () {
+            onSuccess: function onSuccess() {
               try {
                 var tags = self._parseData(self._mediaFileReader, self._tags);
               } catch (ex) {
@@ -2199,9 +2377,9 @@ var MediaTagReader = function () {
                   });
                   return;
                 }
-              }
+              } // TODO: destroy mediaFileReader
 
-              // TODO: destroy mediaFileReader
+
               callbacks.onSuccess(tags);
             },
             onError: callbacks.onError
@@ -2211,32 +2389,30 @@ var MediaTagReader = function () {
       });
     }
   }, {
-    key: 'getShortcuts',
+    key: "getShortcuts",
     value: function getShortcuts() {
       return {};
     }
-
     /**
      * Load the necessary bytes from the media file.
      */
 
   }, {
-    key: '_loadData',
+    key: "_loadData",
     value: function _loadData(mediaFileReader, callbacks) {
       throw new Error("Must implement _loadData function");
     }
-
     /**
      * Parse the loaded data to read the media tags.
      */
 
   }, {
-    key: '_parseData',
+    key: "_parseData",
     value: function _parseData(mediaFileReader, tags) {
       throw new Error("Must implement _parseData function");
     }
   }, {
-    key: '_expandShortcutTags',
+    key: "_expandShortcutTags",
     value: function _expandShortcutTags(tagsWithShortcuts) {
       if (!tagsWithShortcuts) {
         return null;
@@ -2244,6 +2420,7 @@ var MediaTagReader = function () {
 
       var tags = [];
       var shortcuts = this.getShortcuts();
+
       for (var i = 0, tagOrShortcut; tagOrShortcut = tagsWithShortcuts[i]; i++) {
         tags = tags.concat(shortcuts[tagOrShortcut] || [tagOrShortcut]);
       }
@@ -2251,11 +2428,10 @@ var MediaTagReader = function () {
       return tags;
     }
   }], [{
-    key: 'getTagIdentifierByteRange',
+    key: "getTagIdentifierByteRange",
     value: function getTagIdentifierByteRange() {
       throw new Error("Must implement");
     }
-
     /**
      * Given a tag identifier (read from the file byte positions speficied by
      * getTagIdentifierByteRange) this function checks if it can read the tag
@@ -2263,7 +2439,7 @@ var MediaTagReader = function () {
      */
 
   }, {
-    key: 'canReadTagFormat',
+    key: "canReadTagFormat",
     value: function canReadTagFormat(tagIdentifier) {
       throw new Error("Must implement");
     }
@@ -2275,15 +2451,27 @@ var MediaTagReader = function () {
 module.exports = MediaTagReader;
 
 },{"./MediaFileReader":11}],13:[function(require,module,exports){
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+"use strict";
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var InternalDecodedString = function () {
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var InternalDecodedString =
+/*#__PURE__*/
+function () {
   function InternalDecodedString(value, bytesReadCount) {
     _classCallCheck(this, InternalDecodedString);
+
+    _defineProperty(this, "_value", void 0);
+
+    _defineProperty(this, "bytesReadCount", void 0);
+
+    _defineProperty(this, "length", void 0);
 
     this._value = value;
     this.bytesReadCount = bytesReadCount;
@@ -2301,34 +2489,36 @@ var InternalDecodedString = function () {
 }();
 
 var StringUtils = {
-  readUTF16String: function (bytes, bigEndian, maxBytes) {
+  readUTF16String: function readUTF16String(bytes, bigEndian, maxBytes) {
     var ix = 0;
     var offset1 = 1,
         offset2 = 0;
-
     maxBytes = Math.min(maxBytes || bytes.length, bytes.length);
 
-    if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
+    if (bytes[0] == 0xfe && bytes[1] == 0xff) {
       bigEndian = true;
       ix = 2;
-    } else if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
+    } else if (bytes[0] == 0xff && bytes[1] == 0xfe) {
       bigEndian = false;
       ix = 2;
     }
+
     if (bigEndian) {
       offset1 = 0;
       offset2 = 1;
     }
 
     var arr = [];
+
     for (var j = 0; ix < maxBytes; j++) {
       var byte1 = bytes[ix + offset1];
       var byte2 = bytes[ix + offset2];
       var word1 = (byte1 << 8) + byte2;
       ix += 2;
+
       if (word1 == 0x0000) {
         break;
-      } else if (byte1 < 0xD8 || byte1 >= 0xE0) {
+      } else if (byte1 < 0xd8 || byte1 >= 0xe0) {
         arr[j] = String.fromCharCode(word1);
       } else {
         var byte3 = bytes[ix + offset1];
@@ -2338,81 +2528,107 @@ var StringUtils = {
         arr[j] = String.fromCharCode(word1, word2);
       }
     }
+
     return new InternalDecodedString(arr.join(""), ix);
   },
-
-  readUTF8String: function (bytes, maxBytes) {
+  readUTF8String: function readUTF8String(bytes, maxBytes) {
     var ix = 0;
     maxBytes = Math.min(maxBytes || bytes.length, bytes.length);
 
-    if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+    if (bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf) {
       ix = 3;
     }
 
     var arr = [];
+
     for (var j = 0; ix < maxBytes; j++) {
       var byte1 = bytes[ix++];
+
       if (byte1 == 0x00) {
         break;
       } else if (byte1 < 0x80) {
         arr[j] = String.fromCharCode(byte1);
-      } else if (byte1 >= 0xC2 && byte1 < 0xE0) {
+      } else if (byte1 >= 0xc2 && byte1 < 0xe0) {
         var byte2 = bytes[ix++];
-        arr[j] = String.fromCharCode(((byte1 & 0x1F) << 6) + (byte2 & 0x3F));
-      } else if (byte1 >= 0xE0 && byte1 < 0xF0) {
+        arr[j] = String.fromCharCode(((byte1 & 0x1f) << 6) + (byte2 & 0x3f));
+      } else if (byte1 >= 0xe0 && byte1 < 0xf0) {
         var byte2 = bytes[ix++];
         var byte3 = bytes[ix++];
-        arr[j] = String.fromCharCode(((byte1 & 0xFF) << 12) + ((byte2 & 0x3F) << 6) + (byte3 & 0x3F));
-      } else if (byte1 >= 0xF0 && byte1 < 0xF5) {
+        arr[j] = String.fromCharCode(((byte1 & 0xff) << 12) + ((byte2 & 0x3f) << 6) + (byte3 & 0x3f));
+      } else if (byte1 >= 0xf0 && byte1 < 0xf5) {
         var byte2 = bytes[ix++];
         var byte3 = bytes[ix++];
         var byte4 = bytes[ix++];
-        var codepoint = ((byte1 & 0x07) << 18) + ((byte2 & 0x3F) << 12) + ((byte3 & 0x3F) << 6) + (byte4 & 0x3F) - 0x10000;
-        arr[j] = String.fromCharCode((codepoint >> 10) + 0xD800, (codepoint & 0x3FF) + 0xDC00);
+        var codepoint = ((byte1 & 0x07) << 18) + ((byte2 & 0x3f) << 12) + ((byte3 & 0x3f) << 6) + (byte4 & 0x3f) - 0x10000;
+        arr[j] = String.fromCharCode((codepoint >> 10) + 0xd800, (codepoint & 0x3ff) + 0xdc00);
       }
     }
+
     return new InternalDecodedString(arr.join(""), ix);
   },
-
-  readNullTerminatedString: function (bytes, maxBytes) {
+  readNullTerminatedString: function readNullTerminatedString(bytes, maxBytes) {
     var arr = [];
     maxBytes = maxBytes || bytes.length;
+
     for (var i = 0; i < maxBytes;) {
       var byte1 = bytes[i++];
+
       if (byte1 == 0x00) {
         break;
       }
+
       arr[i - 1] = String.fromCharCode(byte1);
     }
+
     return new InternalDecodedString(arr.join(""), i);
   }
 };
-
 module.exports = StringUtils;
 
 },{}],14:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var ChunkedFileData = require('./ChunkedFileData');
+
 var MediaFileReader = require('./MediaFileReader');
 
 var CHUNK_SIZE = 1024;
 
-var XhrFileReader = function (_MediaFileReader) {
+var XhrFileReader =
+/*#__PURE__*/
+function (_MediaFileReader) {
   _inherits(XhrFileReader, _MediaFileReader);
 
   function XhrFileReader(url) {
+    var _this;
+
     _classCallCheck(this, XhrFileReader);
 
-    var _this = _possibleConstructorReturn(this, (XhrFileReader.__proto__ || Object.getPrototypeOf(XhrFileReader)).call(this));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(XhrFileReader).call(this));
+
+    _defineProperty(_assertThisInitialized(_this), "_url", void 0);
+
+    _defineProperty(_assertThisInitialized(_this), "_fileData", void 0);
 
     _this._url = url;
     _this._fileData = new ChunkedFileData();
@@ -2420,7 +2636,7 @@ var XhrFileReader = function (_MediaFileReader) {
   }
 
   _createClass(XhrFileReader, [{
-    key: '_init',
+    key: "_init",
     value: function _init(callbacks) {
       if (XhrFileReader._config.avoidHeadRequests) {
         this._fetchSizeWithGetRequest(callbacks);
@@ -2429,13 +2645,14 @@ var XhrFileReader = function (_MediaFileReader) {
       }
     }
   }, {
-    key: '_fetchSizeWithHeadRequest',
+    key: "_fetchSizeWithHeadRequest",
     value: function _fetchSizeWithHeadRequest(callbacks) {
       var self = this;
 
       this._makeXHRRequest("HEAD", null, {
-        onSuccess: function (xhr) {
+        onSuccess: function onSuccess(xhr) {
           var contentLength = self._parseContentLength(xhr);
+
           if (contentLength) {
             self._size = contentLength;
             callbacks.onSuccess();
@@ -2449,14 +2666,16 @@ var XhrFileReader = function (_MediaFileReader) {
       });
     }
   }, {
-    key: '_fetchSizeWithGetRequest',
+    key: "_fetchSizeWithGetRequest",
     value: function _fetchSizeWithGetRequest(callbacks) {
       var self = this;
+
       var range = this._roundRangeToChunkMultiple([0, 0]);
 
       this._makeXHRRequest("GET", range, {
-        onSuccess: function (xhr) {
+        onSuccess: function onSuccess(xhr) {
           var contentRange = self._parseContentRange(xhr);
+
           var data = self._getXhrResponseContent(xhr);
 
           if (contentRange) {
@@ -2464,8 +2683,10 @@ var XhrFileReader = function (_MediaFileReader) {
               // Last resort, server is not able to tell us the content length,
               // need to fetch entire file then.
               self._fetchEntireFile(callbacks);
+
               return;
             }
+
             self._size = contentRange.instanceLength;
           } else {
             // Range request not supported, we got the entire file
@@ -2473,32 +2694,37 @@ var XhrFileReader = function (_MediaFileReader) {
           }
 
           self._fileData.addData(0, data);
+
           callbacks.onSuccess();
         },
         onError: callbacks.onError
       });
     }
   }, {
-    key: '_fetchEntireFile',
+    key: "_fetchEntireFile",
     value: function _fetchEntireFile(callbacks) {
       var self = this;
+
       this._makeXHRRequest("GET", null, {
-        onSuccess: function (xhr) {
+        onSuccess: function onSuccess(xhr) {
           var data = self._getXhrResponseContent(xhr);
+
           self._size = data.length;
+
           self._fileData.addData(0, data);
+
           callbacks.onSuccess();
         },
         onError: callbacks.onError
       });
     }
   }, {
-    key: '_getXhrResponseContent',
+    key: "_getXhrResponseContent",
     value: function _getXhrResponseContent(xhr) {
       return xhr.responseBody || xhr.responseText || "";
     }
   }, {
-    key: '_parseContentLength',
+    key: "_parseContentLength",
     value: function _parseContentLength(xhr) {
       var contentLength = this._getResponseHeader(xhr, "Content-Length");
 
@@ -2509,12 +2735,13 @@ var XhrFileReader = function (_MediaFileReader) {
       }
     }
   }, {
-    key: '_parseContentRange',
+    key: "_parseContentRange",
     value: function _parseContentRange(xhr) {
       var contentRange = this._getResponseHeader(xhr, "Content-Range");
 
       if (contentRange) {
         var parsedContentRange = contentRange.match(/bytes (\d+)-(\d+)\/(?:(\d+)|\*)/i);
+
         if (!parsedContentRange) {
           throw new Error("FIXME: Unknown Content-Range syntax: " + contentRange);
         }
@@ -2529,47 +2756,49 @@ var XhrFileReader = function (_MediaFileReader) {
       }
     }
   }, {
-    key: 'loadRange',
+    key: "loadRange",
     value: function loadRange(range, callbacks) {
       var self = this;
 
       if (self._fileData.hasDataRange(range[0], Math.min(self._size, range[1]))) {
         setTimeout(callbacks.onSuccess, 1);
         return;
-      }
-
-      // Always download in multiples of CHUNK_SIZE. If we're going to make a
+      } // Always download in multiples of CHUNK_SIZE. If we're going to make a
       // request might as well get a chunk that makes sense. The big cost is
       // establishing the connection so getting 10bytes or 1K doesn't really
       // make a difference.
-      range = this._roundRangeToChunkMultiple(range);
 
-      // Upper range should not be greater than max file size
+
+      range = this._roundRangeToChunkMultiple(range); // Upper range should not be greater than max file size
+
       range[1] = Math.min(self._size, range[1]);
 
       this._makeXHRRequest("GET", range, {
-        onSuccess: function (xhr) {
+        onSuccess: function onSuccess(xhr) {
           var data = self._getXhrResponseContent(xhr);
+
           self._fileData.addData(range[0], data);
+
           callbacks.onSuccess();
         },
         onError: callbacks.onError
       });
     }
   }, {
-    key: '_roundRangeToChunkMultiple',
+    key: "_roundRangeToChunkMultiple",
     value: function _roundRangeToChunkMultiple(range) {
       var length = range[1] - range[0] + 1;
       var newLength = Math.ceil(length / CHUNK_SIZE) * CHUNK_SIZE;
       return [range[0], range[0] + newLength - 1];
     }
   }, {
-    key: '_makeXHRRequest',
+    key: "_makeXHRRequest",
     value: function _makeXHRRequest(method, range, callbacks) {
       var xhr = this._createXHRObject();
+
       xhr.open(method, this._url);
 
-      var onXHRLoad = function () {
+      var onXHRLoad = function onXHRLoad() {
         // 200 - OK
         // 206 - Partial Content
         // $FlowIssue - xhr will not be null here
@@ -2582,11 +2811,13 @@ var XhrFileReader = function (_MediaFileReader) {
             "xhr": xhr
           });
         }
+
         xhr = null;
       };
 
       if (typeof xhr.onload !== 'undefined') {
         xhr.onload = onXHRLoad;
+
         xhr.onerror = function () {
           if (callbacks.onError) {
             callbacks.onError({
@@ -2607,6 +2838,7 @@ var XhrFileReader = function (_MediaFileReader) {
 
       if (XhrFileReader._config.timeoutInSec) {
         xhr.timeout = XhrFileReader._config.timeoutInSec * 1000;
+
         xhr.ontimeout = function () {
           if (callbacks.onError) {
             callbacks.onError({
@@ -2620,21 +2852,24 @@ var XhrFileReader = function (_MediaFileReader) {
       }
 
       xhr.overrideMimeType("text/plain; charset=x-user-defined");
+
       if (range) {
         this._setRequestHeader(xhr, "Range", "bytes=" + range[0] + "-" + range[1]);
       }
+
       this._setRequestHeader(xhr, "If-Modified-Since", "Sat, 01 Jan 1970 00:00:00 GMT");
+
       xhr.send(null);
     }
   }, {
-    key: '_setRequestHeader',
+    key: "_setRequestHeader",
     value: function _setRequestHeader(xhr, headerName, headerValue) {
       if (XhrFileReader._config.disallowedXhrHeaders.indexOf(headerName.toLowerCase()) < 0) {
         xhr.setRequestHeader(headerName, headerValue);
       }
     }
   }, {
-    key: '_hasResponseHeader',
+    key: "_hasResponseHeader",
     value: function _hasResponseHeader(xhr, headerName) {
       var allResponseHeaders = xhr.getAllResponseHeaders();
 
@@ -2644,6 +2879,7 @@ var XhrFileReader = function (_MediaFileReader) {
 
       var headers = allResponseHeaders.split("\r\n");
       var headerNames = [];
+
       for (var i = 0; i < headers.length; i++) {
         headerNames[i] = headers[i].split(":")[0].toLowerCase();
       }
@@ -2651,7 +2887,7 @@ var XhrFileReader = function (_MediaFileReader) {
       return headerNames.indexOf(headerName.toLowerCase()) >= 0;
     }
   }, {
-    key: '_getResponseHeader',
+    key: "_getResponseHeader",
     value: function _getResponseHeader(xhr, headerName) {
       if (!this._hasResponseHeader(xhr, headerName)) {
         return null;
@@ -2660,18 +2896,19 @@ var XhrFileReader = function (_MediaFileReader) {
       return xhr.getResponseHeader(headerName);
     }
   }, {
-    key: 'getByteAt',
+    key: "getByteAt",
     value: function getByteAt(offset) {
       var character = this._fileData.getByteAt(offset);
+
       return character.charCodeAt(0) & 0xff;
     }
   }, {
-    key: '_isWebWorker',
+    key: "_isWebWorker",
     value: function _isWebWorker() {
       return typeof WorkerGlobalScope !== 'undefined' && self instanceof WorkerGlobalScope;
     }
   }, {
-    key: '_createXHRObject',
+    key: "_createXHRObject",
     value: function _createXHRObject() {
       if (typeof window === "undefined" && !this._isWebWorker()) {
         // $FlowIssue - flow is not able to recognize this module.
@@ -2685,18 +2922,21 @@ var XhrFileReader = function (_MediaFileReader) {
       throw new Error("XMLHttpRequest is not supported");
     }
   }], [{
-    key: 'canReadFile',
+    key: "canReadFile",
     value: function canReadFile(file) {
       return typeof file === 'string' && /^[a-z]+:\/\//i.test(file);
     }
   }, {
-    key: 'setConfig',
+    key: "setConfig",
     value: function setConfig(config) {
       for (var key in config) {
         if (config.hasOwnProperty(key)) {
           this._config[key] = config[key];
         }
-      }var disallowedXhrHeaders = this._config.disallowedXhrHeaders;
+      }
+
+      var disallowedXhrHeaders = this._config.disallowedXhrHeaders;
+
       for (var i = 0; i < disallowedXhrHeaders.length; i++) {
         disallowedXhrHeaders[i] = disallowedXhrHeaders[i].toLowerCase();
       }
@@ -2706,30 +2946,42 @@ var XhrFileReader = function (_MediaFileReader) {
   return XhrFileReader;
 }(MediaFileReader);
 
+_defineProperty(XhrFileReader, "_config", void 0);
+
 XhrFileReader._config = {
   avoidHeadRequests: false,
   disallowedXhrHeaders: [],
   timeoutInSec: 30
 };
-
 module.exports = XhrFileReader;
 
 },{"./ChunkedFileData":5,"./MediaFileReader":11,"xhr2":2}],15:[function(require,module,exports){
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var MediaFileReader = require("./MediaFileReader");
-var NodeFileReader = require("./NodeFileReader");
+
 var XhrFileReader = require("./XhrFileReader");
+
 var BlobFileReader = require("./BlobFileReader");
+
 var ArrayFileReader = require("./ArrayFileReader");
+
 var MediaTagReader = require("./MediaTagReader");
+
 var ID3v1TagReader = require("./ID3v1TagReader");
+
 var ID3v2TagReader = require("./ID3v2TagReader");
+
 var MP4TagReader = require("./MP4TagReader");
+
 var FLACTagReader = require("./FLACTagReader");
 
 var mediaFileReaders = [];
@@ -2741,15 +2993,23 @@ function read(location, callbacks) {
 
 function isRangeValid(range, fileSize) {
   var invalidPositiveRange = range.offset >= 0 && range.offset + range.length >= fileSize;
-
   var invalidNegativeRange = range.offset < 0 && (-range.offset > fileSize || range.offset + range.length > 0);
-
   return !(invalidPositiveRange || invalidNegativeRange);
 }
 
-var Reader = function () {
+var Reader =
+/*#__PURE__*/
+function () {
   function Reader(file) {
     _classCallCheck(this, Reader);
+
+    _defineProperty(this, "_file", void 0);
+
+    _defineProperty(this, "_tagsToRead", void 0);
+
+    _defineProperty(this, "_fileReader", void 0);
+
+    _defineProperty(this, "_tagReader", void 0);
 
     this._file = file;
   }
@@ -2776,13 +3036,13 @@ var Reader = function () {
     key: "read",
     value: function read(callbacks) {
       var FileReader = this._getFileReader();
+
       var fileReader = new FileReader(this._file);
       var self = this;
-
       fileReader.init({
-        onSuccess: function () {
+        onSuccess: function onSuccess() {
           self._getTagReader(fileReader, {
-            onSuccess: function (TagReader) {
+            onSuccess: function onSuccess(TagReader) {
               new TagReader(fileReader).setTagsToRead(self._tagsToRead).read(callbacks);
             },
             onError: callbacks.onError
@@ -2842,6 +3102,7 @@ var Reader = function () {
 
       for (var i = 0; i < mediaTagReaders.length; i++) {
         var range = mediaTagReaders[i].getTagIdentifierByteRange();
+
         if (!isRangeValid(range, fileSize)) {
           continue;
         }
@@ -2855,7 +3116,7 @@ var Reader = function () {
 
       var tagsLoaded = false;
       var loadTagIdentifiersCallbacks = {
-        onSuccess: function () {
+        onSuccess: function onSuccess() {
           if (!tagsLoaded) {
             // We're expecting to load two sets of tag identifiers. This flag
             // indicates when the first one has been loaded.
@@ -2865,6 +3126,7 @@ var Reader = function () {
 
           for (var i = 0; i < mediaTagReaders.length; i++) {
             var range = mediaTagReaders[i].getTagIdentifierByteRange();
+
             if (!isRangeValid(range, fileSize)) {
               continue;
             }
@@ -2878,6 +3140,7 @@ var Reader = function () {
                   "info": ex.message
                 });
               }
+
               return;
             }
 
@@ -2898,6 +3161,7 @@ var Reader = function () {
       };
 
       this._loadTagIdentifierRanges(fileReader, tagReadersAtFileStart, loadTagIdentifiersCallbacks);
+
       this._loadTagIdentifierRanges(fileReader, tagReadersAtFileEnd, loadTagIdentifiersCallbacks);
     }
   }, {
@@ -2910,16 +3174,14 @@ var Reader = function () {
       }
 
       var tagIdentifierRange = [Number.MAX_VALUE, 0];
-      var fileSize = fileReader.getSize();
-
-      // Create a super set of all ranges so we can load them all at once.
+      var fileSize = fileReader.getSize(); // Create a super set of all ranges so we can load them all at once.
       // Might need to rethink this approach if there are tag ranges too far
       // a part from each other. We're good for now though.
+
       for (var i = 0; i < tagReaders.length; i++) {
         var range = tagReaders[i].getTagIdentifierByteRange();
         var start = range.offset >= 0 ? range.offset : range.offset + fileSize;
         var end = start + range.length - 1;
-
         tagIdentifierRange[0] = Math.min(start, tagIdentifierRange[0]);
         tagIdentifierRange[1] = Math.max(end, tagIdentifierRange[1]);
       }
@@ -2931,7 +3193,9 @@ var Reader = function () {
   return Reader;
 }();
 
-var Config = function () {
+var Config =
+/*#__PURE__*/
+function () {
   function Config() {
     _classCallCheck(this, Config);
   }
@@ -2988,7 +3252,15 @@ var Config = function () {
 Config.addFileReader(XhrFileReader).addFileReader(BlobFileReader).addFileReader(ArrayFileReader).addTagReader(ID3v2TagReader).addTagReader(ID3v1TagReader).addTagReader(MP4TagReader).addTagReader(FLACTagReader);
 
 if (typeof process !== "undefined" && !process.browser) {
-  Config.addFileReader(NodeFileReader);
+  if (typeof navigator !== "undefined" && navigator.product === "ReactNative") {
+    var ReactNativeFileReader = require('./ReactNativeFileReader');
+
+    Config.addFileReader(ReactNativeFileReader);
+  } else {
+    var NodeFileReader = require('./NodeFileReader');
+
+    Config.addFileReader(NodeFileReader);
+  }
 }
 
 module.exports = {
@@ -2997,5 +3269,5 @@ module.exports = {
   "Config": Config
 };
 
-},{"./ArrayFileReader":3,"./BlobFileReader":4,"./FLACTagReader":6,"./ID3v1TagReader":7,"./ID3v2TagReader":9,"./MP4TagReader":10,"./MediaFileReader":11,"./MediaTagReader":12,"./NodeFileReader":1,"./XhrFileReader":14}]},{},[15])(15)
+},{"./ArrayFileReader":3,"./BlobFileReader":4,"./FLACTagReader":6,"./ID3v1TagReader":7,"./ID3v2TagReader":9,"./MP4TagReader":10,"./MediaFileReader":11,"./MediaTagReader":12,"./NodeFileReader":1,"./ReactNativeFileReader":1,"./XhrFileReader":14}]},{},[15])(15)
 });

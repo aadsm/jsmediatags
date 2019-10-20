@@ -552,6 +552,7 @@ frameReaderFunctions['TXXX'] = function readTextFrame(
   id3header?: TagHeader
 ): Object {
   var charset = getTextEncoding(data.getByteAt(offset));
+
   return getUserDefinedFields(offset, length, data, charset);
 };
 
@@ -640,6 +641,7 @@ frameReaderFunctions['UFID'] = function readLyricsFrame(
 
 function getTextEncoding(bite): CharsetType {
   var charset: ?CharsetType;
+
   switch (bite)
   {
     case 0x00:
@@ -661,6 +663,7 @@ function getTextEncoding(bite): CharsetType {
     default:
     charset = 'iso-8859-1';
   }
+
   return charset;
 }
 

@@ -338,13 +338,13 @@ describe("ID3v2FrameReader", function() {
       bin("ID2"), [0x00], // child 1
       bin("ID3"), [0x00], // child 2
       bin("TIT1"), // child 1
-      [0x00, 0x00, 0x00, 0x02], // size
-      [0x00, 0x00], // flags
-      [0x00, 0x00], // text encoding + null terminated string
+        [0x00, 0x00, 0x00, 0x02], // size
+        [0x00, 0x00], // flags
+        [0x00, 0x00], // text encoding + null terminated string
       bin("TIT2"), // child 2
-      [0x00, 0x00, 0x00, 0x02], // size
-      [0x00, 0x00], // flags
-      [0x00, 0x00] // text encoding + null terminated string
+        [0x00, 0x00, 0x00, 0x02], // size
+        [0x00, 0x00], // flags
+        [0x00, 0x00] // text encoding + null terminated string
     );
     var fileReader = new ArrayFileReader(fileData);
     var data = frameReader(0, fileData.length, fileReader, null, {major: 3});

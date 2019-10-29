@@ -9,11 +9,11 @@ var ArrayFileReader = require('./ArrayFileReader');
 
 import type {
   CharsetType,
-    FrameReaderSignature,
-    TagHeader,
-    TagFrames,
-    TagFrameHeader,
-    TagFrameFlags
+  FrameReaderSignature,
+  TagHeader,
+  TagFrames,
+  TagFrameHeader,
+  TagFrameFlags
 } from './FlowTypes';
 
 const FRAME_DESCRIPTIONS = {
@@ -310,19 +310,19 @@ class ID3v2FrameReader {
 
     switch (major) {
       case 2:
-        var frameId = data.getStringAt(offset, 3);
-        var frameSize = data.getInteger24At(offset+3, true);
-        break;
+      var frameId = data.getStringAt(offset, 3);
+      var frameSize = data.getInteger24At(offset+3, true);
+      break;
 
       case 3:
-        var frameId = data.getStringAt(offset, 4);
-        var frameSize = data.getLongAt(offset+4, true);
-        break;
+      var frameId = data.getStringAt(offset, 4);
+      var frameSize = data.getLongAt(offset+4, true);
+      break;
 
       case 4:
-        var frameId = data.getStringAt(offset, 4);
-        var frameSize = data.getSynchsafeInteger32At(offset+4);
-        break;
+      var frameId = data.getStringAt(offset, 4);
+      var frameSize = data.getSynchsafeInteger32At(offset+4);
+      break;
     }
 
     if (
@@ -402,18 +402,18 @@ frameReaderFunctions['APIC'] = function readPictureFrame(
   var charset = getTextEncoding(data.getByteAt(offset));
   switch (id3header && id3header.major) {
     case 2:
-      var format = data.getStringAt(offset+1, 3);
-      offset += 4;
-      break;
+    var format = data.getStringAt(offset+1, 3);
+    offset += 4;
+    break;
 
     case 3:
     case 4:
-      var format = data.getStringWithCharsetAt(offset+1, length - 1);
-      offset += 1 + format.bytesReadCount;
-      break;
+    var format = data.getStringWithCharsetAt(offset+1, length - 1);
+    offset += 1 + format.bytesReadCount;
+    break;
 
     default:
-      throw new Error("Couldn't read ID3v2 major version.");
+    throw new Error("Couldn't read ID3v2 major version.");
   }
   var bite = data.getByteAt(offset);
   var type = PICTURE_TYPE[bite];
@@ -552,7 +552,7 @@ frameReaderFunctions['TXXX'] = function readTextFrame(
   id3header?: TagHeader
 ): Object {
   var charset = getTextEncoding(data.getByteAt(offset));
-  
+
   return getUserDefinedFields(offset, length, data, charset);
 };
 
@@ -641,29 +641,29 @@ frameReaderFunctions['UFID'] = function readLyricsFrame(
 
 function getTextEncoding(bite): CharsetType {
   var charset: ?CharsetType;
-  
-  switch (bite) 
+
+  switch (bite)
   {
     case 0x00:
-      charset = 'iso-8859-1';
-      break;
+    charset = 'iso-8859-1';
+    break;
 
     case 0x01:
-      charset = 'utf-16';
-      break;
+    charset = 'utf-16';
+    break;
 
     case 0x02:
-      charset = 'utf-16be';
-      break;
+    charset = 'utf-16be';
+    break;
 
     case 0x03:
-      charset = 'utf-8';
-      break;
+    charset = 'utf-8';
+    break;
 
     default:
-      charset = 'iso-8859-1';
+    charset = 'iso-8859-1';
   }
-  
+
   return charset;
 }
 

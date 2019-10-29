@@ -251,7 +251,7 @@ describe("ID3v2FrameReader", function() {
         expect(data).toEqual(expected);
       });
 
-      it("reads the description and url utf-16 charset", function() {
+      it("reads the description and url with utf-16 charset", function() {
         var fileData = [].concat(
           [0x01], // encoding
           [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00],

@@ -172,7 +172,7 @@ describe("ID3v2FrameReader", function() {
         var fileData = [].concat(
           [0x01], // encoding
           [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00],
-          0xe3
+          [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
@@ -184,7 +184,7 @@ describe("ID3v2FrameReader", function() {
         var fileData = [].concat(
           [0x02], // encoding
           [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00],
-          0xe3
+          [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
@@ -196,7 +196,7 @@ describe("ID3v2FrameReader", function() {
         var fileData = [].concat(
           [0x03], // encoding
           [0xc3, 0xa3, 0x00],
-          0xe3
+          [0xc3, 0xe3, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
@@ -251,11 +251,11 @@ describe("ID3v2FrameReader", function() {
         expect(data).toEqual(expected);
       });
 
-      it("reads the description utf-16 charset, and url with iso-8859-1 charset", function() {
+      it("reads the description and url with utf-16 charset", function() {
         var fileData = [].concat(
           [0x01], // encoding
           [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00],
-          0xe3
+          [0xfe, 0xff, 0x00, 0xe3, 0x00, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
@@ -263,11 +263,11 @@ describe("ID3v2FrameReader", function() {
         expect(data).toEqual(expected);
       });
 
-      it("reads the description with utf-16be charset, and url with iso-8859-1 charset", function() {
+      it("reads the description and url with utf-16be charset", function() {
         var fileData = [].concat(
           [0x02], // encoding
           [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00],
-          0xe3
+          [0xff, 0xfe, 0xe3, 0x00, 0x00, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);
@@ -275,11 +275,11 @@ describe("ID3v2FrameReader", function() {
         expect(data).toEqual(expected);
       });
 
-      it("reads the description with utf-8 charset, and url with iso-8859-1 charset", function() {
+      it("reads the description and url with utf-8 charset", function() {
         var fileData = [].concat(
           [0x03], // encoding
           [0xc3, 0xa3, 0x00],
-          0xe3
+          [0xc3, 0xe3, 0x00]
         );
         var fileReader = new ArrayFileReader(fileData);
         var data = frameReader(0, fileData.length, fileReader);

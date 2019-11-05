@@ -676,7 +676,7 @@ function getUserDefinedFields(
   charset: CharsetType
 ): Object {
   var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
-  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);
+  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount, charset);
 
   return {
     user_description: userDesc.toString(),

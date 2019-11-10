@@ -1502,7 +1502,7 @@ function getTextEncoding(bite) {
 
 function getUserDefinedFields(offset, length, data, charset) {
   var userDesc = data.getStringWithCharsetAt(offset + 1, length - 1, charset);
-  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount);
+  var userDefinedData = data.getStringWithCharsetAt(offset + 1 + userDesc.bytesReadCount, length - 1 - userDesc.bytesReadCount, charset);
   return {
     user_description: userDesc.toString(),
     data: userDefinedData.toString()
@@ -2451,7 +2451,7 @@ function () {
 module.exports = MediaTagReader;
 
 },{"./MediaFileReader":11}],13:[function(require,module,exports){
-"use strict";
+'use strict';
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2495,10 +2495,10 @@ var StringUtils = {
         offset2 = 0;
     maxBytes = Math.min(maxBytes || bytes.length, bytes.length);
 
-    if (bytes[0] == 0xfe && bytes[1] == 0xff) {
+    if (bytes[0] == 0xFE && bytes[1] == 0xFF) {
       bigEndian = true;
       ix = 2;
-    } else if (bytes[0] == 0xff && bytes[1] == 0xfe) {
+    } else if (bytes[0] == 0xFF && bytes[1] == 0xFE) {
       bigEndian = false;
       ix = 2;
     }
@@ -2518,7 +2518,7 @@ var StringUtils = {
 
       if (word1 == 0x0000) {
         break;
-      } else if (byte1 < 0xd8 || byte1 >= 0xe0) {
+      } else if (byte1 < 0xD8 || byte1 >= 0xE0) {
         arr[j] = String.fromCharCode(word1);
       } else {
         var byte3 = bytes[ix + offset1];
@@ -2535,7 +2535,7 @@ var StringUtils = {
     var ix = 0;
     maxBytes = Math.min(maxBytes || bytes.length, bytes.length);
 
-    if (bytes[0] == 0xef && bytes[1] == 0xbb && bytes[2] == 0xbf) {
+    if (bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
       ix = 3;
     }
 
@@ -2548,19 +2548,19 @@ var StringUtils = {
         break;
       } else if (byte1 < 0x80) {
         arr[j] = String.fromCharCode(byte1);
-      } else if (byte1 >= 0xc2 && byte1 < 0xe0) {
+      } else if (byte1 >= 0xC2 && byte1 < 0xE0) {
         var byte2 = bytes[ix++];
-        arr[j] = String.fromCharCode(((byte1 & 0x1f) << 6) + (byte2 & 0x3f));
-      } else if (byte1 >= 0xe0 && byte1 < 0xf0) {
+        arr[j] = String.fromCharCode(((byte1 & 0x1F) << 6) + (byte2 & 0x3F));
+      } else if (byte1 >= 0xE0 && byte1 < 0xF0) {
         var byte2 = bytes[ix++];
         var byte3 = bytes[ix++];
-        arr[j] = String.fromCharCode(((byte1 & 0xff) << 12) + ((byte2 & 0x3f) << 6) + (byte3 & 0x3f));
-      } else if (byte1 >= 0xf0 && byte1 < 0xf5) {
+        arr[j] = String.fromCharCode(((byte1 & 0xFF) << 12) + ((byte2 & 0x3F) << 6) + (byte3 & 0x3F));
+      } else if (byte1 >= 0xF0 && byte1 < 0xF5) {
         var byte2 = bytes[ix++];
         var byte3 = bytes[ix++];
         var byte4 = bytes[ix++];
-        var codepoint = ((byte1 & 0x07) << 18) + ((byte2 & 0x3f) << 12) + ((byte3 & 0x3f) << 6) + (byte4 & 0x3f) - 0x10000;
-        arr[j] = String.fromCharCode((codepoint >> 10) + 0xd800, (codepoint & 0x3ff) + 0xdc00);
+        var codepoint = ((byte1 & 0x07) << 18) + ((byte2 & 0x3F) << 12) + ((byte3 & 0x3F) << 6) + (byte4 & 0x3F) - 0x10000;
+        arr[j] = String.fromCharCode((codepoint >> 10) + 0xD800, (codepoint & 0x3FF) + 0xDC00);
       }
     }
 

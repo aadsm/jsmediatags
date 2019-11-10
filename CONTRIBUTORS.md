@@ -28,6 +28,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
 
 ## Bugs
 
+* **[Curtis Menmuir](https://github.com/curtismenmuir)**
+  * Fixed charset issue when getting data from TXXX frame
+
 * **[Chris Parton](https://github.com/chrisparton1991)**
   * Fixed Number casting bug
 

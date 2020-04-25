@@ -87,6 +87,10 @@ jsmediatags.read("http://www.example.com/music-file.mp3", {
   }
 });
 ```
+
+Note that URL has to include scheme(absolute URL).Relative URL is not supported for now.
+
+
 ```javascript
 // From Blob
 jsmediatags.read(blob, ...);

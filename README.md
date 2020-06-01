@@ -88,7 +88,7 @@ jsmediatags.read("http://www.example.com/music-file.mp3", {
 });
 ```
 
-Note that URL has to include scheme(absolute URL).Relative URL is not supported for now.
+Note that the URI has to include the scheme (e.g.: https://), as relative URIs are not supported.
 
 
 ```javascript

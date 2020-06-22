@@ -87,6 +87,10 @@ jsmediatags.read("http://www.example.com/music-file.mp3", {
   }
 });
 ```
+
+Note that the URI has to include the scheme (e.g.: https://), as relative URIs are not supported.
+
+
 ```javascript
 // From Blob
 jsmediatags.read(blob, ...);

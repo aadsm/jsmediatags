@@ -6,7 +6,7 @@
 const RNFS = require('react-native-fs');
 const { Buffer } = require('buffer');
 
-const ChunkedFileData = require('./ChunkedFileData');
+const { ChunkedFileData } = require('@tokenizer/range/lib/chunked-file-data');
 const MediaFileReader = require('./MediaFileReader');
 
 import type {

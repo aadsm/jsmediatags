@@ -41,6 +41,7 @@
     "./NodeFileReader": false
   },
   "dependencies": {
+    "@tokenizer/range": "^0.4.0",
     "xhr2": "^0.1.4"
   },
   "optionalPeerDependencies": {

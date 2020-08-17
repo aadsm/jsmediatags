@@ -1,7 +1,6 @@
 jest
     .dontMock('../ArrayBufferFileReader.js')
-    .dontMock('../MediaFileReader.js')
-    .dontMock('../ChunkedFileData.js');
+    .dontMock('../MediaFileReader.js');
 
 var ArrayBufferFileReader = require('../ArrayBufferFileReader');
 

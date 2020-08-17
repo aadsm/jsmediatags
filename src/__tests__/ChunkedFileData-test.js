@@ -1,11 +1,10 @@
-jest
-  .dontMock('../ChunkedFileData.js');
+const { ChunkedFileData } = require('@tokenizer/range/lib/chunked-file-data');
 
-var ChunkedFileData = require('../ChunkedFileData');
+const NOT_FOUND = -1;
 
 describe("ChunkedFileData", function() {
   var chunkedFileData;
-  var someData = new Array(400);
+  var someData = new Buffer(400);
 
   for (var i = 0; i < someData.length; i++) {
     someData[i] = i;
@@ -193,29 +192,29 @@ describe("ChunkedFileData", function() {
       chunkedFileData = new ChunkedFileData();
 
       var range = chunkedFileData._getChunkRange(100, 200);
-      expect(range.startIx).toBe(ChunkedFileData.NOT_FOUND, "startIx");
-      expect(range.endIx).toBe(ChunkedFileData.NOT_FOUND, "endIx");
+      expect(range.startIx).toBe(NOT_FOUND, "startIx");
+      expect(range.endIx).toBe(NOT_FOUND, "endIx");
       expect(range.insertIx).toBe(0, "insertIx");
     })
 
     it("should find no range when offset is before any chunk", function() {
       var range = chunkedFileData._getChunkRange(50, 70);
-      expect(range.startIx).toBe(ChunkedFileData.NOT_FOUND, "startIx");
-      expect(range.endIx).toBe(ChunkedFileData.NOT_FOUND, "endIx");
+      expect(range.startIx).toBe(NOT_FOUND, "startIx");
+      expect(range.endIx).toBe(NOT_FOUND, "endIx");
       expect(range.insertIx).toBe(0, "insertIx");
     });
 
     it("should find no range when offset is after all chunks", function() {
       var range = chunkedFileData._getChunkRange(500, 600);
-      expect(range.startIx).toBe(ChunkedFileData.NOT_FOUND, "startIx");
-      expect(range.endIx).toBe(ChunkedFileData.NOT_FOUND, "endIx");
+      expect(range.startIx).toBe(NOT_FOUND, "startIx");
+      expect(range.endIx).toBe(NOT_FOUND, "endIx");
       expect(range.insertIx).toBe(3, "insertIx");
     });
 
     it("should find no range when offset is between chunks", function() {
       var range = chunkedFileData._getChunkRange(170, 190);
-      expect(range.startIx).toBe(ChunkedFileData.NOT_FOUND, "startIx");
-      expect(range.endIx).toBe(ChunkedFileData.NOT_FOUND, "endIx");
+      expect(range.startIx).toBe(NOT_FOUND, "startIx");
+      expect(range.endIx).toBe(NOT_FOUND, "endIx");
       expect(range.insertIx).toBe(1, "insertIx");
     });
 
@@ -301,29 +300,29 @@ describe("ChunkedFileData", function() {
   });
 
   it("should read data when offsets match", function() {
-    chunkedFileData.addData(0, [0x01, 0x02, 0x03, 0x04, 0x05]);
+    chunkedFileData.addData(0, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
     var iByte = chunkedFileData.getByteAt(2);
 
     expect(iByte).toBe(0x03);
   });
 
   it("should read data when offsets are mapped", function() {
-    chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
+    chunkedFileData.addData(100, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
     var iByte = chunkedFileData.getByteAt(102);
 
     expect(iByte).toBe(0x03);
   });
 
   it("should read data from the right range", function() {
-    chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
-    chunkedFileData.addData(200, [0x11, 0x12, 0x13, 0x14, 0x15]);
+    chunkedFileData.addData(100, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
+    chunkedFileData.addData(200, Buffer.from([0x11, 0x12, 0x13, 0x14, 0x15]));
     var iByte = chunkedFileData.getByteAt(202);
 
     expect(iByte).toBe(0x13);
   });
 
   it("should fail to read when data is not loaded before any chunks", function() {
-    chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
+    chunkedFileData.addData(100, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
 
     expect(function() {
       chunkedFileData.getByteAt(0);
@@ -331,8 +330,8 @@ describe("ChunkedFileData", function() {
   });
 
   it("should fail to read when data is not loaded between chunks", function() {
-    chunkedFileData.addData(0, [0x01, 0x02, 0x03, 0x04, 0x05]);
-    chunkedFileData.addData(100, [0x01, 0x02, 0x03, 0x04, 0x05]);
+    chunkedFileData.addData(0, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
+    chunkedFileData.addData(100, Buffer.from([0x01, 0x02, 0x03, 0x04, 0x05]));
 
     expect(function() {
       chunkedFileData.getByteAt(50);

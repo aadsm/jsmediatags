@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const ChunkedFileData = require('./ChunkedFileData');
+const { ChunkedFileData } = require('@tokenizer/range/lib/chunked-file-data');
 const MediaFileReader = require('./MediaFileReader');
 
 import type {

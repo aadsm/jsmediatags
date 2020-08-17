@@ -1,8 +1,7 @@
 jest
   .mock('xhr2')
   .dontMock('../XhrFileReader.js')
-  .dontMock('../MediaFileReader.js')
-  .dontMock('../ChunkedFileData.js');
+  .dontMock('../MediaFileReader.js');
 
 var XhrFileReader = require('../XhrFileReader');
 

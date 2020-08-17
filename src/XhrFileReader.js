@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const ChunkedFileData = require('./ChunkedFileData');
+const { ChunkedFileData } = require('@tokenizer/range/lib/chunked-file-data');
 const MediaFileReader = require('./MediaFileReader');
 
 const CHUNK_SIZE = 1024;
@@ -286,8 +286,7 @@ class XhrFileReader extends MediaFileReader {
   }
 
   getByteAt(offset: number): number {
-    var character = this._fileData.getByteAt(offset);
-    return character.charCodeAt(0) & 0xff;
+    return this._fileData.getByteAt(offset);
   }
 
   _isWebWorker(): boolean {

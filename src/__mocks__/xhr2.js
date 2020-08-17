@@ -30,6 +30,7 @@ function getUrlContents(url, range) {
   } else {
     contents = urlData.contents;
   }
+  contents = Buffer.from(contents, 'ascii');
 
   return range ? contents.slice(range[0], range[1] + 1) : contents;
 }
@@ -104,7 +105,7 @@ function XMLHttpRequestMock() {
   );
   this._getContentRange = function() {
     if (_range && !isRangeDisabled(_url) && !isHeaderDisallowed('content-range')) {
-      var endByte = Math.min(_range[1], getUrlContents(_url).length - 1);
+      var endByte = Math.min(_range[1], getUrlContents(_url).byteLength - 1);
       return "bytes " + _range[0] + "-" + endByte + "/" + (getUrlFileLength(_url) || "*");
     }
   }

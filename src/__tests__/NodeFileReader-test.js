@@ -1,8 +1,7 @@
 jest
   .mock('fs')
   .dontMock('../NodeFileReader.js')
-  .dontMock('../MediaFileReader.js')
-  .dontMock('../ChunkedFileData.js');
+  .dontMock('../MediaFileReader.js');
 
 describe("NodeFileReader", function() {
   var NodeFileReader;

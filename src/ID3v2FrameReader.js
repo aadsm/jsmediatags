@@ -249,7 +249,7 @@ class ID3v2FrameReader {
       }
 
       var unsyncData;
-      if (flags && flags.format.unsynchronisation) {
+      if (flags && flags.format.unsynchronisation && !id3header.flags.unsynchronisation) {
         frameData = this.getUnsyncFileReader(frameData, frameDataOffset, frameSize);
         frameDataOffset = 0;
         frameSize = frameData.getSize();

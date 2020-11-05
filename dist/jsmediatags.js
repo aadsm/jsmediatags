@@ -674,7 +674,7 @@ function (_MediaTagReader) {
 
       var numComments = data.getLongAt(offsetList, false);
       var dataOffset = offsetList + 4;
-      var title, artist, album, track, genre, picture;
+      var title, artist, album, track, genre, picture, albumArtist, year, discNumber;
 
       for (var i = 0; i < numComments; i++) {
         var _dataLength = data.getLongAt(dataOffset, false);
@@ -702,6 +702,18 @@ function (_MediaTagReader) {
 
           case "GENRE":
             genre = split[1];
+            break;
+
+          case "ALBUMARTIST":
+            albumArtist = split[1];
+            break;
+
+          case "DATE":
+            year = split[1];
+            break;
+
+          case "DISCNUMBER":
+            discNumber = split[1];
             break;
         }
 
@@ -746,7 +758,10 @@ function (_MediaTagReader) {
           "album": album,
           "track": track,
           "genre": genre,
-          "picture": picture
+          "picture": picture,
+          "albumArtist": albumArtist,
+          "year": year,
+          "discNumber": discNumber
         }
       };
       return tag;

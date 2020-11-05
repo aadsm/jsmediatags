@@ -10,7 +10,10 @@ describe("FLACTagReader", function() {
     ["ARTIST", "An Artist"],
     ["ALBUM", "An Album"],
     ["TRACKNUMBER", "1"],
-    ["GENRE", "A Genre"]
+    ["GENRE", "A Genre"],
+    ["ALBUMARTIST", "An Album Artist"],
+    ["DATE", "2020"],
+    ["DISCNUMBER", "2"],
   ), FLACTagContents.createPictureBlock()]);
   var mediaFileReader;
   var tagReader;
@@ -73,6 +76,9 @@ describe("FLACTagReader", function() {
       expect(tags.album).toBeTruthy();
       expect(tags.track).toBeTruthy();
       expect(tags.picture).toBeTruthy();
+      expect(tags.albumArtist).toBeTruthy();
+      expect(tags.year).toBeTruthy();
+      expect(tags.discNumber).toBeTruthy();
     });
   });
   it("calls failure callback if file doesn't have comments", function() {

@@ -2,7 +2,7 @@
  * Extended from https://facebook.github.io/jest/docs/manual-mocks.html
  */
 // Get the real (not mocked) version of the 'path' module
-var path = require.requireActual('path');
+var path = require('path');
 
 // Get the automatic mock for `fs`
 var fsMock = jest.genMockFromModule('fs');

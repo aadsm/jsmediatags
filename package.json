@@ -48,23 +48,23 @@
     "react-native-fs": "^2.9.2"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.5.0",
-    "@babel/cli": "^7.5.0",
+    "@babel/cli": "^7.12.16",
     "@babel/core": "^7.5.0",
-    "babel-jest": "^24.8.0",
     "@babel/plugin-proposal-class-properties": "^7.5.0",
     "@babel/plugin-transform-block-scoping": "^7.4.4",
     "@babel/plugin-transform-classes": "^7.4.4",
-    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
     "@babel/plugin-transform-flow-strip-types": "^7.4.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.5.0",
+    "@babel/preset-env": "^7.5.0",
+    "babel-jest": "^26.6.3",
     "babelify": "^10.0.0",
     "browserify": "^16.3.0",
     "flow-bin": "~0.53.1",
     "google-closure-compiler": "20170626.0.0",
-    "jest-cli": "^24.8.0",
+    "jest-cli": "^26.6.3",
     "react": "^16.2.0",
-    "react-native": "^0.60.0",
-    "watchify": "^3.11.1"
+    "react-native": "^0.63.4",
+    "watchify": "^4.0.0"
   },
   "scripts": {
     "test": "jest",

@@ -275,7 +275,7 @@ class FLACTagReader extends MediaTagReader {
       let s = data.getStringWithCharsetAt(dataOffset + 4, dataLength, "utf-8").toString();
       let d = s.indexOf("=");
       let split = [s.slice(0, d), s.slice(d + 1)];
-      switch (split[0]) {
+      switch (split[0].toUpperCase()) {
         case "TITLE":
           title = split[1];
           break;

@@ -75,6 +75,27 @@ describe("FLACTagReader", function() {
       expect(tags.picture).toBeTruthy();
     });
   });
+
+  it("reads tags no matter their case", function () {
+    var flacFileContents = new FLACTagContents([FLACTagContents.createCommentBlock(
+      ["Title", "A Title"],
+      ["artist", "An Artist"],
+    )]);
+    mediaFileReader = new ArrayFileReader(flacFileContents.toArray());
+    tagReader = new FLACTagReader(mediaFileReader);
+    return new Promise(function (resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
+      });
+      jest.runAllTimers();
+    }).then(function (tag) {
+      var tags = tag.tags;
+      expect(tags.title).toBeTruthy();
+      expect(tags.artist).toBeTruthy();
+    });
+  });
+
   it("calls failure callback if file doesn't have comments", function() {
     var flacFileEmpty = new FLACTagContents();
     var fileReaderEmpty = new ArrayFileReader(flacFileEmpty.toArray());

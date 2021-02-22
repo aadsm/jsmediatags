@@ -683,7 +683,7 @@ function (_MediaTagReader) {
         var d = s.indexOf("=");
         var split = [s.slice(0, d), s.slice(d + 1)];
 
-        switch (split[0]) {
+        switch (split[0].toUpperCase()) {
           case "TITLE":
             title = split[1];
             break;

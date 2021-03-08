@@ -31,14 +31,12 @@ describe("MP4TagReader", function() {
     MP4TagContents.createMetadataAtom("©ART", "text", bin("A Artist")),
     MP4TagContents.createMetadataAtom("©alb", "text", bin("A Album")),
     MP4TagContents.createMetadataAtom("trkn", "uint8", [].concat(
-      [0x00, 0x00],
-      [0x00, 0x02], // track
-      [0x00, 0x09] // total track count
+      [0x00, 0x00, 0x00, 0x02], // track
+      [0x00, 0x00, 0x00, 0x09] // total track count
     )),
     MP4TagContents.createMetadataAtom("disk", "uint8", [].concat(
-      [0x00, 0x00],
-      [0x00, 0x02], // disk
-      [0x00, 0x02] // total disk count
+      [0x00, 0x00, 0x00, 0x02], // disk
+      [0x00, 0x00, 0x00, 0x03] // total disk count
     )),
     MP4TagContents.createMetadataAtom("©cmt", "text", bin("A Comment")),
     MP4TagContents.createMetadataAtom("cpil", "uint8", [0x01]),
@@ -124,7 +122,7 @@ describe("MP4TagReader", function() {
       expect(tags.trkn.data.track).toBe(2);
       expect(tags.trkn.data.total).toBe(9);
       expect(tags.disk.data.disk).toBe(2);
-      expect(tags.disk.data.total).toBe(2);
+      expect(tags.disk.data.total).toBe(3);
     });
   });
 
@@ -186,26 +184,26 @@ describe("MP4TagReader", function() {
     }).then(function(tag) {
       expect(Object.keys(tag.tags)).toContain("title");
     });
+  });
 
-    it("reads jpeg tag despite uint8 type", function() {
-      var mp4FileContents = createMP4FileContents([
-        MP4TagContents.createMetadataAtom("covr", "uint8", [0x01, 0x02, 0x03])
-      ]);
-      var mediaFileReader = new ArrayFileReader(mp4FileContents.toArray());
-      var tagReader = new MP4TagReader(mediaFileReader);
+  it("reads jpeg tag despite uint8 type", function() {
+    var mp4FileContents = createMP4FileContents([
+      MP4TagContents.createMetadataAtom("covr", "uint8", [0x01, 0x02, 0x03])
+    ]);
+    var mediaFileReader = new ArrayFileReader(mp4FileContents.toArray());
+    var tagReader = new MP4TagReader(mediaFileReader);
 
-      return new Promise(function(resolve, reject) {
-        tagReader.read({
-          onSuccess: resolve,
-          onFailure: reject
-        });
-        jest.runAllTimers();
-      }).then(function(tag) {
-        var tags = tag.tags;
-        expect("covr" in tags).toBeTruthy();
-        expect(tags.covr.data.format).toBe("image/jpeg");
-        expect(tags.covr.data.data).toEqual([0x01, 0x02, 0x03]);
+    return new Promise(function(resolve, reject) {
+      tagReader.read({
+        onSuccess: resolve,
+        onFailure: reject
       });
+      jest.runAllTimers();
+    }).then(function(tag) {
+      var tags = tag.tags;
+      expect("covr" in tags).toBeTruthy();
+      expect(tags.covr.data.format).toBe("image/jpeg");
+      expect(tags.covr.data.data).toEqual([0x01, 0x02, 0x03]);
     });
   });
 });

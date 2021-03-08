@@ -185,7 +185,9 @@ class MP4TagReader extends MediaTagReader {
   }
 
   _readMetadataAtom(data: MediaFileReader, offset: number): TagFrame {
-    // 16: name + size + "data" + size (4 bytes each)
+    // 16: size + name + size + "data" (4 bytes each)
+    // 8: 1 byte atom version & 3 bytes atom flags + 4 bytes NULL space
+    // 8: 4 bytes track + 4 bytes total
     const METADATA_HEADER = 16;
 
     var atomSize = data.getLongAt(offset, true);
@@ -194,16 +196,16 @@ class MP4TagReader extends MediaTagReader {
     var klass = data.getInteger24At(offset + METADATA_HEADER + 1, true);
     var type = TYPES[klass];
     var atomData;
-
+    var bigEndian = true;
     if (atomName == "trkn") {
       atomData = {
-        "track": data.getByteAt(offset + METADATA_HEADER + 11),
-        "total": data.getByteAt(offset + METADATA_HEADER + 13)
+        "track": data.getShortAt(offset + METADATA_HEADER + 10, bigEndian),
+        "total": data.getShortAt(offset + METADATA_HEADER + 14, bigEndian)
       };
     } else if (atomName == "disk") {
       atomData = {
-        "disk": data.getByteAt(offset + METADATA_HEADER + 11),
-        "total": data.getByteAt(offset + METADATA_HEADER + 13)
+        "disk": data.getShortAt(offset + METADATA_HEADER + 10, bigEndian),
+        "total": data.getShortAt(offset + METADATA_HEADER + 14, bigEndian)
       };
     } else {
       // 4: atom version (1 byte) + atom flags (3 bytes)

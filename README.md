@@ -276,7 +276,7 @@ let base64String = "";
 for (const i = 0; i < data.length; i++) {
   base64String += String.fromCharCode(data[i]);
 }
-img.src = `data:${format};base64,${base64String}`;
+img.src = `data:${data.format};base64,${window.btoa(base64String)}`;
 ```
 
 ### HTTP Access Control (CORS)

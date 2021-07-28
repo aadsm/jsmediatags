@@ -273,10 +273,10 @@ The `picture` tag contains an array buffer of all the bytes of the album artwork
 ```javascript
 const { data, format } = result.tags.picture;
 let base64String = "";
-for (const i = 0; i < data.length; i++) {
+for (let i = 0; i < data.length; i++) {
   base64String += String.fromCharCode(data[i]);
 }
-img.src = `data:${data.format};base64,${window.btoa(base64String)}`;
+img.src = `data:${format};base64,${window.btoa(base64String)}`;
 ```
 
 ### HTTP Access Control (CORS)

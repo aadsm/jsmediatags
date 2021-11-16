@@ -262,7 +262,7 @@ These are the supported shortcuts.
 * `year`
 * `comment`
 * `track`
-* `genre`
+* `genres`
 * `picture`
 * `lyrics`
 

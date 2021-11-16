@@ -118,9 +118,10 @@ class MP4TagReader extends MediaTagReader {
 
   _parseData(data: MediaFileReader, tagsToRead: ?Array<string>): TagType {
     var tags = {};
+    var genres = [];
 
     tagsToRead = this._expandShortcutTags(tagsToRead);
-    this._readAtom(tags, data, 0, data.getSize(), tagsToRead);
+    this._readAtom(tags, genres, data, 0, data.getSize(), tagsToRead);
 
     // create shortcuts for most common data.
     for (var name in SHORTCUTS) if (SHORTCUTS.hasOwnProperty(name)) {
@@ -134,6 +135,8 @@ class MP4TagReader extends MediaTagReader {
       }
     }
 
+    tags["genres"] = genres.map(genre => genre.data);
+
     return {
       "type": "MP4",
       "ftyp": data.getStringAt(8, 4),
@@ -144,6 +147,7 @@ class MP4TagReader extends MediaTagReader {
 
   _readAtom(
     tags: Object,
+    genres: Array<Object>,
     data: MediaFileReader,
     offset: number,
     length: number,
@@ -167,7 +171,7 @@ class MP4TagReader extends MediaTagReader {
           seek += 4; // next_item_id (uint32)
         }
         var atomFullName = (parentAtomFullName ? parentAtomFullName+"." : "") + atomName;
-        this._readAtom(tags, data, seek + 8, atomSize - 8, tagsToRead, atomFullName, indent);
+        this._readAtom(tags, genres, data, seek + 8, atomSize - 8, tagsToRead, atomFullName, indent);
         return;
       }
 
@@ -177,7 +181,13 @@ class MP4TagReader extends MediaTagReader {
         parentAtomFullName === "moov.udta.meta.ilst" &&
         this._canReadAtom(atomName)
       ) {
-        tags[atomName] = this._readMetadataAtom(data, seek);
+        var value = this._readMetadataAtom(data, seek);
+        if (atomName == GENRE) {
+          genres.push(value);
+        }
+        else {
+          tags[atomName] = value;
+        }
       }
 
       seek += atomSize;
@@ -347,9 +357,10 @@ const SHORTCUTS = {
   "year"      : "©day",
   "comment"   : "©cmt",
   "track"     : "trkn",
-  "genre"     : "©gen",
   "picture"   : "covr",
   "lyrics"    : "©lyr"
 };
+
+const GENRE = "©gen";
 
 module.exports = MP4TagReader;

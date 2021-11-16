@@ -145,7 +145,7 @@ const SHORTCUTS = {
   "year"      : ["TYER", "TYE"],
   "comment"   : ["COMM", "COM"],
   "track"     : ["TRCK", "TRK"],
-  "genre"     : ["TCON", "TCO"],
+  "genres"    : ["TCON", "TCO"],
   "picture"   : ["APIC", "PIC"],
   "lyrics"    : ["USLT", "ULT"]
 };

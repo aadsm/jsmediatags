@@ -16,6 +16,8 @@ import type {
   TagFrameFlags
 } from './FlowTypes';
 
+const GENRE_SEPARATOR = 65279;
+
 const FRAME_DESCRIPTIONS = {
   // v2.2
   "BUF" : "Recommended buffer size",
@@ -589,8 +591,12 @@ frameReaderFunctions['TCON'] = function readGenreFrame(
   data: MediaFileReader,
   flags: ?Object
 ): any {
-  var text = frameReaderFunctions['T*'].apply(this, arguments);
-  return (text: string).replace(/^\(\d+\)/, '');
+  var charset = getTextEncoding(data.getByteAt(offset));
+  var text = data.getStringWithCharsetAt(offset + 1, length - 1, charset, true).toString();
+
+  return text
+    .split(String.fromCharCode(GENRE_SEPARATOR))
+    .map(text => text.replace(/^\(\d+\)/, ''));
 };
 
 frameReaderFunctions['TCO'] = frameReaderFunctions['TCON'];

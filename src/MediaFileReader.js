@@ -172,7 +172,8 @@ class MediaFileReader {
   getStringWithCharsetAt(
     offset: number,
     length: number,
-    charset: ?CharsetType
+    charset: ?CharsetType,
+    disableBreakAtNull?: bool
   ): DecodedString {
     var bytes = this.getBytesAt(offset, length);
     var string;
@@ -181,15 +182,15 @@ class MediaFileReader {
       case "utf-16":
       case "utf-16le":
       case "utf-16be":
-        string = StringUtils.readUTF16String(bytes, charset === "utf-16be");
+        string = StringUtils.readUTF16String(bytes, charset === "utf-16be", disableBreakAtNull);
         break;
 
       case "utf-8":
-        string = StringUtils.readUTF8String(bytes);
+        string = StringUtils.readUTF8String(bytes, disableBreakAtNull);
         break;
 
       default:
-        string = StringUtils.readNullTerminatedString(bytes);
+        string = StringUtils.readNullTerminatedString(bytes, disableBreakAtNull);
         break;
     }
 

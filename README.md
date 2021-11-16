@@ -165,39 +165,86 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
 #### ID3v2
 ```javascript
 {
-  type: "ID3",
-  version: "2.4.0",
-  major: 4,
+  type: 'ID3',
+  version: '2.3.0',
+  major: 3,
   revision: 0,
-  tags: {
-    artist: "Sam, The Kid",
-    album: "Pratica(mente)",
-    track: "12",
-    TPE1: {
-      id: "TPE1",
-      size: 14,
-      description: "Lead performer(s)/Soloist(s)",
-      data: "Sam, The Kid"
-    },
-    TALB: {
-      id: "TALB",
-      size: 16,
-      description: "Album/Movie/Show title",
-      data: "Pratica(mente)"
-    },
-    TRCK: {
-      id: "TRCK",
-      size: 3,
-      description: "Track number/Position in set",
-      data: "12",
-    }
-  },
-  size: 34423,
   flags: {
     unsynchronisation: false,
     extended_header: false,
     experimental_indicator: false,
     footer_present: false
+  },
+  size: 64578,
+  tags: {
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: '3/4',
+    genres: [ 'AfrobeatAfrican' ],
+    picture: {
+      format: 'image/jpeg',
+      type: 'Cover (front)',
+      description: '',
+      data: [Array]
+    },
+    TPUB: {
+      id: 'TPUB',
+      size: 27,
+      description: 'Publisher',
+      data: 'MCA Records'
+    },
+    TXXX: [
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object],
+      [Object], [Object],
+      [Object]
+    ],
+    TPE2: {
+      id: 'TPE2',
+      size: 23,
+      description: 'Band/orchestra/accompaniment',
+      data: 'Fela Kuti'
+    },
+    TALB: {
+      id: 'TALB',
+      size: 85,
+      description: 'Album/Movie/Show title',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    TPE1: {
+      id: 'TPE1',
+      size: 23,
+      description: 'Lead performer(s)/Soloist(s)',
+      data: 'Fela Kuti'
+    },
+    TIT2: {
+      id: 'TIT2',
+      size: 49,
+      description: 'Title/songname/content description',
+      data: 'Sorrow Tears and Blood'
+    },
+    TCON: {
+      id: 'TCON',
+      size: 37,
+      description: 'Content type',
+      data: [Array]
+    },
+    TYER: { id: 'TYER', size: 13, description: 'Year', data: '1977' },
+    TRCK: {
+      id: 'TRCK',
+      size: 11,
+      description: 'Track number/Position in set',
+      data: '3/4'
+    },
+    APIC: {
+      id: 'APIC',
+      size: 61857,
+      description: 'Attached picture',
+      data: [Object]
+    }
   }
 }
 ```
@@ -205,16 +252,55 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
 #### MP4
 ```javascript
 {
-  type: "MP4",
-  ftyp: "M4A",
+  type: 'MP4',
+  ftyp: 'M4A ',
   version: 0,
   tags: {
-    "©too": {
-      id: "©too",
-      size: 35,
+    '©too': {
+      id: '©too',
+      size: 99,
       description: 'Encoding Tool',
-      data: 'Lavf53.24.2'
-    }
+      data: 'qaac 2.69, CoreAudioToolbox 7.10.9.0, AAC-LC Encoder, TVBR q127, Quality 96'
+    },
+    trkn: {
+      id: 'trkn',
+      size: 32,
+      description: 'Track Number',
+      data: [Object]
+    },
+    '©ART': { id: '©ART', size: 33, description: 'Artist', data: 'Fela Kuti' },
+    aART: {
+      id: 'aART',
+      size: 33,
+      description: 'Album Artist',
+      data: 'Fela Kuti'
+    },
+    '©nam': {
+      id: '©nam',
+      size: 46,
+      description: 'Title',
+      data: 'Sorrow Tears and Blood'
+    },
+    '©alb': {
+      id: '©alb',
+      size: 64,
+      description: 'Album',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    '©day': { id: '©day', size: 28, description: 'Release Date', data: '1977' },
+    covr: {
+      id: 'covr',
+      size: 61867,
+      description: 'Cover Art',
+      data: [Object]
+    },
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: 3,
+    picture: { format: 'image/jpeg', data: [Array] },
+    genres: [ 'Afrobeat', 'African' ]
   }
 }
 ```
@@ -222,14 +308,20 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
 #### FLAC
 ```javascript
 {
-  type: "FLAC",
-  version: "1",
+  type: 'FLAC',
+  version: '1',
   tags: {
-    title: "16/12/95",
-    artist: "Sam, The Kid",
-    album: "Pratica(mente)",
-    track: "12",
-    picture: ...
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    track: '3/4',
+    genres: [ 'Afrobeat', 'African' ],
+    picture: {
+      format: 'image/jpeg',
+      type: 'Cover (front)',
+      description: '',
+      data: [Array]
+    }
   }
 }
 ```

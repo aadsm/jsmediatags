@@ -164,6 +164,24 @@ new Promise((resolve, reject) => {
 ### The Output
 This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` callback.
 
+#### ID3v1
+
+```javascript
+{
+  type: 'ID3',
+  version: '1.1',
+  tags: {
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears',
+    year: '1977',
+    comment: '',
+    genres: [ 'Ethnic' ],
+    track: 3
+  }
+}
+```
+
 #### ID3v2
 ```javascript
 {

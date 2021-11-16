@@ -184,31 +184,12 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     album: 'Opposite People / Sorrow Tears and Blood',
     year: '1977',
     track: '3/4',
-    genres: [ 'AfrobeatAfrican' ],
+    genres: [ 'Afrobeat', 'African' ],
     picture: {
       format: 'image/jpeg',
       type: 'Cover (front)',
       description: '',
       data: [Array]
-    },
-    TPUB: {
-      id: 'TPUB',
-      size: 27,
-      description: 'Publisher',
-      data: 'MCA Records'
-    },
-    TXXX: [
-      [Object], [Object],
-      [Object], [Object],
-      [Object], [Object],
-      [Object], [Object],
-      [Object]
-    ],
-    TPE2: {
-      id: 'TPE2',
-      size: 23,
-      description: 'Band/orchestra/accompaniment',
-      data: 'Fela Kuti'
     },
     TALB: {
       id: 'TALB',
@@ -222,31 +203,114 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
       description: 'Lead performer(s)/Soloist(s)',
       data: 'Fela Kuti'
     },
+    TPE2: {
+      id: 'TPE2',
+      size: 23,
+      description: 'Band/orchestra/accompaniment',
+      data: 'Fela Kuti'
+    },
+    TCON: {
+      id: 'TCON',
+      size: 39,
+      description: 'Content type',
+      data: [Array]
+    },
+    TPUB: {
+      id: 'TPUB',
+      size: 27,
+      description: 'Publisher',
+      data: 'MCA Records'
+    },
     TIT2: {
       id: 'TIT2',
       size: 49,
       description: 'Title/songname/content description',
       data: 'Sorrow Tears and Blood'
     },
-    TCON: {
-      id: 'TCON',
-      size: 37,
-      description: 'Content type',
-      data: [Array]
-    },
-    TYER: { id: 'TYER', size: 13, description: 'Year', data: '1977' },
     TRCK: {
       id: 'TRCK',
-      size: 11,
+      size: 5,
       description: 'Track number/Position in set',
       data: '3/4'
     },
+    UFID: {
+      id: 'UFID',
+      size: 59,
+      description: 'Unique file identifier',
+      data: [Object]
+    },
+    TYER: { id: 'TYER', size: 6, description: 'Year', data: '1977' },
+    TSOP: {
+      id: 'TSOP',
+      size: 47,
+      description: 'Performer sort order',
+      data: 'Kuti, Fela; Africa 70'
+    },
+    TSO2: {
+      id: 'TSO2',
+      size: 25,
+      description: 'Unknown',
+      data: 'Kuti, Fela'
+    },
+    TXXX: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
     APIC: {
       id: 'APIC',
       size: 61857,
       description: 'Attached picture',
       data: [Object]
     }
+  }
+}
+{
+  type: 'MP4',
+  ftyp: 'M4A ',
+  version: 0,
+  tags: {
+    '©too': {
+      id: '©too',
+      size: 99,
+      description: 'Encoding Tool',
+      data: 'qaac 2.69, CoreAudioToolbox 7.10.9.0, AAC-LC Encoder, TVBR q127, Quality 96'
+    },
+    trkn: {
+      id: 'trkn',
+      size: 32,
+      description: 'Track Number',
+      data: [Object]
+    },
+    '©ART': { id: '©ART', size: 33, description: 'Artist', data: 'Fela Kuti' },
+    aART: {
+      id: 'aART',
+      size: 33,
+      description: 'Album Artist',
+      data: 'Fela Kuti'
+    },
+    '©nam': {
+      id: '©nam',
+      size: 46,
+      description: 'Title',
+      data: 'Sorrow Tears and Blood'
+    },
+    '©alb': {
+      id: '©alb',
+      size: 64,
+      description: 'Album',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    '©day': { id: '©day', size: 28, description: 'Release Date', data: '1977' },
+    covr: {
+      id: 'covr',
+      size: 61867,
+      description: 'Cover Art',
+      data: [Object]
+    },
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: 3,
+    picture: { format: 'image/jpeg', data: [Array] },
+    genres: [ 'Afrobeat', 'African' ]
   }
 }
 ```
@@ -359,6 +423,16 @@ These are the supported shortcuts.
 * `genres`
 * `picture`
 * `lyrics`
+
+### Multiple genres
+
+FLAC and MP4 supports multiple genre fields.
+
+ID3v1 supports only one genre field and it stores the information in one byte (and uses a predefined list to translate the value back to human readable information), so storing multiple genres is not an option.
+
+ID3v2 supports only one genre field, but up to 16MB in length, so the different genres can be stored joined with a special character. The most common approach is to use the character `65279` as a separator.
+
+Mp3tag does all the required work automatically if the supplied genres are separated with double backslash (`\\`) characters. For example, to have `["Afrobeat", "African"]` in the output of `jsmediatags`, the Genre field of Mp3tag needs to contain the following: `Afrobeat\\African`. This will work with FLAC, MP4 and ID3v2 as well.
 
 ### Picture data
 

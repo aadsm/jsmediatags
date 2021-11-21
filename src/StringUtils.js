@@ -25,6 +25,7 @@ var StringUtils = {
   readUTF16String: function(
     bytes: Array<number>,
     bigEndian: boolean,
+    disableBreakAtNull?: bool,
     maxBytes?: number
   ): DecodedString {
     var ix = 0;
@@ -51,7 +52,9 @@ var StringUtils = {
         var word1 = (byte1<<8)+byte2;
         ix += 2;
         if( word1 == 0x0000 ) {
+          if (!disableBreakAtNull) {
             break;
+          }
         } else if( byte1 < 0xD8 || byte1 >= 0xE0 ) {
             arr[j] = String.fromCharCode(word1);
         } else {
@@ -67,6 +70,7 @@ var StringUtils = {
 
   readUTF8String: function(
     bytes: Array<number>,
+    disableBreakAtNull?: bool,
     maxBytes?: number
   ): DecodedString {
     var ix = 0;
@@ -80,7 +84,9 @@ var StringUtils = {
     for( var j = 0; ix < maxBytes; j++ ) {
       var byte1 = bytes[ix++];
       if( byte1 == 0x00 ) {
-        break;
+        if (!disableBreakAtNull) {
+          break;
+        }
       } else if( byte1 < 0x80 ) {
         arr[j] = String.fromCharCode(byte1);
       } else if( byte1 >= 0xC2 && byte1 < 0xE0 ) {
@@ -106,13 +112,14 @@ var StringUtils = {
 
   readNullTerminatedString: function(
     bytes: Array<number>,
+    disableBreakAtNull?: bool,
     maxBytes?: number
   ): DecodedString {
     var arr = [];
     maxBytes = maxBytes || bytes.length;
     for ( var i = 0; i < maxBytes; ) {
       var byte1 = bytes[i++];
-      if ( byte1 == 0x00 ) {
+      if ( byte1 == 0x00 && !disableBreakAtNull) {
         break;
       }
       arr[i-1] = String.fromCharCode(byte1);

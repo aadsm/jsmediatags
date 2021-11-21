@@ -36,7 +36,7 @@ describe("ID3v1TagReader", function() {
           album: 'The Album',
           year: '1995',
           comment: 'A Comment',
-          genre: 'Fusion'
+          genres: ['Fusion']
         }
       });
     });
@@ -73,7 +73,7 @@ describe("ID3v1TagReader", function() {
           year: '1995',
           comment: 'A Comment',
           track: 3,
-          genre: 'Fusion'
+          genres: ['Fusion']
         }
       });
     });

@@ -301,7 +301,7 @@ describe("ID3v2FrameReader", function() {
     var fileReader = new ArrayFileReader(fileData);
     var data = frameReader(0, fileData.length, fileReader);
 
-    expect(data).toEqual("Eurodisc");
+    expect(data).toEqual(["Eurodisc"]);
   });
 
   it("should read USLT tag", function() {

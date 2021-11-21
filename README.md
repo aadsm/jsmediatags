@@ -2,6 +2,8 @@
 
 The next version of https://github.com/aadsm/JavaScript-ID3-Reader.
 
+Modified version of https://github.com/aadsm/jsmediatags as this supports tracks with multiple genres.
+
 ## Donations
 A few people have asked me about donations (or even crowdfunding). I would prefer you to consider making a donation to the ["Girls Who Code" NPO](https://www.classy.org/checkout/donation?eid=77372). If you do please send me a message so I can add you as a contributor.
 
@@ -162,42 +164,174 @@ new Promise((resolve, reject) => {
 ### The Output
 This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` callback.
 
+#### ID3v1
+
+```javascript
+{
+  type: 'ID3',
+  version: '1.1',
+  tags: {
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears',
+    year: '1977',
+    comment: '',
+    genres: [ 'Ethnic' ],
+    genre: 'Ethnic',
+    track: 3
+  }
+}
+```
+
 #### ID3v2
 ```javascript
 {
-  type: "ID3",
-  version: "2.4.0",
-  major: 4,
+  type: 'ID3',
+  version: '2.3.0',
+  major: 3,
   revision: 0,
-  tags: {
-    artist: "Sam, The Kid",
-    album: "Pratica(mente)",
-    track: "12",
-    TPE1: {
-      id: "TPE1",
-      size: 14,
-      description: "Lead performer(s)/Soloist(s)",
-      data: "Sam, The Kid"
-    },
-    TALB: {
-      id: "TALB",
-      size: 16,
-      description: "Album/Movie/Show title",
-      data: "Pratica(mente)"
-    },
-    TRCK: {
-      id: "TRCK",
-      size: 3,
-      description: "Track number/Position in set",
-      data: "12",
-    }
-  },
-  size: 34423,
   flags: {
     unsynchronisation: false,
     extended_header: false,
     experimental_indicator: false,
     footer_present: false
+  },
+  size: 64578,
+  tags: {
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: '3/4',
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat',
+    picture: {
+      format: 'image/jpeg',
+      type: 'Cover (front)',
+      description: '',
+      data: [Array]
+    },
+    TALB: {
+      id: 'TALB',
+      size: 85,
+      description: 'Album/Movie/Show title',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    TPE1: {
+      id: 'TPE1',
+      size: 23,
+      description: 'Lead performer(s)/Soloist(s)',
+      data: 'Fela Kuti'
+    },
+    TPE2: {
+      id: 'TPE2',
+      size: 23,
+      description: 'Band/orchestra/accompaniment',
+      data: 'Fela Kuti'
+    },
+    TCON: {
+      id: 'TCON',
+      size: 39,
+      description: 'Content type',
+      data: [Array]
+    },
+    TPUB: {
+      id: 'TPUB',
+      size: 27,
+      description: 'Publisher',
+      data: 'MCA Records'
+    },
+    TIT2: {
+      id: 'TIT2',
+      size: 49,
+      description: 'Title/songname/content description',
+      data: 'Sorrow Tears and Blood'
+    },
+    TRCK: {
+      id: 'TRCK',
+      size: 5,
+      description: 'Track number/Position in set',
+      data: '3/4'
+    },
+    UFID: {
+      id: 'UFID',
+      size: 59,
+      description: 'Unique file identifier',
+      data: [Object]
+    },
+    TYER: { id: 'TYER', size: 6, description: 'Year', data: '1977' },
+    TSOP: {
+      id: 'TSOP',
+      size: 47,
+      description: 'Performer sort order',
+      data: 'Kuti, Fela; Africa 70'
+    },
+    TSO2: {
+      id: 'TSO2',
+      size: 25,
+      description: 'Unknown',
+      data: 'Kuti, Fela'
+    },
+    TXXX: [ [Object], [Object], [Object], [Object], [Object], [Object] ],
+    APIC: {
+      id: 'APIC',
+      size: 61857,
+      description: 'Attached picture',
+      data: [Object]
+    }
+  }
+}
+{
+  type: 'MP4',
+  ftyp: 'M4A ',
+  version: 0,
+  tags: {
+    '©too': {
+      id: '©too',
+      size: 99,
+      description: 'Encoding Tool',
+      data: 'qaac 2.69, CoreAudioToolbox 7.10.9.0, AAC-LC Encoder, TVBR q127, Quality 96'
+    },
+    trkn: {
+      id: 'trkn',
+      size: 32,
+      description: 'Track Number',
+      data: [Object]
+    },
+    '©ART': { id: '©ART', size: 33, description: 'Artist', data: 'Fela Kuti' },
+    aART: {
+      id: 'aART',
+      size: 33,
+      description: 'Album Artist',
+      data: 'Fela Kuti'
+    },
+    '©nam': {
+      id: '©nam',
+      size: 46,
+      description: 'Title',
+      data: 'Sorrow Tears and Blood'
+    },
+    '©alb': {
+      id: '©alb',
+      size: 64,
+      description: 'Album',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    '©day': { id: '©day', size: 28, description: 'Release Date', data: '1977' },
+    covr: {
+      id: 'covr',
+      size: 61867,
+      description: 'Cover Art',
+      data: [Object]
+    },
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: 3,
+    picture: { format: 'image/jpeg', data: [Array] },
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat'
   }
 }
 ```
@@ -205,16 +339,56 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
 #### MP4
 ```javascript
 {
-  type: "MP4",
-  ftyp: "M4A",
+  type: 'MP4',
+  ftyp: 'M4A ',
   version: 0,
   tags: {
-    "©too": {
-      id: "©too",
-      size: 35,
+    '©too': {
+      id: '©too',
+      size: 99,
       description: 'Encoding Tool',
-      data: 'Lavf53.24.2'
-    }
+      data: 'qaac 2.69, CoreAudioToolbox 7.10.9.0, AAC-LC Encoder, TVBR q127, Quality 96'
+    },
+    trkn: {
+      id: 'trkn',
+      size: 32,
+      description: 'Track Number',
+      data: [Object]
+    },
+    '©ART': { id: '©ART', size: 33, description: 'Artist', data: 'Fela Kuti' },
+    aART: {
+      id: 'aART',
+      size: 33,
+      description: 'Album Artist',
+      data: 'Fela Kuti'
+    },
+    '©nam': {
+      id: '©nam',
+      size: 46,
+      description: 'Title',
+      data: 'Sorrow Tears and Blood'
+    },
+    '©alb': {
+      id: '©alb',
+      size: 64,
+      description: 'Album',
+      data: 'Opposite People / Sorrow Tears and Blood'
+    },
+    '©day': { id: '©day', size: 28, description: 'Release Date', data: '1977' },
+    covr: {
+      id: 'covr',
+      size: 61867,
+      description: 'Cover Art',
+      data: [Object]
+    },
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    year: '1977',
+    track: 3,
+    picture: { format: 'image/jpeg', data: [Array] },
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat'
   }
 }
 ```
@@ -222,14 +396,21 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
 #### FLAC
 ```javascript
 {
-  type: "FLAC",
-  version: "1",
+  type: 'FLAC',
+  version: '1',
   tags: {
-    title: "16/12/95",
-    artist: "Sam, The Kid",
-    album: "Pratica(mente)",
-    track: "12",
-    picture: ...
+    title: 'Sorrow Tears and Blood',
+    artist: 'Fela Kuti',
+    album: 'Opposite People / Sorrow Tears and Blood',
+    track: '3/4',
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat',
+    picture: {
+      format: 'image/jpeg',
+      type: 'Cover (front)',
+      description: '',
+      data: [Array]
+    }
   }
 }
 ```
@@ -262,9 +443,20 @@ These are the supported shortcuts.
 * `year`
 * `comment`
 * `track`
-* `genre`
+* `genres`
+* `genre` (first element of the genres array)
 * `picture`
 * `lyrics`
+
+### Multiple genres
+
+FLAC and MP4 supports multiple genre fields.
+
+ID3v1 supports only one genre field and it stores the information in one byte (and uses a predefined list to translate the value back to human readable information), so storing multiple genres is not an option.
+
+ID3v2 supports only one genre field, but up to 16MB in length, so the different genres can be stored joined with a special character. The most common approach is to use the character `65279` as a separator.
+
+Mp3tag does all the required work automatically if the supplied genres are separated with double backslash (`\\`) characters. For example, to have `["Afrobeat", "African"]` in the output of `jsmediatags`, the Genre field of Mp3tag needs to contain the following: `Afrobeat\\African`. This will work with FLAC, MP4 and ID3v2 as well.
 
 ### Picture data
 

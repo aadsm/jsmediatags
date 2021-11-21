@@ -177,6 +177,7 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     year: '1977',
     comment: '',
     genres: [ 'Ethnic' ],
+    genre: 'Ethnic',
     track: 3
   }
 }
@@ -203,6 +204,7 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     year: '1977',
     track: '3/4',
     genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat',
     picture: {
       format: 'image/jpeg',
       type: 'Cover (front)',
@@ -328,7 +330,8 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     year: '1977',
     track: 3,
     picture: { format: 'image/jpeg', data: [Array] },
-    genres: [ 'Afrobeat', 'African' ]
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat'
   }
 }
 ```
@@ -384,7 +387,8 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     year: '1977',
     track: 3,
     picture: { format: 'image/jpeg', data: [Array] },
-    genres: [ 'Afrobeat', 'African' ]
+    genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat'
   }
 }
 ```
@@ -400,6 +404,7 @@ This is an example of the object passed to the `jsmediatags.read`'s `onSuccess` 
     album: 'Opposite People / Sorrow Tears and Blood',
     track: '3/4',
     genres: [ 'Afrobeat', 'African' ],
+    genre: 'Afrobeat',
     picture: {
       format: 'image/jpeg',
       type: 'Cover (front)',
@@ -439,6 +444,7 @@ These are the supported shortcuts.
 * `comment`
 * `track`
 * `genres`
+* `genre` (first element of the genres array)
 * `picture`
 * `lyrics`
 

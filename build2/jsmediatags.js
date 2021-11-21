@@ -83,7 +83,16 @@ var Reader = /*#__PURE__*/function () {
         onSuccess: function onSuccess() {
           self._getTagReader(fileReader, {
             onSuccess: function onSuccess(TagReader) {
-              new TagReader(fileReader).setTagsToRead(self._tagsToRead).read(callbacks);
+              new TagReader(fileReader).setTagsToRead(self._tagsToRead).read({
+                onSuccess: function onSuccess(meta) {
+                  if (meta.tags) {
+                    meta.tags.genre = meta.tags.genres && meta.tags.genres.length && meta.tags.genres[0];
+                  }
+
+                  callbacks.onSuccess(meta);
+                },
+                onError: callbacks.onError
+              });
             },
             onError: callbacks.onError
           });

@@ -87,8 +87,7 @@ class NodeFileReader extends MediaFileReader {
     };
 
     var storeBuffer = function (buffer) {
-      var data = Array.prototype.slice.call(buffer, 0, length);
-      fileData.addData(range[0], data);
+      fileData.addData(range[0], buffer);
     };
 
     fs.open(this._path, "r", undefined, readData);

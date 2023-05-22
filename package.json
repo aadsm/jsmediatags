@@ -19,7 +19,7 @@
     }
   ],
   "main": "build2/jsmediatags.js",
-  "browser": "dist/jsmediatags.js",
+  "browser": "dist/jsmediatags.min.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aadsm/jsmediatags.git"

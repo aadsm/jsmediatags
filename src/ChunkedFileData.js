@@ -210,7 +210,7 @@ class ChunkedFileData {
       return dataChunk.data[offset - dataChunk.offset];
     }
 
-    throw new Error("Offset " + offset + " hasn't been loaded yet.");
+    throw new Error("File Offset " + offset + " hasn't been loaded yet.");
   }
 }
 

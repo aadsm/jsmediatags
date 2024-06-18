@@ -86,6 +86,40 @@ describe("ID3v2FrameReader", function() {
     expect(data).toEqual(6575);
   });
 
+  it("should read SYLT tag", function() {
+    var frameReader = ID3v2FrameReader.getFrameReaderFunction("SYLT");
+
+    expect(frameReader).toBeDefined();
+
+    var fileData = [].concat(
+      [0x00], // encoding
+      bin("ENG"), // language
+      [0x01], // time stamp format
+      [0x02], // content type
+      [0x00], // content descriptor
+      bin("Hi"), [0x00],
+      [0x00, 0x00, 0x00, 0x00],
+      bin(" there!"), [0x00],
+      [0x00, 0x00, 0x00, 0x64]
+    );
+    var fileReader = new ArrayFileReader(fileData);
+    var data = frameReader(0, fileData.length, fileReader);
+
+    expect(data).toEqual({
+      language: "ENG",
+      timeStampFormat: "milliseconds",
+      contentType: "transcription",
+      descriptor: "",
+      synchronisedText: [{
+        text: "Hi",
+        timeStamp: 0
+      }, {
+        text: " there!",
+        timeStamp: 100
+      }]
+    });
+  });
+
   describe("T* text tags", function() {
     describe("T000 - TZZZ, excluding TXXX", function() {
       var frameReader = ID3v2FrameReader.getFrameReaderFunction("T*");

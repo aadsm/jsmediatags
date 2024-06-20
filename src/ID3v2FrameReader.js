@@ -539,20 +539,24 @@ frameReaderFunctions['SYLT'] = function readSynchronizedLyricsFrame(
   flags: ?Object,
   id3header?: TagHeader
 ): any {
+  var start = offset;
   var contentTypes = ['other', 'lyrics', 'transcription', 'movement', 'events', 'chord', 'trivia'];
-  var timeStampFormats = ['frames', 'milliseconds'];
+  var timeStampFormats = ['unset', 'frames', 'milliseconds'];
   var charset = getTextEncoding(data.getByteAt(offset));
-  var language = data.getStringAt(offset+1, 3);
-  var timeStampFormat = timeStampFormats[data.getByteAt(offset+4)];
-  var contentType = contentTypes[data.getByteAt(offset+5)];
-  var descriptor = StringUtils.readNullTerminatedString(data.getBytesAt(offset+6, length-offset-6));
-  offset += 6 + descriptor.bytesReadCount;
-
+  offset += 1;
+  var language = data.getStringAt(offset, 3);
+  offset += 3;
+  var timeStampFormat = timeStampFormats[data.getByteAt(offset)];
+  offset += 1;
+  var contentType = contentTypes[data.getByteAt(offset)];
+  offset += 1;
+  var descriptor = data.getStringWithCharsetAt(offset, length + start - offset, charset);
+  offset += descriptor.bytesReadCount;
   var synchronisedText = [];
   var line = '';
 
-  while (offset < length) {
-    line = StringUtils.readNullTerminatedString(data.getBytesAt(offset, length-offset));
+  while (offset < length + start) {
+    line = data.getStringWithCharsetAt(offset, length + start - offset, charset);
     offset += line.bytesReadCount;
     synchronisedText.push({
       text : line.toString(),

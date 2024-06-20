@@ -94,7 +94,7 @@ describe("ID3v2FrameReader", function() {
     var fileData = [].concat(
       [0x00], // encoding
       bin("ENG"), // language
-      [0x01], // time stamp format
+      [0x02], // time stamp format
       [0x02], // content type
       [0x00], // content descriptor
       bin("Hi"), [0x00],

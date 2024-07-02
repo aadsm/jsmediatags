@@ -51,7 +51,7 @@ class MP4TagReader extends MediaTagReader {
 
     var self = this;
     // Load the header of the first atom
-    mediaFileReader.loadRange([0, 16], {
+    mediaFileReader.loadRange([0, 48], {
       onSuccess: function() {
         self._loadAtom(mediaFileReader, 0, "", callbacks);
       },
@@ -80,7 +80,12 @@ class MP4TagReader extends MediaTagReader {
       return;
     }
     var atomName = mediaFileReader.getStringAt(offset + 4, 4);
-    // console.log(parentAtomFullName, atomName, atomSize);
+    
+    if (atomSize == 1 && atomName == "mdat") {
+      atomSize = mediaFileReader.getLongAt(offset + 12, true);
+    }
+    
+    // console.log(parentAtomFullName, atomName, atomSize);  
     // Container atoms (no actual data)
     if (this._isContainerAtom(atomName)) {
       if (atomName == "meta") {
@@ -161,6 +166,10 @@ class MP4TagReader extends MediaTagReader {
       }
       var atomName = data.getStringAt(seek + 4, 4);
 
+      if (atomSize == 1 && atomName == "mdat") {
+        atomSize = data.getLongAt(seek + 12, true);
+      }
+      
       // console.log(seek, parentAtomFullName, atomName, atomSize);
       if (this._isContainerAtom(atomName)) {
         if (atomName == "meta") {

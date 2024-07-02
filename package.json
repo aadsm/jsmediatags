@@ -62,8 +62,8 @@
     "flow-bin": "~0.53.1",
     "google-closure-compiler": "20170626.0.0",
     "jest-cli": "^26.6.3",
-    "react": "^16.2.0",
-    "react-native": "^0.64.0",
+    "react": "^18.0.0",
+    "react-native": "^0.72.4",
     "watchify": "^4.0.0"
   },
   "scripts": {

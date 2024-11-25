@@ -53,10 +53,10 @@ class ID3v1TagReader extends MediaTagReader {
     }
 
     var genreIdx = data.getByteAt(offset + 97 + 30);
+    var genres = []
+
     if (genreIdx < 255) {
-      var genre = GENRES[genreIdx];
-    } else {
-      var genre = "";
+      genres.push(GENRES[genreIdx]);
     }
 
     var tag = {
@@ -68,7 +68,7 @@ class ID3v1TagReader extends MediaTagReader {
         "album" : album,
         "year" : year,
         "comment" : comment,
-        "genre" : genre
+        "genres" : genres
       }
     };
 

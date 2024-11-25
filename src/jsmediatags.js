@@ -72,7 +72,19 @@ class Reader {
           onSuccess: function(TagReader: Class<MediaTagReader>) {
             new TagReader(fileReader)
               .setTagsToRead(self._tagsToRead)
-              .read(callbacks);
+              .read({
+                onSuccess: function(meta) {
+                  if (meta.tags) {
+                    meta.tags.genre = 
+                      meta.tags.genres && 
+                      meta.tags.genres.length && 
+                      meta.tags.genres[0];
+                  }
+
+                  callbacks.onSuccess(meta);
+                },
+                onError: callbacks.onError
+              });
           },
           onError: callbacks.onError
         });

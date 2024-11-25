@@ -111,6 +111,6 @@ type ShortcutNameType =
   "year" |
   "comment" |
   "track" |
-  "genre" |
+  "genres" |
   "picture" |
   "lyrics";

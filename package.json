@@ -16,6 +16,10 @@
     {
       "name": "Jesse Ditson",
       "email": "jesse.ditson@gmail.com"
+    },
+    {
+      "name": "Denes Tornyi",
+      "email": "astameteo@posteo.net"
     }
   ],
   "main": "build2/jsmediatags.js",

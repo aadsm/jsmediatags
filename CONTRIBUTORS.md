@@ -26,6 +26,9 @@ Donations are towards the ["Girls Who Code" NPO](https://www.classy.org/checkout
 * **[LiuTongTong](https://github.com/TongDaDa)**
   * Added ArrayBuffer file reader.
 
+* **[Denes Tornyi](https://github.com/pinting)**
+  * Added feature to read tracks with multiple genres.
+
 ## Bugs
 
 * **[Curtis Menmuir](https://github.com/curtismenmuir)**

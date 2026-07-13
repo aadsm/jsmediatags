@@ -11,7 +11,7 @@ You also do not need to be a great english writer / speaker (I'm certainly not) 
 When creating a Pull Request make sure to:
 * not include post processed files like `dist/*`.
 * include unit tests for your changes
-  * when adding new ID3 frames check this [file](https://github.com/aadsm/jsmediatags/blob/master/src/__tests__/ID3v2FrameReader-test.js) fo examples. 
+  * when adding new ID3 frames check this [file](https://github.com/aadsm/jsmediatags/blob/master/src/__tests__/ID3v2FrameReader-test.ts) fo examples. 
 * run `npm test`.
 
 ## Coding conventions

@@ -2,8 +2,9 @@
 node_modules
 src
 .babelrc
-.flowconfig
 .gitignore
+tsconfig.json
+tsconfig.build.json
 browser.js
 publish.sh
 build2/__mocks__/

@@ -55,6 +55,8 @@
     "@types/jest": "^26.0.24",
     "@types/node": "^26.1.1",
     "babel-jest": "^26.6.3",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "babelify": "^10.0.0",
     "browserify": "^16.3.0",
     "jest-cli": "^26.6.3",
     "terser": "^5.44.1",
@@ -66,8 +68,8 @@
     "typecheck": "tsc",
     "build": "tsc -p tsconfig.build.json",
     "watch": "tsc -p tsconfig.build.json --watch",
-    "dist-dev": "npm run build && mkdir -p dist && browserify build2/jsmediatags.js --detect-globals false -i ./build2/NodeFileReader.js -i ./build2/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags",
-    "dist-watch": "mkdir -p dist && watchify build2/jsmediatags.js -v --detect-globals false -i ./build2/NodeFileReader.js -i ./build2/ReactNativeFileReader.js -o dist/jsmediatags.js -s jsmediatags",
+    "dist-dev": "mkdir -p dist && browserify src/jsmediatags.ts --detect-globals false --extension=.ts -i ./src/NodeFileReader.ts -i ./src/ReactNativeFileReader.ts -o dist/jsmediatags.js -s jsmediatags -t [ babelify --extensions .ts,.js ]",
+    "dist-watch": "mkdir -p dist && watchify src/jsmediatags.ts -v --detect-globals false --extension=.ts -i ./src/NodeFileReader.ts -i ./src/ReactNativeFileReader.ts -o dist/jsmediatags.js -s jsmediatags -t [ babelify --extensions .ts,.js ]",
     "dist": "npm run dist-dev && terser dist/jsmediatags.js --compress --mangle -o dist/jsmediatags.min.js"
   },
   "jest": {

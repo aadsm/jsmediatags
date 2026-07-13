@@ -322,22 +322,16 @@ New file and tag readers can be implemented by extending the MediaFileReader and
 
 ## Development
 
-Source code uses Flow for type checking meaning that a compilation step is needed to remove all type annotations.
-When using this library with NodeJS you can use the runtime compilation that is supported by babel. It will be slightly slower but no compilation step is required.
+Source code is written in [TypeScript](https://www.typescriptlang.org/), so a
+compilation step is needed to generate plain JavaScript (and the accompanying
+`.d.ts` type declarations).
 
-### NodeJS (With Runtime Compilation)
+Run `npm run typecheck` to type check the source code without emitting any files.
 
-```javascript
-require('babel-core/register');
+### NodeJS (With Compiled Code)
 
-var NodeFileReader = require('./src/NodeFileReader');
-var ID3v2TagReader = require('./src/ID3v2TagReader');
-...
-```
-
-### NodeJS (With Compiled Code (faster))
-
-Run `npm run build` to generate proper JavaScript code into the `build2` directory.
+Run `npm run build` to compile the source code into the `build2` directory. This
+emits both JavaScript and TypeScript declaration files.
 
 ```javascript
 var NodeFileReader = require('./build2/NodeFileReader');
@@ -365,9 +359,9 @@ Extend the `MediaFileReader` class to implement a new file reader. Methods to im
 * getByteAt
 
 Current Implementations:
-* [NodeFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/NodeFileReader.js) (NodeJS)
-* [XhrFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/XhrFileReader.js) (Browser and NodeJS)
-* [BlobFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/BlobFileReader.js) (Blob and File)
+* [NodeFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/NodeFileReader.ts) (NodeJS)
+* [XhrFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/XhrFileReader.ts) (Browser and NodeJS)
+* [BlobFileReader](https://github.com/aadsm/jsmediatags/blob/master/src/BlobFileReader.ts) (Blob and File)
 
 
 ### New Tag Readers
@@ -380,9 +374,9 @@ Extend the `MediaTagReader` class to implement a new tag reader. Methods to impl
 * \_parseData
 
 Current Implementations:
-* [ID3v1TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v1TagReader.js)
-* [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.js)
-* [MP4TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/MP4TagReader.js)
+* [ID3v1TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v1TagReader.ts)
+* [ID3v2TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/ID3v2TagReader.ts)
+* [MP4TagReader](https://github.com/aadsm/jsmediatags/blob/master/src/MP4TagReader.ts)
 
 ### Unit Testing
 
@@ -465,6 +459,6 @@ new jsmediatags.Reader("filename.mp3")
 ## Goals
 
 * Improve the API of JavaScript-ID3-Reader
-* Improve the source code with readable code and Flow annotated types
+* Improve the source code with readable code and TypeScript annotated types
 * Have unit tests
 * Support NodeJS
